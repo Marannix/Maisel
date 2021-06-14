@@ -2,6 +2,7 @@ package com.maisel.signup
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.maisel.R
 
 class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
