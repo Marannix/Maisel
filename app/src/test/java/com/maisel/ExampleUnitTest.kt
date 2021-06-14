@@ -1,4 +1,4 @@
-package com.marannix
+package com.maisel
 
 import org.junit.Test
 

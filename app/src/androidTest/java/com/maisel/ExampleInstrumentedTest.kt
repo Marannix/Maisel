@@ -1,4 +1,4 @@
-package com.marannix
+package com.maisel
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
