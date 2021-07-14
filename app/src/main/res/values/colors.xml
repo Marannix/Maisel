@@ -15,10 +15,11 @@
     <color name="red">#9F0B0B</color>
     <color name="status_background">#009688</color>
     <color name="chat_background">#8BC34A</color>
-    <color name="fb_color">#3c5793</color>
+    <color name="facebook_colour">#3c5793</color>
     <color name="lightgreen">#e5ffcc</color>
     <color name="settingsIconColor">#0E8374</color>
     <color name="grayBackground">#BCBCBC</color>
     <color name="chatbackground">#AAAAAA</color>
     <color name="mirage">#201A30</color>
+    <color name="buttonColour">@color/whatsAppColor</color>
 </resources>
