@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.maisel.R
 import com.maisel.databinding.ActivitySignInBinding
+import com.maisel.signup.SignUpActivity
 
 class SignInActivity : AppCompatActivity() {
 
@@ -15,5 +16,9 @@ class SignInActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
+
+        binding.signUpButton.setOnClickListener {
+            SignUpActivity.createIntent(this).also { startActivity(it) }
+        }
     }
 }
