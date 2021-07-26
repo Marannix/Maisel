@@ -2,5 +2,5 @@ package com.maisel.repository
 
 interface UserRepositoryImpl {
 
-    fun createAccount(email: String, password: String)
+    fun createAccount(name: String, email: String, password: String)
 }
