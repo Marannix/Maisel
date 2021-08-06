@@ -1,6 +1,8 @@
 package com.maisel.repository
 
-interface UserRepositoryImpl {
+import com.google.firebase.auth.AuthResult
+import io.reactivex.Maybe
 
-    fun createAccount(name: String, email: String, password: String)
+interface UserRepository {
+    fun createAccount(name: String, email: String, password: String) : Maybe<AuthResult>
 }
