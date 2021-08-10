@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Logger
 import com.maisel.databinding.ActivitySignUpBinding
 import com.maisel.state.AuthResultState
+import com.maisel.state.SignUpViewState
 import com.maisel.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +20,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
 
     private val viewModel: SignUpViewModel by lazy {
-        ViewModelProvider(this).get<SignUpViewModel>(
+        ViewModelProvider(this).get(
             SignUpViewModel::class.java
         )
     }
@@ -29,7 +30,7 @@ class SignUpActivity : AppCompatActivity() {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.valueOf("DEBUG"));
-        observeAuthState()
+        observeViewState()
         binding.signUpButton.setOnClickListener {
             //TODO: Make sure nothing is null or empty
             //TODO: Hide password by default
@@ -39,43 +40,33 @@ class SignUpActivity : AppCompatActivity() {
                 binding.editTextEmailAddress.text.toString(),
                 binding.editTextPassword.text.toString()
             )
-            //.observeOn(AndroidSchedulers.mainThread())
-//                .subscribe { result ->
-//                when (result) {
-//                    AuthResultState.Error -> {
-//                        Log.d("joshua", "authresultstate error")
-//                    }
-//                    AuthResultState.Loading -> {
-//                        Log.d("joshua", "authresultstate loading")
-//                    }
-//                    AuthResultState.Success -> {
-//                        Log.d("joshua", "authresultstate success")
-//                    }
-//                    AuthResultState.Idle -> {
-//                        Log.d("joshua", "authresultstate idle")
-//                    }
-//                }
-//            }
         }
     }
 
-    fun observeAuthState() {
-        viewModel.viewState.observe(this, { state ->
-            when (state) {
-                AuthResultState.Error -> {
-                    Log.d("joshua", "activity error")
-                }
-                AuthResultState.Loading -> {
-                    Log.d("joshua", "activity loading")
-                }
-                AuthResultState.Success -> {
-                    Log.d("joshua", "activity success")
-                }
-                AuthResultState.Idle -> {
-                    Log.d("joshua", "activity idle")
-                }
+    private fun observeViewState() {
+        viewModel.viewState.observe(this) { state ->
+            render(state)
+        }
+    }
+
+    private fun render(state: SignUpViewState) {
+        when (state.authResultState) {
+            AuthResultState.Error -> {
+                binding.signUpButton.setFailed()
+                Log.d("joshua", "activity error")
             }
-        })
+            AuthResultState.Loading -> {
+                binding.signUpButton.setLoading()
+                Log.d("joshua", "activity loading")
+            }
+            AuthResultState.Success -> {
+                binding.signUpButton.setComplete()
+                Log.d("joshua", "activity success")
+            }
+            AuthResultState.Idle -> {
+                Log.d("joshua", "activity idle")
+            }
+        }
     }
 
     companion object {
