@@ -1,4 +1,4 @@
-package com.maisel.usecase
+package com.maisel.domain.user.usecase
 
 import com.google.firebase.auth.AuthResult
 import com.maisel.domain.user.repository.UserRepository
