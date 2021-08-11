@@ -1,12 +1,11 @@
 package com.maisel.signin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.maisel.R
+import com.maisel.common.BaseActivity
 import com.maisel.databinding.ActivitySignInBinding
 import com.maisel.signup.SignUpActivity
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySignInBinding
 
