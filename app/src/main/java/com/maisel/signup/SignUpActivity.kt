@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.maisel.common.BaseActivity
 import com.maisel.databinding.ActivitySignUpBinding
 import com.maisel.state.AuthResultState
-import com.maisel.state.SignUpViewState
-import com.maisel.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -1,5 +1,5 @@
-package com.maisel.state
+package com.maisel.signup
 
-import com.maisel.signup.SignUpValidator
+import com.maisel.state.AuthResultState
 
 data class SignUpViewState(val authResultState: AuthResultState? = null, val signUpValidator: SignUpValidator = SignUpValidator())

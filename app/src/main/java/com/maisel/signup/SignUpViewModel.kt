@@ -1,10 +1,9 @@
-package com.maisel.viewmodel
+package com.maisel.signup
 
 import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
 import com.maisel.domain.user.usecase.SignUpUseCase
 import com.maisel.state.AuthResultState
-import com.maisel.state.SignUpViewState
 import com.maisel.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
