@@ -26,6 +26,8 @@ class SignInActivity : BaseActivity() {
 
         supportActionBar?.hide()
 
+        signInCurrentUser()
+
         observeViewState()
 
         binding.signUpButton.setOnClickListener {
@@ -80,5 +82,16 @@ class SignInActivity : BaseActivity() {
 
     private fun signInUser() {
         viewModel.signInWithEmailAndPassword(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
+    }
+
+    /**
+     * TODO: Create splash screen
+     *  Move this method to splash screen
+     */
+    private fun signInCurrentUser() {
+        if (viewModel.isUserLoggedIn()) {
+            MainActivity.createIntent(this).also { startActivity(it) }
+            finish()
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.maisel.signin
 
 import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
+import com.maisel.domain.user.usecase.GetCurrentUser
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.state.AuthResultState
 import com.maisel.utils.Validator
@@ -10,7 +11,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCase) : BaseViewModel() {
+class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCase,
+                                          private val currentUser: GetCurrentUser) : BaseViewModel() {
 
     val viewState = MutableLiveData<SignInViewState>()
 
@@ -40,5 +42,9 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
             viewState.value = currentViewState().copy(signInValidator = currentViewState().signInValidator.copy(showEmailError = true))
             false
         }
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return currentUser.invoke() != null
     }
 }

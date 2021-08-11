@@ -3,6 +3,7 @@ package com.maisel.data.signup.repository
 import android.util.Log
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -52,5 +53,9 @@ class UserRepositoryImpl(private val firebaseAuth: FirebaseAuth) : UserRepositor
     override fun signInWithEmailAndPassword(email: String, password: String) : Maybe<AuthResult> {
         return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
             .subscribeOn(Schedulers.io())
+    }
+
+    override fun getCurrentUser(): FirebaseUser? {
+        return firebaseAuth.currentUser
     }
 }
