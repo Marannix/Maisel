@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Logger
+import com.maisel.common.BaseActivity
 import com.maisel.databinding.ActivitySignUpBinding
 import com.maisel.state.AuthResultState
 import com.maisel.state.SignUpViewState
@@ -15,7 +13,7 @@ import com.maisel.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
 
@@ -29,18 +27,27 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.valueOf("DEBUG"));
         observeViewState()
         binding.signUpButton.setOnClickListener {
-            //TODO: Make sure nothing is null or empty
-            //TODO: Hide password by default
-            //TODO: Add regex
-            viewModel.registerUser(
-                binding.editTextName.text.toString(),
-                binding.editTextEmailAddress.text.toString(),
-                binding.editTextPassword.text.toString()
-            )
+            validateSignUp()
         }
+    }
+
+    private fun validateSignUp() {
+        if (viewModel.isNameValid(binding.editTextName.text.toString())
+            && viewModel.isEmailAddressValid(binding.editTextEmailAddress.text.toString())
+            && viewModel.isPasswordValid(binding.editTextPassword.text.toString())
+        ) {
+            registerUser()
+        }
+    }
+
+    private fun registerUser() {
+        viewModel.registerUser(
+            binding.editTextName.text.toString(),
+            binding.editTextEmailAddress.text.toString(),
+            binding.editTextPassword.text.toString()
+        )
     }
 
     private fun observeViewState() {
@@ -53,19 +60,37 @@ class SignUpActivity : AppCompatActivity() {
         when (state.authResultState) {
             AuthResultState.Error -> {
                 binding.signUpButton.setFailed()
-                Log.d("joshua", "activity error")
             }
             AuthResultState.Loading -> {
                 binding.signUpButton.setLoading()
-                Log.d("joshua", "activity loading")
             }
             AuthResultState.Success -> {
                 binding.signUpButton.setComplete()
-                Log.d("joshua", "activity success")
             }
             AuthResultState.Idle -> {
                 Log.d("joshua", "activity idle")
             }
+        }
+
+        state.signUpValidator.showPasswordError.let { showPasswordError ->
+            if (showPasswordError) {
+                binding.editTextInputPasswordLayout.error = "Password must be 8 characters long"
+            }
+            binding.editTextInputPasswordLayout.isErrorEnabled = showPasswordError
+        }
+
+        state.signUpValidator.showNameError.let { showNameError ->
+            if (showNameError) {
+                binding.editTextInputNameLayout.error = "Please enter a valid name"
+            }
+            binding.editTextInputNameLayout.isErrorEnabled = showNameError
+        }
+
+        state.signUpValidator.showEmailError.let { showEmailError ->
+            if (showEmailError) {
+                binding.editTextInputEmailLayout.error = "Please enter a valid email"
+            }
+            binding.editTextInputEmailLayout.isErrorEnabled = showEmailError
         }
     }
 
