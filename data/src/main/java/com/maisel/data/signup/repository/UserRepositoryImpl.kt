@@ -12,6 +12,7 @@ import durdinapps.rxfirebase2.RxFirebaseAuth
 import io.reactivex.Maybe
 import io.reactivex.schedulers.Schedulers
 
+//TODO: Rename package to @user
 class UserRepositoryImpl(private val firebaseAuth: FirebaseAuth) : UserRepository {
 
     //TODO: Extract path to constant
@@ -45,6 +46,11 @@ class UserRepositoryImpl(private val firebaseAuth: FirebaseAuth) : UserRepositor
 
                 authResults
             }
+            .subscribeOn(Schedulers.io())
+    }
+
+    override fun signInWithEmailAndPassword(email: String, password: String) : Maybe<AuthResult> {
+        return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
             .subscribeOn(Schedulers.io())
     }
 }

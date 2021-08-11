@@ -12,12 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Maisel">
-        <activity android:name=".signin.SignInActivity"></activity>
+
         <activity
-            android:name=".MainActivity"
-            android:exported="true" />
-        <activity
-            android:name=".signup.SignUpActivity"
+            android:name=".signin.SignInActivity"
             android:exported="true"
             android:theme="@style/Theme.Maisel">
             <intent-filter>
@@ -26,6 +23,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Maisel"/>
+
+        <activity
+            android:name=".signup.SignUpActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Maisel"/>
+
+    </application>
 </manifest>

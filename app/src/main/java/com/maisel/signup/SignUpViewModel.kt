@@ -19,8 +19,8 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
 
     private fun currentViewState(): SignUpViewState = viewState.value!!
 
-    fun registerUser(email: String, address: String, password: String) {
-            signUpUseCase.invoke(email, address, password)
+    fun registerUser(name: String, email: String, password: String) {
+            signUpUseCase.invoke(name, email, password)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.value = currentViewState().copy(authResultState = AuthResultState.Loading  )}
                 .subscribe ({
