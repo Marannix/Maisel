@@ -1,4 +1,4 @@
-package com.maisel.repository
+package com.maisel.domain.user.repository
 
 import com.google.firebase.auth.AuthResult
 import io.reactivex.Maybe
