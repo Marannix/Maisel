@@ -12,4 +12,8 @@
         <item name="hintTextAppearance">@style/HintText</item>
         <item name="boxBackgroundColor">@android:color/white</item>
     </style>
+
+    <style name="ToolbarTheme" parent="Theme.MaterialComponents.Light">
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
 </resources>

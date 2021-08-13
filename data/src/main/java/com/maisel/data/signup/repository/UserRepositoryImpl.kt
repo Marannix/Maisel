@@ -58,4 +58,8 @@ class UserRepositoryImpl(private val firebaseAuth: FirebaseAuth) : UserRepositor
     override fun getCurrentUser(): FirebaseUser? {
         return firebaseAuth.currentUser
     }
+
+    override fun logoutUser() {
+        return firebaseAuth.signOut()
+    }
 }

@@ -1,15 +1,23 @@
 package com.maisel.signin
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
-import com.maisel.MainActivity
 import com.maisel.common.BaseActivity
+import com.maisel.dashboard.MainActivity
 import com.maisel.databinding.ActivitySignInBinding
 import com.maisel.signup.SignUpActivity
 import com.maisel.state.AuthResultState
 
 class SignInActivity : BaseActivity() {
+
+    companion object {
+        fun createIntent(context: Context): Intent {
+            return Intent(context, SignInActivity::class.java)
+        }
+    }
 
     private lateinit var binding: ActivitySignInBinding
 
