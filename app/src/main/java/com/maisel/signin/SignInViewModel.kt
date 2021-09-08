@@ -1,9 +1,11 @@
 package com.maisel.signin
 
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.AuthCredential
 import com.maisel.common.BaseViewModel
 import com.maisel.domain.user.usecase.GetCurrentUser
 import com.maisel.domain.user.usecase.SignInUseCase
+import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.state.AuthResultState
 import com.maisel.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCase,
+                                          private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
                                           private val currentUser: GetCurrentUser) : BaseViewModel() {
 
     val viewState = MutableLiveData<SignInViewState>()
@@ -42,6 +45,17 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
             viewState.value = currentViewState().copy(signInValidator = currentViewState().signInValidator.copy(showEmailError = true))
             false
         }
+    }
+
+    fun signInWithCredential(idToken: String, credential: AuthCredential) {
+        signInWithCredentialUseCase.invoke(idToken, credential).observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { viewState.value = currentViewState().copy(authResultState = AuthResultState.Loading  )}
+            .subscribe ({
+                viewState.value = currentViewState().copy(authResultState = AuthResultState.Success)
+            }, {
+                viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
+            })
+            .addDisposable()
     }
 
     fun isUserLoggedIn(): Boolean {
