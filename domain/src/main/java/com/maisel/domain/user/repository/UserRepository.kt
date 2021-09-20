@@ -27,5 +27,7 @@ interface UserRepository {
 
     fun signInWithCredential(idToken: String, credential: AuthCredential): Maybe<AuthResult>
 
+    fun setCurrentUser(firebaseUser: FirebaseUser)
+
     fun logoutUser()
 }

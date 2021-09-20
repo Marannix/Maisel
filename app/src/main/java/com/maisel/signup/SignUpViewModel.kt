@@ -10,7 +10,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCase) : BaseViewModel() {
+class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCase) :
+    BaseViewModel() {
     val viewState = MutableLiveData<SignUpViewState>()
 
     init {
@@ -20,43 +21,64 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
     private fun currentViewState(): SignUpViewState = viewState.value!!
 
     fun registerUser(name: String, email: String, password: String) {
-            signUpUseCase.invoke(name, email, password)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { viewState.value = currentViewState().copy(authResultState = AuthResultState.Loading  )}
-                .subscribe ({
-                    viewState.value = currentViewState().copy(authResultState = AuthResultState.Success)
-                }, {
-                    viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
-                })
-                .addDisposable()
+        signUpUseCase.invoke(name, email, password)
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                viewState.value = currentViewState().copy(authResultState = AuthResultState.Loading)
+            }
+            .subscribe({
+                if (it.user != null) {
+                    viewState.value =
+                        currentViewState().copy(authResultState = AuthResultState.Success(it.user!!))
+                } else {
+                    //TODO: Throw specific error for null user
+                    viewState.value =
+                        currentViewState().copy(authResultState = AuthResultState.Error)
+                }
+            }, {
+                viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
+            })
+            .addDisposable()
     }
 
-    fun isEmailAddressValid(email: String) : Boolean {
+    fun isEmailAddressValid(email: String): Boolean {
         return if (email.isNotEmpty() && Validator().isEmailValid(email)) {
-            viewState.value = currentViewState().copy(signUpValidator = currentViewState().signUpValidator.copy(showEmailError = false))
+            viewState.value = currentViewState().copy(
+                signUpValidator = currentViewState().signUpValidator.copy(showEmailError = false)
+            )
             true
         } else {
-            viewState.value = currentViewState().copy(signUpValidator = currentViewState().signUpValidator.copy(showEmailError = true))
+            viewState.value = currentViewState().copy(
+                signUpValidator = currentViewState().signUpValidator.copy(showEmailError = true)
+            )
             false
         }
     }
 
-    fun isPasswordValid(password: String) : Boolean {
+    fun isPasswordValid(password: String): Boolean {
         return if (password.isNotEmpty() && Validator().isPasswordValid(password)) {
-            viewState.value = currentViewState().copy(signUpValidator = currentViewState().signUpValidator.copy(showPasswordError = false))
+            viewState.value = currentViewState().copy(
+                signUpValidator = currentViewState().signUpValidator.copy(showPasswordError = false)
+            )
             true
         } else {
-            viewState.value = currentViewState().copy(signUpValidator = currentViewState().signUpValidator.copy(showPasswordError = true))
+            viewState.value = currentViewState().copy(
+                signUpValidator = currentViewState().signUpValidator.copy(showPasswordError = true)
+            )
             false
         }
     }
 
-    fun isNameValid(name: String) : Boolean {
+    fun isNameValid(name: String): Boolean {
         return if (name.isNotEmpty()) {
-            viewState.value = currentViewState().copy(signUpValidator = currentViewState().signUpValidator.copy(showNameError = false))
+            viewState.value = currentViewState().copy(
+                signUpValidator = currentViewState().signUpValidator.copy(showNameError = false)
+            )
             true
         } else {
-            viewState.value = currentViewState().copy(signUpValidator = currentViewState().signUpValidator.copy(showNameError = true))
+            viewState.value = currentViewState().copy(
+                signUpValidator = currentViewState().signUpValidator.copy(showNameError = true)
+            )
             false
         }
     }

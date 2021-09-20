@@ -62,7 +62,7 @@ class SignUpActivity : BaseActivity() {
             AuthResultState.Loading -> {
                 binding.signUpButton.setLoading()
             }
-            AuthResultState.Success -> {
+            is AuthResultState.Success -> {
                 binding.signUpButton.setComplete()
             }
             AuthResultState.Idle -> {

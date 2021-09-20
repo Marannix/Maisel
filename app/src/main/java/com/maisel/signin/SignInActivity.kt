@@ -69,22 +69,23 @@ class SignInActivity : BaseActivity() {
 
     private fun render(state: SignInViewState) {
         when (state.authResultState) {
-            AuthResultState.Error -> {
-                binding.signInButton.setFailed()
-                Log.d("joshua", "activity error")
+            AuthResultState.Idle -> {
+                Log.d("joshua", "activity idle")
             }
             AuthResultState.Loading -> {
                 binding.signInButton.setLoading()
                 Log.d("joshua", "activity loading")
             }
-            AuthResultState.Success -> {
+            is AuthResultState.Success -> {
+                viewModel.setUser(state.authResultState.user)
                 binding.signInButton.setComplete()
                 Log.d("joshua", "activity success")
                 MainActivity.createIntent(this).also { startActivity(it) }
                 finish()
             }
-            AuthResultState.Idle -> {
-                Log.d("joshua", "activity idle")
+            AuthResultState.Error -> {
+                binding.signInButton.setFailed()
+                Log.d("joshua", "activity error")
             }
         }
 
