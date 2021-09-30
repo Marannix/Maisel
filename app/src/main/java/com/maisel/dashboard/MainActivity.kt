@@ -2,17 +2,18 @@ package com.maisel.dashboard
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.content.ContextCompat
+import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.lifecycle.ViewModelProvider
 import com.maisel.R
 import com.maisel.common.BaseActivity
-import com.maisel.databinding.ActivityMainBinding
+import com.maisel.dashboard.composables.LoginPage1
 import com.maisel.signin.SignInActivity
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 class MainActivity : BaseActivity() {
 
@@ -22,7 +23,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private lateinit var binding: ActivityMainBinding
+//    private lateinit var binding: ActivityMainBinding
 
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(this).get(
@@ -32,10 +33,20 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setSupportActionBar(binding.root.toolbar)
-        binding.root.toolbar?.overflowIcon?.setColorFilter(ContextCompat.getColor(this, android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+        window.statusBarColor = Color.WHITE
+        setContent {
+            MaterialTheme() {
+                Surface(color = MaterialTheme.colors.background) {
+                    LoginPage1()
+                }
+            }
+        }
+//        binding = ActivityMainBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//        setSupportActionBar(binding.root.toolbar)
+//        binding.root.toolbar?.overflowIcon?.setColorFilter(ContextCompat.getColor(this, android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
