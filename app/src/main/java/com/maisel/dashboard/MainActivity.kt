@@ -12,7 +12,7 @@ import androidx.compose.material.Surface
 import androidx.lifecycle.ViewModelProvider
 import com.maisel.R
 import com.maisel.common.BaseActivity
-import com.maisel.dashboard.composables.LoginPage1
+import com.maisel.dashboard.composables.LoginPage
 import com.maisel.signin.SignInActivity
 
 class MainActivity : BaseActivity() {
@@ -38,7 +38,7 @@ class MainActivity : BaseActivity() {
         setContent {
             MaterialTheme() {
                 Surface(color = MaterialTheme.colors.background) {
-                    LoginPage1()
+                    LoginPage()
                 }
             }
         }

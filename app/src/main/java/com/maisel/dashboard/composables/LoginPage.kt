@@ -32,7 +32,7 @@ import com.maisel.ui.purplish
 // https://www.youtube.com/watch?v=iUIXsHiuRfY
 @Preview(showBackground = true)
 @Composable
-fun LoginPage1() {
+fun LoginPage() {
 
     Box {
         BackgroundCard()
