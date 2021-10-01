@@ -33,30 +33,36 @@ import com.maisel.ui.purplish
 @Preview(showBackground = true)
 @Composable
 fun LoginPage1() {
+
+    Box {
+        BackgroundCard()
+        MainCard()
+    }
+
+}
+
+@Composable
+fun BackgroundCard() {
     val signUpText = buildAnnotatedString {
         append("Don't have an account? ")
         withStyle(SpanStyle(color = orangish)) {
             append("Sign up here!")
         }
     }
-    Box {
-        //This is the background
-        Surface(color = purplish, modifier = Modifier.fillMaxSize()) {
-            Column(verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally,
+
+    //This is the background
+    Surface(color = purplish, modifier = Modifier.fillMaxSize()) {
+        Column(verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.offset(y = (-30).dp)) {
-                Row() {
-                    Image(imageVector = ImageVector.vectorResource(id = R.drawable.ic_fb), contentDescription = "Facebook icon" )
-                    Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-                    Image(imageVector = ImageVector.vectorResource(id = R.drawable.ic_google), contentDescription = "Google icon")
-                }
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-                Text(text = signUpText, color = Color.White)
+            Row() {
+                Image(imageVector = ImageVector.vectorResource(id = R.drawable.ic_fb), contentDescription = "Facebook icon" )
+                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                Image(imageVector = ImageVector.vectorResource(id = R.drawable.ic_google), contentDescription = "Google icon")
             }
+            Spacer(modifier = Modifier.padding(vertical = 8.dp))
+            Text(text = signUpText, color = Color.White)
         }
-        MainCard()
-
     }
-
 }
 
 @Composable
@@ -82,7 +88,9 @@ fun MainCard() {
             Image(
                 ImageVector.vectorResource(id = R.drawable.ic_undraw_chatting),
                 contentDescription = "",
-                modifier = Modifier.fillMaxHeight(0.4f).fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxHeight(0.4f)
+                    .fillMaxWidth(),
             )
             Spacer(modifier = Modifier.padding(16.dp))
             CreateEmailAddressTextField(emailState, modifier)
