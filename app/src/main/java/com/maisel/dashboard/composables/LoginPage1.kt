@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -66,7 +67,10 @@ fun LoginPage1() {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled ) {
                     Text("Forgot Password?", textAlign = TextAlign.End, modifier = modifier)
                 }
-
+                Spacer(modifier = Modifier.padding(vertical = 12.dp))
+                Button(onClick = {}, shape = shapes.medium, contentPadding = PaddingValues(16.dp), modifier = modifier) {
+                    Text(text = "Log In")
+                }
             }
         }
     }
