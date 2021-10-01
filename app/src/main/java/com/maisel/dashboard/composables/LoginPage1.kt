@@ -6,21 +6,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
+import com.maisel.ui.orangish
 import com.maisel.ui.purplish
 
 //TODO: Support multi size
@@ -29,52 +33,78 @@ import com.maisel.ui.purplish
 @Preview(showBackground = true)
 @Composable
 fun LoginPage1() {
+    val signUpText = buildAnnotatedString {
+        append("Don't have an account? ")
+        withStyle(SpanStyle(color = orangish)) {
+            append("Sign up here!")
+        }
+    }
+    Box {
+        //This is the background
+        Surface(color = purplish, modifier = Modifier.fillMaxSize()) {
+            Column(verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.offset(y = (-30).dp)) {
+                Row() {
+                    Image(imageVector = ImageVector.vectorResource(id = R.drawable.ic_fb), contentDescription = "Facebook icon" )
+                    Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                    Image(imageVector = ImageVector.vectorResource(id = R.drawable.ic_google), contentDescription = "Google icon")
+                }
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                Text(text = signUpText, color = Color.White)
+            }
+        }
+        MainCard()
+
+    }
+
+}
+
+@Composable
+fun MainCard() {
 
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
 
-    Box {
-        //This is the background
-        Surface(color = purplish, modifier = Modifier.fillMaxSize()) {
-
-        }
-
-        //This is the white background section
-        Surface(
-            color = Color.White, modifier = Modifier
+    //This is the white background section
+    Surface(
+        color = Color.White, modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.8f),
+        shape = RoundedCornerShape(60.dp).copy(
+            topStart = ZeroCornerSize,
+            topEnd = ZeroCornerSize
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            val modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.8f),
-            shape = RoundedCornerShape(60.dp).copy(
-                topStart = ZeroCornerSize,
-                topEnd = ZeroCornerSize
+                .padding(horizontal = 16.dp)
+            Image(
+                ImageVector.vectorResource(id = R.drawable.ic_undraw_chatting),
+                contentDescription = "",
+                modifier = Modifier.fillMaxHeight(0.4f).fillMaxWidth(),
             )
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                val modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                Image(
-                    ImageVector.vectorResource(id = R.drawable.ic_undraw_chatting),
-                    contentDescription = ""
-                )
-                Spacer(modifier = Modifier.padding(16.dp))
-                CreateEmailAddressTextField(emailState, modifier)
-                Spacer(modifier = Modifier.padding(6.dp))
-                CreatePasswordTextField(passwordState, modifier)
-                Spacer(modifier = Modifier.padding(vertical = 12.dp))
+            Spacer(modifier = Modifier.padding(16.dp))
+            CreateEmailAddressTextField(emailState, modifier)
+            Spacer(modifier = Modifier.padding(6.dp))
+            CreatePasswordTextField(passwordState, modifier)
+            Spacer(modifier = Modifier.padding(vertical = 12.dp))
 
-                //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled ) {
-                    Text("Forgot Password?", textAlign = TextAlign.End, modifier = modifier)
-                }
-                Spacer(modifier = Modifier.padding(vertical = 12.dp))
-                Button(onClick = {}, shape = shapes.medium, contentPadding = PaddingValues(16.dp), modifier = modifier) {
-                    Text(text = "Log In")
-                }
+            //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+                Text("Forgot Password?", textAlign = TextAlign.End, modifier = modifier)
+            }
+            Spacer(modifier = Modifier.padding(vertical = 12.dp))
+            Button(
+                onClick = {},
+                shape = MaterialTheme.shapes.medium,
+                contentPadding = PaddingValues(16.dp),
+                modifier = modifier
+            ) {
+                Text(text = "Log In")
             }
         }
     }
-
 }
 
 @Composable
