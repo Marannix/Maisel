@@ -1,5 +1,7 @@
 package com.maisel.signin
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
@@ -78,5 +80,9 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
 
     fun setUser(user: FirebaseUser) {
         setCurrentUser.invoke(user)
+    }
+
+    fun onLoginClicked(emailState: MutableState<TextFieldValue>) {
+        isEmailAddressValid(emailState.value.text)
     }
 }

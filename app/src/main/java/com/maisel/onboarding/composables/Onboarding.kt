@@ -1,4 +1,4 @@
-package com.maisel.dashboard.composables
+package com.maisel.onboarding.composables
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
