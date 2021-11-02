@@ -99,12 +99,13 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
 
                 Column(
                     verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(vertical = 24.dp)
-                        .fillMaxWidth()
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = signUpText, style = MaterialTheme.typography.subtitle1)
+                    Text(text = signUpText, style = MaterialTheme.typography.subtitle1,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                        .padding(vertical = 24.dp)
+                        .fillMaxWidth())
                 }
             }
         }
@@ -156,6 +157,7 @@ fun CreateEmailAddressTextField(
 ) {
 //    viewState.observeAsState().value?.signInValidator.javaClasss
     OutlinedTextField(
+        modifier = modifier,
         value = emailState.value, onValueChange = {
             emailState.value = it
         },
@@ -166,11 +168,11 @@ fun CreateEmailAddressTextField(
             Text(text = "Email")
         },
         isError = showEmailError,
-        modifier = modifier
+        singleLine = true
     )
     if (showEmailError) {
         Text(
-            text = "yellow",
+            text = "Please enter a valid email",
             textAlign = TextAlign.Start,
             color = MaterialTheme.colors.error,
             style = MaterialTheme.typography.caption,
