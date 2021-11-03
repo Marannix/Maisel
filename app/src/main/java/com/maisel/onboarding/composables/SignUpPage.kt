@@ -38,7 +38,6 @@ fun SignUpPage(viewModel: SignInViewModel, showEmailError: Boolean = false) {
 @Composable
 fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
-    val emailTextUpdate = { data: String -> emailState.value = TextFieldValue(data) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val scrollState = rememberScrollState()
 
@@ -72,7 +71,6 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
         ValidationUI(
             viewModel,
             emailState,
-            emailTextUpdate,
             showEmailError,
             passwordState,
             modifier
@@ -110,13 +108,12 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
 private fun ValidationUI(
     viewModel: SignInViewModel,
     emailState: MutableState<TextFieldValue>,
-    emailTextUpdate: (String) -> Unit,
     showEmailError: Boolean,
     passwordState: MutableState<TextFieldValue>,
     modifier: Modifier
 
 ) {
-    CreateEmailAddressTextField(emailState, emailTextUpdate, showEmailError, modifier)
+    CreateEmailAddressTextField(emailState, showEmailError, modifier)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreatePasswordTextField(passwordState, modifier)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
@@ -129,11 +126,9 @@ private fun ValidationUI(
 @Composable
 fun CreateEmailAddressTextField(
     emailState: MutableState<TextFieldValue>,
-    emailTextUpdate: (String) -> Unit,
     showEmailError: Boolean,
     modifier: Modifier
 ) {
-//    viewState.observeAsState().value?.signInValidator.javaClasss
     OutlinedTextField(
         modifier = modifier,
         value = emailState.value, onValueChange = {
