@@ -5,24 +5,30 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.pager.ExperimentalPagerApi
+import android.graphics.PorterDuff
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.ViewModelProvider
-import com.google.accompanist.pager.ExperimentalPagerApi
+import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
 import com.maisel.R
-import com.maisel.common.BaseActivity
-import com.maisel.dashboard.composables.LoginPage
+import com.maisel.common.BaseFragmentActivity
+import com.maisel.dashboard.composables.OnboardingTut
+import com.maisel.databinding.ActivityMainBinding
 import com.maisel.signin.SignInActivity
 import com.maisel.ui.OnBoardingTheme
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
-class MainActivity : BaseActivity() {
+class MainActivity : BaseFragmentActivity() {
 
     companion object {
         fun createIntent(context: Context): Intent {
@@ -30,7 +36,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
-//    private lateinit var binding: ActivityMainBinding
+   private lateinit var binding: ActivityMainBinding
+   private lateinit var viewPager2: ViewPager2
 
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(this).get(
@@ -46,16 +53,52 @@ class MainActivity : BaseActivity() {
                 window.statusBarColor = MaterialTheme.colors.background.toArgb()
                 window.navigationBarColor = MaterialTheme.colors.background.toArgb()
 
-                Surface(color = MaterialTheme.colors.background, modifier = Modifier.fillMaxSize()) {
-                    LoginPage()
+                Surface(
+                    color = MaterialTheme.colors.background,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    OnboardingTut()
                 }
             }
         }
+        //  window.statusBarColor = Color.WHITE
+//        setContent {
+//            MaterialTheme() {
+//                Surface(color = MaterialTheme.colors.background) {
+//                    LoginPage()
+//                }
+//            }
+//        }
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(binding.root)
-//        setSupportActionBar(binding.root.toolbar)
+//       //setSupportActionBar(binding.root.toolbar)
 //        binding.root.toolbar?.overflowIcon?.setColorFilter(ContextCompat.getColor(this, android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+//        render()
+//    }
+        render()
+    }
 
+    private fun render() {
+        createViewPager()
+        setTabLayout()
+    }
+
+    private fun createViewPager() {
+        viewPager2 = binding.root.viewPager2
+        viewPager2.adapter = FragmentsAdapter(this)
+    }
+
+    private fun setTabLayout() {
+        val tabLayout = binding.root.tabLayout
+        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+            tab.text = when (position + 1) {
+                1 -> "Chats"
+                2 -> "Status"
+                3 -> "Calls"
+                else -> throw Exception("Wrong number of tabs")
+            }
+
+        }.attach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

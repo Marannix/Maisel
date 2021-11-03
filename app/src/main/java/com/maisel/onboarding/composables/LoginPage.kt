@@ -1,4 +1,4 @@
-package com.maisel.dashboard.composables
+package com.maisel.onboarding.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -22,21 +22,22 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.maisel.R
+import com.maisel.onboarding.composables.provider.OnboardingProvider
 import com.maisel.ui.orangish
-import com.maisel.ui.purplish
 
 //TODO: Support multi size
 //https://proandroiddev.com/supporting-different-screen-sizes-on-android-with-jetpack-compose-f215c13081bd
 // https://www.youtube.com/watch?v=iUIXsHiuRfY
 @Preview(showBackground = true)
 @Composable
-fun LoginPage() {
+fun LoginPage(@PreviewParameter(OnboardingProvider::class) onLoginClicked: () -> Unit) {
 
     Box {
         BackgroundCard()
-        MainCard()
+        MainCard(onLoginClicked)
     }
 
 }
@@ -46,12 +47,12 @@ fun BackgroundCard() {
     val signUpText = buildAnnotatedString {
         append("Don't have an account? ")
         withStyle(SpanStyle(color = orangish)) {
-            append("Sign up here!")
+            append("Sign up!")
         }
     }
 
     //This is the background
-    Surface(color = purplish, modifier = Modifier.fillMaxSize()) {
+    Surface(color = MaterialTheme.colors.primary, modifier = Modifier.fillMaxSize()) {
         Column(verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.offset(y = (-30).dp)) {
             Row() {
@@ -66,7 +67,7 @@ fun BackgroundCard() {
 }
 
 @Composable
-fun MainCard() {
+fun MainCard(onLoginClicked: () -> Unit) {
 
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
@@ -104,9 +105,10 @@ fun MainCard() {
             }
             Spacer(modifier = Modifier.padding(vertical = 12.dp))
             Button(
-                onClick = {},
+                onClick = { onLoginClicked.invoke() },
                 shape = MaterialTheme.shapes.medium,
                 contentPadding = PaddingValues(16.dp),
+
                 modifier = modifier
             ) {
                 Text(text = "Log In")
@@ -125,10 +127,10 @@ private fun CreateEmailAddressTextField(
             emailState.value = it
         },
         label = {
-            Text(text = "Email address")
+            Text(text = "Email")
         },
         placeholder = {
-            Text(text = "Email address")
+            Text(text = "Email")
         },
         leadingIcon = {
             Icon(imageVector = Icons.Filled.Email, contentDescription = "Email Icon")

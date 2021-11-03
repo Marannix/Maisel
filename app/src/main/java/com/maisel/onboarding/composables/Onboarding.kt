@@ -1,4 +1,4 @@
-package com.maisel.dashboard.composables
+package com.maisel.onboarding.composables
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -21,16 +21,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.maisel.dashboard.composables.OnboardingItemTut
 import kotlinx.coroutines.launch
 
 @ExperimentalPagerApi
 @Composable
 @Preview
-fun OnboardingTut() {
+fun Onboarding() {
     val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
@@ -48,7 +50,10 @@ fun OnboardingTut() {
             OnboardingItem(item = items[page])
         }
 
-        BottomSection(size = items.size, index = state.currentPage) {
+        BottomSection(
+            size = items.size,
+            index = state.currentPage
+        ) {
             if (state.currentPage + 1 < items.size) {
                 scope.launch {
                     state.scrollToPage(state.currentPage + 1)
@@ -114,7 +119,7 @@ fun BoxScope.Indicators(size: Int, index: Int) {
         modifier = Modifier.align(Alignment.CenterStart)
     ) {
         repeat(size) {
-            Indicator(isSelected = it == index)
+           Indicator(isSelected = it == index)
         }
     }
 }
