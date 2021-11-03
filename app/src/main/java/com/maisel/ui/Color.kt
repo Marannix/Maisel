@@ -9,6 +9,15 @@ val teal200 = Color(0xFF03DAC5)
 val purplish = Color(0xff4e3d77)
 val orangish = Color(0xffffac00)
 
+val Primary=Color(0xFFF05777)
+val PrimaryVariant=Color(0xFFDB3557)
+val Primary200=Color(0xFFF59CAF)
+
+val BlackDark=Color(0xFF11181F)
+val BlackLight=Color(0xFF1B2630)
+
+val WhiteLight=Color(0xFFecf0f1)
+val WhiteDark=Color(0xFFFFF4F6)
 // Colour Palette
 val sanMarino = Color(0xFF3f71ae)
 val tuna = Color(0xFF3a3a3b)
