@@ -47,13 +47,12 @@ class OnboardingActivity : BaseActivity() {
             val showEmailError = viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
             MainTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    //LoginPage(onLoginClicked = { beenTapped() })
                     SignUpPage(viewModel, showEmailError)
-                    observeViewState()
                 }
             }
         }
 
+        observeViewState()
     }
 
     private fun observeViewState() {

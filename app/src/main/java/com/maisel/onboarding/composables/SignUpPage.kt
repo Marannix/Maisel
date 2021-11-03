@@ -1,17 +1,18 @@
 package com.maisel.onboarding.composables
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
@@ -40,6 +41,7 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val scrollState = rememberScrollState()
+    val focusRequester = remember { FocusRequester() }
 
     val modifier = Modifier
         .fillMaxWidth()
@@ -73,7 +75,8 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
             emailState,
             showEmailError,
             passwordState,
-            modifier
+            modifier.focusRequester(focusRequester),
+            focusRequester
         )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
@@ -110,10 +113,10 @@ private fun ValidationUI(
     emailState: MutableState<TextFieldValue>,
     showEmailError: Boolean,
     passwordState: MutableState<TextFieldValue>,
-    modifier: Modifier
-
+    modifier: Modifier,
+    focusRequester: FocusRequester
 ) {
-    CreateEmailAddressTextField(emailState, showEmailError, modifier)
+    CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreatePasswordTextField(passwordState, modifier)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
@@ -127,8 +130,10 @@ private fun ValidationUI(
 fun CreateEmailAddressTextField(
     emailState: MutableState<TextFieldValue>,
     showEmailError: Boolean,
-    modifier: Modifier
+    modifier: Modifier,
+    focusRequester: FocusRequester
 ) {
+
     OutlinedTextField(
         modifier = modifier,
         value = emailState.value, onValueChange = {
@@ -142,7 +147,10 @@ fun CreateEmailAddressTextField(
         },
         isError = showEmailError,
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        keyboardActions = KeyboardActions(
+            onNext = { focusRequester.requestFocus() }
+        )
     )
     if (showEmailError) {
         Text(
