@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -17,6 +19,8 @@ import com.maisel.databinding.ActivitySignInBinding
 import com.maisel.signup.SignUpActivity
 import com.maisel.state.AuthResultState
 
+@ExperimentalAnimationApi
+@ExperimentalPagerApi
 class SignInActivity : BaseActivity() {
 
     companion object {
@@ -40,7 +44,7 @@ class SignInActivity : BaseActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.hide()
+        //supportActionBar?.hide()
 
         signInCurrentUser()
 

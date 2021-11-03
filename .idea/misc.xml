@@ -3,13 +3,30 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/compose-model-1632916914829.xml" value="0.21593063997952835" />
+        <entry key="../../../../../layout/compose-model-1633014436802.xml" value="0.2842060810810811" />
+        <entry key="../../../../../layout/compose-model-1633076189082.xml" value="0.31967905405405406" />
+        <entry key="../../../../../layout/compose-model-1633102269782.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1633102288484.xml" value="0.46216845418805846" />
+        <entry key="../../../../../layout/compose-model-1633105252908.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1635937716459.xml" value="0.11444256756756757" />
+        <entry key="../../../../../layout/compose-model-1635937865778.xml" value="0.10219530658591976" />
         <entry key="..\:/Users/Tobi/Documents/GitHub/Maisel/app/src/main/res/drawable/call_to_action_button_background.xml" value="0.3255" />
         <entry key="..\:/Users/Tobi/Documents/GitHub/Maisel/app/src/main/res/layout/activity_main.xml" value="0.12681159420289856" />
         <entry key="..\:/Users/Tobi/Documents/GitHub/Maisel/app/src/main/res/layout/activity_sign_in.xml" value="0.12681159420289856" />
         <entry key="..\:/Users/Tobi/Documents/GitHub/Maisel/app/src/main/res/layout/activity_sign_up.xml" value="0.12681159420289856" />
         <entry key="..\:/Users/Tobi/Documents/GitHub/Maisel/app/src/main/res/layout/view_call_to_action_button.xml" value="0.5339673913043478" />
+        <entry key="app/src/main/res/drawable-v24/ic_fb.xml" value="0.40512820512820513" />
+        <entry key="app/src/main/res/drawable/ic_dough.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_email.xml" value="0.40512820512820513" />
+        <entry key="app/src/main/res/drawable/ic_fb.xml" value="0.40512820512820513" />
+        <entry key="app/src/main/res/drawable/ic_google.xml" value="0.40512820512820513" />
+        <entry key="app/src/main/res/drawable/ic_undraw_chatting.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_undraw_mobile_login.xml" value="0.33487179487179486" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1421875" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/fragment_chats.xml" value="0.33695652173913043" />
+        <entry key="app/src/main/res/layout/fragment_status.xml" value="0.33695652173913043" />
       </map>
     </option>
   </component>

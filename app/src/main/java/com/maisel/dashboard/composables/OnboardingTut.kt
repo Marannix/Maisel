@@ -3,6 +3,7 @@ package com.maisel.dashboard.composables
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -11,20 +12,49 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 @ExperimentalPagerApi
 @Composable
 @Preview
 fun Onboarding() {
+    val scope = rememberCoroutineScope()
+
     Column(Modifier.fillMaxSize()) {
         TopSection()
-        
+
+        val items = OnboardingItemTut.get()
+        val state = rememberPagerState(pageCount = 3)
+
+        HorizontalPager(
+            state = state,
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(0.8f)
+        ) { page ->
+            OnboardingItem(item = items[page])
+        }
+
+        BottomSection(size = items.size, index = state.currentPage) {
+            if (state.currentPage + 1 < items.size) {
+                scope.launch {
+                    state.scrollToPage(state.currentPage + 1)
+                }
+            }
+        }
     }
 }
 
@@ -39,10 +69,12 @@ fun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
         Indicators(size = size, index = index)
 
         //next button
-        FloatingActionButton(onClick = onNextClicked,
-        modifier = Modifier.align(Alignment.CenterEnd),
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary) {
+        FloatingActionButton(
+            onClick = onNextClicked,
+            modifier = Modifier.align(Alignment.CenterEnd),
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colors.onPrimary
+        ) {
             Icon(Icons.Outlined.KeyboardArrowRight, null)
         }
     }
@@ -106,5 +138,25 @@ fun Indicator(isSelected: Boolean) {
             )
     ) {
 
+    }
+}
+
+@Composable
+fun OnboardingItem(item: OnboardingItemTut) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxSize()) {
+        Image(painter = painterResource(id = item.image), contentDescription = null)
+
+        Text(text = item.title, fontSize = 24.sp,
+        color = MaterialTheme.colors.onBackground,
+        fontWeight = FontWeight.Bold
+        )
+
+        Text(text = item.text,
+            color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),
+            textAlign = TextAlign.Center
+        )
     }
 }
