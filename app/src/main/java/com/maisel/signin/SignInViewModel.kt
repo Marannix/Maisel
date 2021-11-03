@@ -82,7 +82,9 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
         setCurrentUser.invoke(user)
     }
 
-    fun onLoginClicked(emailState: MutableState<TextFieldValue>) {
-        isEmailAddressValid(emailState.value.text)
+    fun onLoginClicked(emailState: MutableState<TextFieldValue>, passwordState: MutableState<TextFieldValue>) {
+        if (isEmailAddressValid(emailState.value.text)) {
+            signInWithEmailAndPassword(emailState.value.text, password = passwordState.value.text)
+        }
     }
 }

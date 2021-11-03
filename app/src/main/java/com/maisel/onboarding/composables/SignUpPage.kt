@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -126,27 +128,11 @@ private fun ValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreatePasswordTextField(passwordState, modifier)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-        Text(
-            "Forgot Password?",
-            textAlign = TextAlign.End,
-            modifier = modifier,
-            style = MaterialTheme.typography.subtitle2
-        )
-    }
-
+    ForgotPassword(modifier)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-    Button(
-        onClick = { viewModel.onLoginClicked(emailState) },
-        shape = MaterialTheme.shapes.medium.copy(CornerSize(8.dp)),
-        contentPadding = PaddingValues(16.dp),
-        elevation = ButtonDefaults.elevation(defaultElevation = 8.dp),
-        modifier = modifier.padding(top = 8.dp)
-    ) {
-        Text(text = "Log In", textAlign = TextAlign.Center)
-    }
+    LoginButton(viewModel, emailState, passwordState, modifier)
 }
+
 
 @Composable
 fun CreateEmailAddressTextField(
@@ -168,7 +154,8 @@ fun CreateEmailAddressTextField(
             Text(text = "Email")
         },
         isError = showEmailError,
-        singleLine = true
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
     )
     if (showEmailError) {
         Text(
@@ -178,6 +165,36 @@ fun CreateEmailAddressTextField(
             style = MaterialTheme.typography.caption,
             modifier = Modifier.padding(start = 16.dp).fillMaxWidth()
         )
+    }
+}
+
+@Composable
+private fun ForgotPassword(modifier: Modifier) {
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+        Text(
+            "Forgot Password?",
+            textAlign = TextAlign.End,
+            modifier = modifier,
+            style = MaterialTheme.typography.subtitle2
+        )
+    }
+}
+
+@Composable
+private fun LoginButton(
+    viewModel: SignInViewModel,
+    emailState: MutableState<TextFieldValue>,
+    passwordState: MutableState<TextFieldValue>,
+    modifier: Modifier
+) {
+    Button(
+        onClick = { viewModel.onLoginClicked(emailState, passwordState) },
+        shape = MaterialTheme.shapes.medium.copy(CornerSize(8.dp)),
+        contentPadding = PaddingValues(16.dp),
+        elevation = ButtonDefaults.elevation(defaultElevation = 8.dp),
+        modifier = modifier.padding(top = 8.dp)
+    ) {
+        Text(text = "Log In", textAlign = TextAlign.Center)
     }
 }
 
