@@ -1,6 +1,7 @@
 package com.maisel.onboarding.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
@@ -26,9 +27,6 @@ import com.maisel.R
 import com.maisel.common.composable.CreatePasswordTextField
 import com.maisel.signin.SignInViewModel
 
-//lateinit var viewState: MutableLiveData<SignInViewState>
-//lateinit var viewModel: SignInViewModel
-
 @Composable
 @Preview(device = PIXEL_4)
 fun SignUpPage(viewModel: SignInViewModel, showEmailError: Boolean = false) {
@@ -39,79 +37,74 @@ fun SignUpPage(viewModel: SignInViewModel, showEmailError: Boolean = false) {
 
 @Composable
 fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
-     var emailState = remember { mutableStateOf(TextFieldValue("")) }
- //  var emailState by remember { mutableStateOf("") }
+    val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val emailTextUpdate = { data: String -> emailState.value = TextFieldValue(data) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val scrollState = rememberScrollState()
 
-    //This is the background
-    Surface(
-        color = Color.White,
+    val modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp)
+
+    Column(
         modifier = Modifier
+            .padding(16.dp)
             .fillMaxSize()
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Column(
-            modifier = Modifier.verticalScroll(scrollState)
-                .padding(16.dp)
-
-        ) {
-            val modifier = Modifier
+        Image(
+            ImageVector.vectorResource(id = R.drawable.ic_son_goku),
+            contentDescription = "",
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .wrapContentHeight()
+                .padding(vertical = 24.dp),
+        )
 
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxHeight()
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        Text(
+            text = "Login to your Account",
+            style = MaterialTheme.typography.h3,
+            modifier = modifier.padding(bottom = 12.dp)
+        )
 
-                Image(
-                    ImageVector.vectorResource(id = R.drawable.ic_son_goku),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(vertical = 24.dp),
-                )
+        ValidationUI(
+            viewModel,
+            emailState,
+            emailTextUpdate,
+            showEmailError,
+            passwordState,
+            modifier
+        )
 
-                Text(
-                    text = "Login to your Account",
-                    style = MaterialTheme.typography.h3,
-                    modifier = modifier.padding(bottom = 12.dp)
-                )
+        //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
 
-                ValidationUI(viewModel, emailState, emailTextUpdate, showEmailError, passwordState, modifier)
+        Spacer(modifier = Modifier.padding(vertical = 24.dp))
 
-                //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
-
-                Spacer(modifier = Modifier.padding(vertical = 24.dp))
-
-                val signUpText = buildAnnotatedString {
-                    append("Don't have an account? ")
-                    withStyle(SpanStyle(color = MaterialTheme.colors.primary)) {
-                        append("Sign up")
-                    }
-                }
-                SignInWith()
-
-                Column(
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = signUpText, style = MaterialTheme.typography.subtitle1,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                        .padding(vertical = 24.dp)
-                        .fillMaxWidth())
-                }
+        val signUpText = buildAnnotatedString {
+            append("Don't have an account? ")
+            withStyle(SpanStyle(color = MaterialTheme.colors.primary)) {
+                append("Sign up")
             }
         }
+        SignInWith()
+
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = signUpText, style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(vertical = 24.dp)
+                    .fillMaxWidth()
+            )
+        }
     }
+
 }
 
 @Composable
@@ -163,7 +156,9 @@ fun CreateEmailAddressTextField(
             textAlign = TextAlign.Start,
             color = MaterialTheme.colors.error,
             style = MaterialTheme.typography.caption,
-            modifier = Modifier.padding(start = 16.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .fillMaxWidth()
         )
     }
 }
