@@ -48,7 +48,6 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxSize()
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
@@ -200,7 +199,7 @@ private fun SignInWith() {
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(vertical = 24.dp)
+            .padding(vertical = 16.dp)
             .fillMaxWidth()
     ) {
         Text(
