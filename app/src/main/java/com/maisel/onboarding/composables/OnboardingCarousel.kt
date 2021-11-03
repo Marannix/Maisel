@@ -34,7 +34,7 @@ fun OnboardingCarousel() {
     val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
-        TopSection()
+        OnboardingCarouselTopSection()
 
         val items = OnboardingCarouseltem.get()
         val state = rememberPagerState(pageCount = 3)
@@ -45,10 +45,13 @@ fun OnboardingCarousel() {
                 .fillMaxSize()
                 .weight(0.8f)
         ) { page ->
-            OnboardingItem(item = items[page])
+            OnboardingCarouselItem(item = items[page])
         }
 
-        BottomSection(size = items.size, index = state.currentPage) {
+        OnboardingCarouselBottomSection(
+            size = items.size,
+            index = state.currentPage
+        ) {
             if (state.currentPage + 1 < items.size) {
                 scope.launch {
                     state.scrollToPage(state.currentPage + 1)
@@ -59,14 +62,13 @@ fun OnboardingCarousel() {
 }
 
 @Composable
-fun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
+fun OnboardingCarouselBottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        //indicators
-        Indicators(size = size, index = index)
+        OnboardingCarouselOnboardingCarouselIndicators(size = size, index = index)
 
         //next button
         FloatingActionButton(
@@ -82,7 +84,7 @@ fun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
 
 @Composable
 @Preview
-fun TopSection() {
+fun OnboardingCarouselTopSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,20 +109,20 @@ fun TopSection() {
 }
 
 @Composable
-fun BoxScope.Indicators(size: Int, index: Int) {
+fun BoxScope.OnboardingCarouselOnboardingCarouselIndicators(size: Int, index: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.align(Alignment.CenterStart)
     ) {
         repeat(size) {
-            Indicator(isSelected = it == index)
+           OnboardingCarouselIndicator(isSelected = it == index)
         }
     }
 }
 
 @Composable
-fun Indicator(isSelected: Boolean) {
+fun OnboardingCarouselIndicator(isSelected: Boolean) {
     val width = animateDpAsState(
         targetValue = if (isSelected) 25.dp else 10.dp,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
@@ -142,7 +144,7 @@ fun Indicator(isSelected: Boolean) {
 }
 
 @Composable
-fun OnboardingItem(item: OnboardingCarouseltem) {
+fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),

@@ -7,22 +7,20 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.maisel.common.BaseActivity
 import com.maisel.dashboard.MainActivity
-import com.maisel.onboarding.composables.OnboardingCarousel
+import com.maisel.onboarding.composables.SignUpPage
 import com.maisel.signin.SignInActivity
 import com.maisel.signin.SignInViewModel
 import com.maisel.signin.SignInViewState
 import com.maisel.state.AuthResultState
-import com.maisel.ui.OnBoardingTheme
+import com.maisel.ui.MainTheme
 
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -45,29 +43,29 @@ class OnboardingActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContent {
-//            val showEmailError = viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
-//            MainTheme {
-//                Surface(color = MaterialTheme.colors.background) {
-//                    //LoginPage(onLoginClicked = { beenTapped() })
-//                    SignUpPage(viewModel, showEmailError)
-//                    observeViewState()
-//                }
-//            }
-//        }
         setContent {
-            OnBoardingTheme {
-                window.statusBarColor = MaterialTheme.colors.background.toArgb()
-                window.navigationBarColor = MaterialTheme.colors.background.toArgb()
-
-                Surface(
-                    color = MaterialTheme.colors.background,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    OnboardingCarousel()
+            val showEmailError = viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
+            MainTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    //LoginPage(onLoginClicked = { beenTapped() })
+                    SignUpPage(viewModel, showEmailError)
+                    observeViewState()
                 }
             }
         }
+//        setContent {
+//            OnBoardingTheme {
+//                window.statusBarColor = MaterialTheme.colors.background.toArgb()
+//                window.navigationBarColor = MaterialTheme.colors.background.toArgb()
+//
+//                Surface(
+//                    color = MaterialTheme.colors.background,
+//                    modifier = Modifier.fillMaxSize()
+//                ) {
+//                    OnboardingCarousel()
+//                }
+//            }
+//        }
     }
 
     private fun observeViewState() {
