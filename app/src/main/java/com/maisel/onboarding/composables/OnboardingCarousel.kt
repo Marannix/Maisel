@@ -1,4 +1,4 @@
-package com.maisel.dashboard.composables
+package com.maisel.onboarding.composables
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -30,13 +30,13 @@ import kotlinx.coroutines.launch
 @ExperimentalPagerApi
 @Composable
 @Preview
-fun OnboardingTut() {
+fun OnboardingCarousel() {
     val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
         TopSection()
 
-        val items = OnboardingItemTut.get()
+        val items = OnboardingCarouseltem.get()
         val state = rememberPagerState(pageCount = 3)
 
         HorizontalPager(
@@ -142,7 +142,7 @@ fun Indicator(isSelected: Boolean) {
 }
 
 @Composable
-fun OnboardingItem(item: OnboardingItemTut) {
+fun OnboardingItem(item: OnboardingCarouseltem) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),

@@ -8,19 +8,17 @@ import android.view.MenuItem
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
-import android.graphics.PorterDuff
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.maisel.R
 import com.maisel.common.BaseFragmentActivity
-import com.maisel.dashboard.composables.OnboardingTut
+import com.maisel.onboarding.composables.OnboardingCarousel
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.signin.SignInActivity
 import com.maisel.ui.OnBoardingTheme
@@ -57,7 +55,7 @@ class MainActivity : BaseFragmentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    OnboardingTut()
+                    OnboardingCarousel()
                 }
             }
         }

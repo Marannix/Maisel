@@ -17,7 +17,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.maisel.common.BaseActivity
 import com.maisel.dashboard.MainActivity
-import com.maisel.dashboard.composables.OnboardingTut
+import com.maisel.onboarding.composables.OnboardingCarousel
 import com.maisel.signin.SignInActivity
 import com.maisel.signin.SignInViewModel
 import com.maisel.signin.SignInViewState
@@ -64,7 +64,7 @@ class OnboardingActivity : BaseActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    OnboardingTut()
+                    OnboardingCarousel()
                 }
             }
         }
