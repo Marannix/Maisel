@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.MaterialTheme
@@ -43,6 +42,7 @@ class OnboardingActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        signInCurrentUser()
         setContent {
             val showEmailError = viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
             MainTheme {
@@ -92,7 +92,15 @@ class OnboardingActivity : BaseActivity() {
         }
     }
 
-    private fun beenTapped() {
-        Toast.makeText(this, "tapped", Toast.LENGTH_SHORT).show()
+    /**
+     * TODO: Create splash screen
+     *  Move this method to splash screen
+     */
+    private fun signInCurrentUser() {
+        if (viewModel.isUserLoggedIn()) {
+            MainActivity.createIntent(this).also { startActivity(it) }
+            finish()
+        }
     }
+
 }
