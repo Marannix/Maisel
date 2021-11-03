@@ -53,19 +53,7 @@ class OnboardingActivity : BaseActivity() {
                 }
             }
         }
-//        setContent {
-//            OnBoardingTheme {
-//                window.statusBarColor = MaterialTheme.colors.background.toArgb()
-//                window.navigationBarColor = MaterialTheme.colors.background.toArgb()
-//
-//                Surface(
-//                    color = MaterialTheme.colors.background,
-//                    modifier = Modifier.fillMaxSize()
-//                ) {
-//                    OnboardingCarousel()
-//                }
-//            }
-//        }
+
     }
 
     private fun observeViewState() {
