@@ -1,19 +1,19 @@
 package com.maisel.onboarding.composables
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -27,17 +27,40 @@ import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.common.composable.CreatePasswordTextField
 import com.maisel.signin.SignInViewModel
+import com.maisel.ui.shapes
 
 @Composable
 @Preview(device = PIXEL_4)
-fun SignUpPage(viewModel: SignInViewModel, showEmailError: Boolean = false) {
+fun SignUpPage(
+    viewModel: SignInViewModel,
+    showEmailError: Boolean = false,
+    showErrorDialog: Boolean,
+    onGoogleClicked: () -> Unit,
+    onFacebookClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit
+) {
     Column(Modifier.fillMaxSize()) {
-        SignUpMainCard(viewModel, showEmailError)
+        //TODO: Can I save these into a variable?
+        SignUpMainCard(
+            viewModel,
+            showEmailError,
+            showErrorDialog,
+            onGoogleClicked,
+            onFacebookClicked,
+            onForgotPasswordClicked
+        )
     }
 }
 
 @Composable
-fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
+fun SignUpMainCard(
+    viewModel: SignInViewModel,
+    showEmailError: Boolean,
+    showErrorDialog: Boolean,
+    onGoogleClicked: () -> Unit,
+    onFacebookClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit
+) {
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val scrollState = rememberScrollState()
@@ -76,7 +99,9 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
             showEmailError,
             passwordState,
             modifier.focusRequester(focusRequester),
-            focusRequester
+            focusRequester,
+            onForgotPasswordClicked,
+            showErrorDialog
         )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
@@ -89,7 +114,7 @@ fun SignUpMainCard(viewModel: SignInViewModel, showEmailError: Boolean) {
                 append("Sign up")
             }
         }
-        SignInWith()
+        SignInWith(onGoogleClicked, onFacebookClicked)
 
         Column(
             verticalArrangement = Arrangement.Bottom,
@@ -114,17 +139,47 @@ private fun ValidationUI(
     showEmailError: Boolean,
     passwordState: MutableState<TextFieldValue>,
     modifier: Modifier,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    onForgotPasswordClicked: () -> Unit,
+    showErrorDialog: Boolean
 ) {
+    IncorrectEmailOrPassword(modifier, showErrorDialog)
+    Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreatePasswordTextField(passwordState, modifier)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
-    ForgotPassword(modifier)
+    ForgotPassword(modifier, onForgotPasswordClicked)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
     LoginButton(viewModel, emailState, passwordState, modifier)
 }
 
+@Composable
+fun IncorrectEmailOrPassword(
+    modifier: Modifier,
+    showErrorDialog: Boolean
+) {
+    if (showErrorDialog) {
+        Row(
+            modifier = modifier
+                .padding(4.dp)
+                .clip(shapes.medium)
+                .background(colorResource(id = R.color.grayBackground)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                modifier = Modifier.padding(4.dp),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_lock),
+                contentDescription = "Facebook icon",
+            )
+            Text(
+                "Your email address or password is incorrect",
+                color = colorResource(id = R.color.red),
+                style = MaterialTheme.typography.subtitle2
+            )
+        }
+    }
+}
 
 @Composable
 fun CreateEmailAddressTextField(
@@ -166,12 +221,12 @@ fun CreateEmailAddressTextField(
 }
 
 @Composable
-private fun ForgotPassword(modifier: Modifier) {
+private fun ForgotPassword(modifier: Modifier, onForgotPasswordClicked: () -> Unit) {
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
         Text(
             "Forgot Password?",
             textAlign = TextAlign.End,
-            modifier = modifier,
+            modifier = modifier.clickable { onForgotPasswordClicked() },
             style = MaterialTheme.typography.subtitle2
         )
     }
@@ -197,7 +252,7 @@ private fun LoginButton(
 
 
 @Composable
-private fun SignInWith() {
+private fun SignInWith(onGoogleClicked: () -> Unit, onFacebookClicked: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -215,14 +270,15 @@ private fun SignInWith() {
         Row {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_fb),
-                contentDescription = "Facebook icon"
+                contentDescription = "Facebook icon",
+                modifier = Modifier.clickable { onFacebookClicked() }
             )
             Spacer(modifier = Modifier.padding(horizontal = 4.dp))
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_google),
-                contentDescription = "Google icon"
+                contentDescription = "Google icon",
+                modifier = Modifier.clickable { onGoogleClicked() },
             )
         }
-        Spacer(modifier = Modifier.padding(vertical = 8.dp))
     }
 }
