@@ -20,7 +20,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
 import com.maisel.common.BaseActivity
 import com.maisel.dashboard.MainActivity
-import com.maisel.onboarding.composables.SignUpPage
+import com.maisel.onboarding.composables.SignInPage
 import com.maisel.signin.SignInActivity
 import com.maisel.signin.SignInViewModel
 import com.maisel.signin.SignInViewState
@@ -57,7 +57,7 @@ class OnboardingActivity : BaseActivity() {
                 viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
             MainTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    SignUpPage(
+                    SignInPage(
                         viewModel,
                         showEmailError,
                         showErrorDialog,

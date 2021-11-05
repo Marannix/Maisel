@@ -31,7 +31,7 @@ import com.maisel.ui.shapes
 
 @Composable
 @Preview(device = PIXEL_4)
-fun SignUpPage(
+fun SignInPage(
     viewModel: SignInViewModel,
     showEmailError: Boolean = false,
     showErrorDialog: Boolean,
