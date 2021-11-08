@@ -39,6 +39,10 @@
             android:name=".signup.SignUpActivity"
             android:exported="true"
             android:theme="@style/Theme.Maisel" />
+        <activity
+            android:name=".onboarding.OnboardingSignUpActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Maisel"/>
     </application>
 
 </manifest>

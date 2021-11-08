@@ -63,7 +63,8 @@ class OnboardingActivity : BaseActivity() {
                         showErrorDialog,
                         ::signInWithGoogle,
                         ::signInWithFacebook,
-                        ::forgotPassword
+                        ::forgotPassword,
+                        ::navigateToSignUp
                     )
                 }
             }
@@ -133,6 +134,14 @@ class OnboardingActivity : BaseActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
+    private fun navigateToSignUp() {
+        OnboardingSignUpActivity.createIntent(this).also { startActivity(it) }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        viewModel.signInWithCredential(idToken, GoogleAuthProvider.getCredential(idToken, null))
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -150,9 +159,4 @@ class OnboardingActivity : BaseActivity() {
             }
         }
     }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        viewModel.signInWithCredential(idToken, GoogleAuthProvider.getCredential(idToken, null))
-    }
-
 }

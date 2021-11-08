@@ -3,8 +3,6 @@ package com.maisel.onboarding.composables
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,7 +15,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -25,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
+import com.maisel.common.composable.CreateEmailAddressTextField
 import com.maisel.common.composable.CreatePasswordTextField
 import com.maisel.signin.SignInViewModel
 import com.maisel.ui.shapes
@@ -37,7 +35,8 @@ fun SignInPage(
     showErrorDialog: Boolean,
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
-    onForgotPasswordClicked: () -> Unit
+    onForgotPasswordClicked: () -> Unit,
+    onSignUpClicked: () -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
         //TODO: Can I save these into a variable?
@@ -47,7 +46,8 @@ fun SignInPage(
             showErrorDialog,
             onGoogleClicked,
             onFacebookClicked,
-            onForgotPasswordClicked
+            onForgotPasswordClicked,
+            onSignUpClicked
         )
     }
 }
@@ -59,7 +59,8 @@ fun SignUpMainCard(
     showErrorDialog: Boolean,
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
-    onForgotPasswordClicked: () -> Unit
+    onForgotPasswordClicked: () -> Unit,
+    onSignUpClicked: () -> Unit
 ) {
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
@@ -125,7 +126,7 @@ fun SignUpMainCard(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(vertical = 24.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth().clickable { onSignUpClicked() }
             )
         }
     }
@@ -181,44 +182,44 @@ fun IncorrectEmailOrPassword(
     }
 }
 
-@Composable
-fun CreateEmailAddressTextField(
-    emailState: MutableState<TextFieldValue>,
-    showEmailError: Boolean,
-    modifier: Modifier,
-    focusRequester: FocusRequester
-) {
-
-    OutlinedTextField(
-        modifier = modifier,
-        value = emailState.value, onValueChange = {
-            emailState.value = it
-        },
-        label = {
-            Text(text = "Email")
-        },
-        placeholder = {
-            Text(text = "Email")
-        },
-        isError = showEmailError,
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        keyboardActions = KeyboardActions(
-            onNext = { focusRequester.requestFocus() }
-        )
-    )
-    if (showEmailError) {
-        Text(
-            text = "Please enter a valid email",
-            textAlign = TextAlign.Start,
-            color = MaterialTheme.colors.error,
-            style = MaterialTheme.typography.caption,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .fillMaxWidth()
-        )
-    }
-}
+//@Composable
+//fun CreateEmailAddressTextField(
+//    emailState: MutableState<TextFieldValue>,
+//    showEmailError: Boolean,
+//    modifier: Modifier,
+//    focusRequester: FocusRequester
+//) {
+//
+//    OutlinedTextField(
+//        modifier = modifier,
+//        value = emailState.value, onValueChange = {
+//            emailState.value = it
+//        },
+//        label = {
+//            Text(text = "Email")
+//        },
+//        placeholder = {
+//            Text(text = "Email")
+//        },
+//        isError = showEmailError,
+//        singleLine = true,
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+//        keyboardActions = KeyboardActions(
+//            onNext = { focusRequester.requestFocus() }
+//        )
+//    )
+//    if (showEmailError) {
+//        Text(
+//            text = "Please enter a valid email",
+//            textAlign = TextAlign.Start,
+//            color = MaterialTheme.colors.error,
+//            style = MaterialTheme.typography.caption,
+//            modifier = Modifier
+//                .padding(start = 16.dp)
+//                .fillMaxWidth()
+//        )
+//    }
+//}
 
 @Composable
 private fun ForgotPassword(modifier: Modifier, onForgotPasswordClicked: () -> Unit) {
