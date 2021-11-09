@@ -31,17 +31,23 @@ import com.maisel.R
 import com.maisel.common.composable.CreateEmailAddressTextField
 import com.maisel.common.composable.CreateNameTextField
 import com.maisel.common.composable.CreatePasswordTextField
+import com.maisel.signup.SignUpViewModel
 
 @Composable
 @Preview(device = Devices.PIXEL_4)
-fun SignUpPage() {
+fun SignUpPage(
+    viewModel: SignUpViewModel,
+    showNameError: Boolean,
+    showEmailError: Boolean,
+    showPasswordError: Boolean
+) {
     Column(Modifier.fillMaxSize()) {
-        SignUpMainCard()
+        SignUpMainCard(viewModel, showNameError, showEmailError, showPasswordError)
     }
 }
 
 @Composable
-fun SignUpMainCard() {
+fun SignUpMainCard(viewModel: SignUpViewModel, showNameError: Boolean, showEmailError: Boolean, showPasswordError: Boolean) {
     val nameState = remember { mutableStateOf(TextFieldValue("")) }
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
@@ -76,11 +82,15 @@ fun SignUpMainCard() {
         )
 
         SignUpValidationUI(
+            viewModel,
             nameState,
             emailState,
             passwordState,
             modifier,
-            focusRequester
+            focusRequester,
+            showNameError,
+            showEmailError,
+            showPasswordError
         )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
@@ -113,30 +123,36 @@ fun SignUpMainCard() {
 
 @Composable
 private fun SignUpValidationUI(
+    viewModel: SignUpViewModel,
     nameState: MutableState<TextFieldValue>,
     emailState: MutableState<TextFieldValue>,
     passwordState: MutableState<TextFieldValue>,
     modifier: Modifier,
-    focusRequester: FocusRequester)
+    focusRequester: FocusRequester,
+    showNameError: Boolean,
+    showEmailError: Boolean,
+    showPasswordError: Boolean
+)
 {
-    CreateNameTextField(nameState, false, modifier, focusRequester)
+    CreateNameTextField(nameState, showNameError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreateEmailAddressTextField(emailState, false, modifier, focusRequester)
+    CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, modifier)
+    CreatePasswordTextField(passwordState, showPasswordError, modifier)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
-    SignUpLoginButton(nameState, emailState, passwordState, modifier)
+    SignUpLoginButton(viewModel, nameState, emailState, passwordState, modifier)
 }
 
 @Composable
 private fun SignUpLoginButton(
+    viewModel: SignUpViewModel,
     nameState: MutableState<TextFieldValue>,
     emailState: MutableState<TextFieldValue>,
     passwordState: MutableState<TextFieldValue>,
     modifier: Modifier
 ) {
     Button(
-        onClick = { },
+        onClick = { viewModel.onSignUpClicked(nameState, emailState, passwordState) },
         shape = MaterialTheme.shapes.medium.copy(CornerSize(8.dp)),
         contentPadding = PaddingValues(16.dp),
         elevation = ButtonDefaults.elevation(defaultElevation = 8.dp),

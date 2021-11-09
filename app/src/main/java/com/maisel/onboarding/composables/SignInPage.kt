@@ -148,7 +148,7 @@ private fun ValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, modifier)
+    CreatePasswordTextField(passwordState, false, modifier)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword(modifier, onForgotPasswordClicked)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))

@@ -27,7 +27,8 @@ import com.maisel.R
 @Composable
 fun CreatePasswordTextField(
     passwordState: MutableState<TextFieldValue>,
-    modifier: Modifier
+    showPasswordError: Boolean = false,
+    modifier: Modifier,
 ) {
     val showPassword = remember { mutableStateOf(false) }
 
@@ -47,6 +48,18 @@ fun CreatePasswordTextField(
         trailingIcon = { SetPasswordTrailingIcon(showPassword) },
         singleLine = true
     )
+
+    if (showPasswordError) {
+        Text(
+            text = "Password must be 8 characters long",
+            textAlign = TextAlign.Start,
+            color = MaterialTheme.colors.error,
+            style = MaterialTheme.typography.caption,
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .fillMaxWidth()
+        )
+    }
 }
 
 @Composable
