@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.maisel.R
 import com.maisel.common.BaseFragmentActivity
 import com.maisel.databinding.ActivityMainBinding
-import com.maisel.signin.SignInActivity
+import com.maisel.signin.OLDSignInActivity
 import kotlinx.android.synthetic.main.activity_main.view.*
 
 @ExperimentalPagerApi
@@ -105,7 +105,7 @@ class MainActivity : BaseFragmentActivity() {
             }
             R.id.logout -> {
                 viewModel.logOutUser()
-                SignInActivity.createIntent(this).also { startActivity(it) }
+                OLDSignInActivity.createIntent(this).also { startActivity(it) }
                 finish()
             }
         }

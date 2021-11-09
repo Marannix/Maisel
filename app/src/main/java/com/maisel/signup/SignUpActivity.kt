@@ -4,16 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
-import com.maisel.databinding.ActivitySignUpBinding
+import com.maisel.dashboard.MainActivity
+import com.maisel.onboarding.composables.SignUpPage
 import com.maisel.state.AuthResultState
+import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalAnimationApi
+@ExperimentalPagerApi
 @AndroidEntryPoint
 class SignUpActivity : BaseActivity() {
-
-    private lateinit var binding: ActivitySignUpBinding
 
     private val viewModel: SignUpViewModel by lazy {
         ViewModelProvider(this).get(
@@ -23,29 +31,22 @@ class SignUpActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContent {
+            val showNameError =
+                viewModel.viewState.observeAsState().value?.signUpValidator?.showNameError ?: false
+            val showEmailError =
+                viewModel.viewState.observeAsState().value?.signUpValidator?.showEmailError ?: false
+            val showPasswordError =
+                viewModel.viewState.observeAsState().value?.signUpValidator?.showPasswordError ?: false
+
+            MainTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    SignUpPage(viewModel, showNameError, showEmailError, showPasswordError)
+                }
+            }
+        }
+
         observeViewState()
-        binding.signUpButton.setOnClickListener {
-            validateSignUp()
-        }
-    }
-
-    private fun validateSignUp() {
-        if (viewModel.isNameValid(binding.editTextName.text.toString())
-            && viewModel.isEmailAddressValid(binding.editTextEmailAddress.text.toString())
-            && viewModel.isPasswordValid(binding.editTextPassword.text.toString())
-        ) {
-            registerUser()
-        }
-    }
-
-    private fun registerUser() {
-        viewModel.registerUser(
-            binding.editTextName.text.toString(),
-            binding.editTextEmailAddress.text.toString(),
-            binding.editTextPassword.text.toString()
-        )
     }
 
     private fun observeViewState() {
@@ -57,38 +58,20 @@ class SignUpActivity : BaseActivity() {
     private fun render(state: SignUpViewState) {
         when (state.authResultState) {
             AuthResultState.Error -> {
-                binding.signUpButton.setFailed()
+                makeToastShort("Error Signing Up")
             }
             AuthResultState.Loading -> {
-                binding.signUpButton.setLoading()
+               // makeToastShort("Error Signing Up")
             }
             is AuthResultState.Success -> {
-                binding.signUpButton.setComplete()
+                makeToastShort("Account Created")
+                viewModel.setUser(state.authResultState.user)
+                MainActivity.createIntent(this).also { startActivity(it) }
+                finishAffinity()
             }
             AuthResultState.Idle -> {
                 Log.d("joshua", "activity idle")
             }
-        }
-
-        state.signUpValidator.showPasswordError.let { showPasswordError ->
-            if (showPasswordError) {
-                binding.editTextInputPasswordLayout.error = "Password must be 8 characters long"
-            }
-            binding.editTextInputPasswordLayout.isErrorEnabled = showPasswordError
-        }
-
-        state.signUpValidator.showNameError.let { showNameError ->
-            if (showNameError) {
-                binding.editTextInputNameLayout.error = "Please enter a valid name"
-            }
-            binding.editTextInputNameLayout.isErrorEnabled = showNameError
-        }
-
-        state.signUpValidator.showEmailError.let { showEmailError ->
-            if (showEmailError) {
-                binding.editTextInputEmailLayout.error = "Please enter a valid email"
-            }
-            binding.editTextInputEmailLayout.isErrorEnabled = showEmailError
         }
     }
 
