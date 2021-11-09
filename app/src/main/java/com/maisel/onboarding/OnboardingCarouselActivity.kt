@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
 import com.maisel.onboarding.composables.OnboardingCarousel
-import com.maisel.ui.OnBoardingTheme
+import com.maisel.ui.MainTheme
 
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -28,7 +28,7 @@ class OnboardingCarouselActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            OnBoardingTheme {
+            MainTheme {
                 window.statusBarColor = MaterialTheme.colors.background.toArgb()
                 window.navigationBarColor = MaterialTheme.colors.background.toArgb()
 

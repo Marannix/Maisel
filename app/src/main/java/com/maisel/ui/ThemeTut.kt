@@ -27,7 +27,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun OnBoardingTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun OnboardingTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
 
     val colors = if (darkTheme) {
         DarkColorPalette

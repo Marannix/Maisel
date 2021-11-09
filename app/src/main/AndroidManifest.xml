@@ -15,11 +15,11 @@
         <activity
             android:name=".signin.SignInActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".signin.OLDSignInActivity"
@@ -37,6 +37,16 @@
             android:name=".signup.SignUpActivity"
             android:exported="true"
             android:theme="@style/Theme.Maisel" />
+        <activity
+            android:name=".onboarding.OnboardingCarouselActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Maisel">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
