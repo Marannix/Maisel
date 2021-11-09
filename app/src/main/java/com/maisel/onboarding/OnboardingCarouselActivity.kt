@@ -41,4 +41,12 @@ class OnboardingCarouselActivity : BaseActivity() {
             }
         }
     }
+
+    private fun backButtonPressed() {
+        notImplementedYet()
+    }
+
+    private fun skipPressed() {
+        notImplementedYet()
+    }
 }

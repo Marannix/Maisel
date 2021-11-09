@@ -18,4 +18,8 @@ abstract class BaseActivity : ComponentActivity() {
     fun makeToastShort(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
+
+    fun notImplementedYet() {
+        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
+    }
 }

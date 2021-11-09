@@ -43,7 +43,7 @@ fun OnboardingCarousel() {
             state = state,
             modifier = Modifier
                 .fillMaxSize()
-                .weight(0.8f)
+                .weight(1f)
         ) { page ->
             OnboardingCarouselItem(item = items[page])
         }
@@ -116,7 +116,7 @@ fun BoxScope.OnboardingCarouselOnboardingCarouselIndicators(size: Int, index: In
         modifier = Modifier.align(Alignment.CenterStart)
     ) {
         repeat(size) {
-           OnboardingCarouselIndicator(isSelected = it == index)
+            OnboardingCarouselIndicator(isSelected = it == index)
         }
     }
 }
@@ -147,18 +147,28 @@ fun OnboardingCarouselIndicator(isSelected: Boolean) {
 fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxSize()) {
-        Image(painter = painterResource(id = item.image), contentDescription = null)
+    //    verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+    ) {
+        Image(painter = painterResource(id = item.image), contentDescription = null, modifier = Modifier.weight(0.5f))
 
-        Text(text = item.title, fontSize = 24.sp,
-        color = MaterialTheme.colors.onBackground,
-        fontWeight = FontWeight.Bold
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.weight(0.5f).padding(16.dp),
+        ) {
+            Text(
+                text = item.title, fontSize = 24.sp,
+                color = MaterialTheme.colors.onBackground,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
 
-        Text(text = item.text,
-            color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),
-            textAlign = TextAlign.Center
-        )
+            Text(
+                text = item.text,
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
