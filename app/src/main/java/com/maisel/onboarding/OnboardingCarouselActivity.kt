@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
 import com.maisel.onboarding.composables.OnboardingCarousel
+import com.maisel.signin.SignInActivity
 import com.maisel.ui.MainTheme
 
 @ExperimentalAnimationApi
@@ -36,7 +37,7 @@ class OnboardingCarouselActivity : BaseActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    OnboardingCarousel()
+                    OnboardingCarousel(::launchLoginActivity)
                 }
             }
         }
@@ -48,5 +49,10 @@ class OnboardingCarouselActivity : BaseActivity() {
 
     private fun skipPressed() {
         notImplementedYet()
+    }
+
+    private fun launchLoginActivity() {
+        SignInActivity.createIntent(this).also { startActivity(it) }
+        finish()
     }
 }

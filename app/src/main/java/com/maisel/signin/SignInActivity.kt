@@ -31,7 +31,7 @@ class SignInActivity : BaseActivity() {
 
     companion object {
         fun createIntent(context: Context): Intent {
-            return Intent(context, OLDSignInActivity::class.java)
+            return Intent(context, SignInActivity::class.java)
         }
     }
 

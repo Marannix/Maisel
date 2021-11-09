@@ -24,20 +24,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @ExperimentalPagerApi
 @Composable
 @Preview
-fun OnboardingCarousel() {
+fun OnboardingCarousel(launchLoginActivity: () -> Unit) {
     val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
-        OnboardingCarouselTopSection()
-
         val items = OnboardingCarouseltem.get()
         val state = rememberPagerState(pageCount = 3)
+
+        OnboardingCarouselTopSection(launchLoginActivity, state, scope)
 
         HorizontalPager(
             state = state,
@@ -56,6 +58,8 @@ fun OnboardingCarousel() {
                 scope.launch {
                     state.scrollToPage(state.currentPage + 1)
                 }
+            } else {
+                launchLoginActivity()
             }
         }
     }
@@ -82,9 +86,14 @@ fun OnboardingCarouselBottomSection(size: Int, index: Int, onNextClicked: () -> 
     }
 }
 
+@ExperimentalPagerApi
 @Composable
 @Preview
-fun OnboardingCarouselTopSection() {
+fun OnboardingCarouselTopSection(
+    launchLoginActivity: () -> Unit,
+    state: PagerState,
+    scope: CoroutineScope
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,7 +101,7 @@ fun OnboardingCarouselTopSection() {
     ) {
         //back button
         IconButton(
-            onClick = { },
+            onClick = { goBack(state, scope)},
             modifier = Modifier.align(Alignment.CenterStart)
         ) {
             Icon(Icons.Outlined.KeyboardArrowLeft, null)
@@ -100,10 +109,20 @@ fun OnboardingCarouselTopSection() {
 
         //skip button
         TextButton(
-            onClick = {},
+            onClick = { launchLoginActivity() },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Text("Skip", color = MaterialTheme.colors.onBackground)
+        }
+    }
+}
+
+
+@ExperimentalPagerApi
+fun goBack(state: PagerState, scope: CoroutineScope) {
+    if (state.currentPage != 0) {
+        scope.launch {
+            state.scrollToPage(state.currentPage - 1)
         }
     }
 }
@@ -148,14 +167,18 @@ fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     //    verticalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
     ) {
         Image(painter = painterResource(id = item.image), contentDescription = null, modifier = Modifier.weight(0.5f))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.weight(0.5f).padding(16.dp),
+            modifier = Modifier
+                .weight(0.5f)
+                .padding(16.dp),
         ) {
             Text(
                 text = item.title, fontSize = 24.sp,
