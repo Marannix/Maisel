@@ -6,7 +6,9 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
@@ -164,9 +166,10 @@ fun OnboardingCarouselIndicator(isSelected: Boolean) {
 
 @Composable
 fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
+    val descriptionScrollState = rememberScrollState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-    //    verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
@@ -176,7 +179,7 @@ fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
+            modifier = Modifier.verticalScroll(descriptionScrollState)
                 .weight(0.5f)
                 .padding(16.dp),
         ) {
