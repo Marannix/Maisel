@@ -184,7 +184,8 @@ fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
                 .padding(16.dp),
         ) {
             Text(
-                text = item.title, fontSize = 24.sp,
+                text = item.title,
+                style = MaterialTheme.typography.h2,
                 color = MaterialTheme.colors.onBackground,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -192,6 +193,7 @@ fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
 
             Text(
                 text = item.text,
+                style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center
             )
