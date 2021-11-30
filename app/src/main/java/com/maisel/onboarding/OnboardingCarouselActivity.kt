@@ -1,7 +1,5 @@
 package com.maisel.onboarding
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -10,8 +8,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
+import com.maisel.dashboard.MainActivity
 import com.maisel.onboarding.composables.OnboardingCarousel
 import com.maisel.signin.SignInActivity
 import com.maisel.ui.MainTheme
@@ -20,14 +20,16 @@ import com.maisel.ui.MainTheme
 @ExperimentalPagerApi
 class OnboardingCarouselActivity : BaseActivity() {
 
-    companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, OnboardingCarouselActivity::class.java)
-        }
+    private val viewModel: OnboardingCarouselViewModel by lazy {
+        ViewModelProvider(this).get(
+            OnboardingCarouselViewModel::class.java
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        signInCurrentUser()
+
         setContent {
             MainTheme {
                 window.statusBarColor = MaterialTheme.colors.background.toArgb()
@@ -40,6 +42,13 @@ class OnboardingCarouselActivity : BaseActivity() {
                     OnboardingCarousel(::launchLoginActivity)
                 }
             }
+        }
+    }
+
+    private fun signInCurrentUser() {
+        if (viewModel.isUserLoggedIn()) {
+            MainActivity.createIntent(this).also { startActivity(it) }
+            finish()
         }
     }
 
