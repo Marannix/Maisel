@@ -26,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:background="?attr/colorPrimary"
-        android:elevation="12dp"
+        android:elevation="4dp"
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white"
         app:tabMaxWidth="0dp"

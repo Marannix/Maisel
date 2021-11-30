@@ -2,12 +2,10 @@ package com.maisel.dashboard
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -39,34 +37,10 @@ class MainActivity : BaseFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        setContent {
-//            OnBoardingTheme {
-//                window.statusBarColor = MaterialTheme.colors.background.toArgb()
-//                window.navigationBarColor = MaterialTheme.colors.background.toArgb()
-//
-//                Surface(
-//                    color = MaterialTheme.colors.background,
-//                    modifier = Modifier.fillMaxSize()
-//                ) {
-//                    OnboardingCarousel()
-//                }
-//            }
-//        }
-        //  window.statusBarColor = Color.WHITE
-//        setContent {
-//            MaterialTheme() {
-//                Surface(color = MaterialTheme.colors.background) {
-//                    LoginPage()
-//                }
-//            }
-//        }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//       setSupportActionBar(binding.root.toolbar)
-        binding.root.toolbar?.overflowIcon?.setColorFilter(ContextCompat.getColor(this, android.R.color.white), PorterDuff.Mode.SRC_ATOP);
-        render()
-//    }
+        binding.root.toolbar.inflateMenu(R.menu.menu)
+        binding.root.toolbar.title = "Maisel"
         render()
     }
 
@@ -89,7 +63,6 @@ class MainActivity : BaseFragmentActivity() {
                 3 -> "Calls"
                 else -> throw Exception("Wrong number of tabs")
             }
-
         }.attach()
     }
 
