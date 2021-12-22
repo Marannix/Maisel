@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.maisel.onboarding.composables.OnboardingCarousel
 import com.maisel.signin.SignInActivity
 import com.maisel.ui.MainTheme
 
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 class OnboardingCarouselActivity : BaseActivity() {

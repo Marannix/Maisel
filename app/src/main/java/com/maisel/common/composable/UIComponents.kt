@@ -12,28 +12,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
 
 
+@ExperimentalComposeUiApi
 @Composable
 fun CreatePasswordTextField(
     passwordState: MutableState<TextFieldValue>,
     showPasswordError: Boolean = false,
     modifier: Modifier,
+    focusRequester: FocusRequester
 ) {
     val showPassword = remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.focusRequester(focusRequester).testTag("password"),
         value = passwordState.value, onValueChange = {
             passwordState.value = it
         },
@@ -44,7 +48,10 @@ fun CreatePasswordTextField(
             Text(text = stringResource(id = R.string.password))
         },
         visualTransformation = setPasswordVisualTransformation(showPassword),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+            onDone = { keyboardController?.hide() }
+        ),
         trailingIcon = { SetPasswordTrailingIcon(showPassword) },
         singleLine = true
     )
@@ -98,7 +105,7 @@ fun CreateEmailAddressTextField(
 ) {
 
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.focusRequester(focusRequester).testTag("email"),
         value = emailState.value, onValueChange = {
             emailState.value = it
         },
@@ -110,7 +117,7 @@ fun CreateEmailAddressTextField(
         },
         isError = showEmailError,
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
             onNext = { focusRequester.requestFocus() }
         )
@@ -136,7 +143,7 @@ fun CreateNameTextField(
     focusRequester: FocusRequester
 ) {
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.focusRequester(focusRequester).testTag("name"),
         value = nameState.value, onValueChange = {
             nameState.value = it
         },
@@ -148,7 +155,7 @@ fun CreateNameTextField(
         },
         isError = showNameError,
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
             onNext = { focusRequester.requestFocus() }
         )
