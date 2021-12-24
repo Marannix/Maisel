@@ -88,6 +88,7 @@ class UserRepositoryImpl(
                     val list = mutableListOf<SignUpUser>()
                     snapshot.children.forEach { children ->
                         val users = children.getValue(SignUpUser::class.java)
+                        users?.userId = children.key
                         users?.let(list::add)
                     }
                     listOfUsers.onNext(list)

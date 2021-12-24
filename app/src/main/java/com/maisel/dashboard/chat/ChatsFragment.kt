@@ -1,7 +1,6 @@
 package com.maisel.dashboard.chat
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,7 +67,6 @@ class ChatsFragment : Fragment() {
             }
             is GetUsersUseCase.UserDataState.Success -> {
                 Toast.makeText(activity, "Chats Fragment Success", Toast.LENGTH_SHORT).show()
-                Log.d("joshua123", state.use.toString())
             }
         }
     }
