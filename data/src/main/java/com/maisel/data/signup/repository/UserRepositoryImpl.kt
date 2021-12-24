@@ -5,16 +5,26 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.repository.UserRepository
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 
 //TODO: Rename package to @user
-class UserRepositoryImpl(private val firebaseAuth: FirebaseAuth,
-                         private val database: DatabaseReference) : UserRepository {
+class UserRepositoryImpl(
+    private val firebaseAuth: FirebaseAuth,
+    private val database: DatabaseReference
+) : UserRepository {
+
+    private var listOfUsers = BehaviorSubject.create<List<SignUpUser>>()
+    private var userListeners: ValueEventListener? = null
 
     override fun createAccount(
         name: String,
@@ -32,18 +42,28 @@ class UserRepositoryImpl(private val firebaseAuth: FirebaseAuth,
             .subscribeOn(Schedulers.io())
     }
 
-    override fun signInWithEmailAndPassword(email: String, password: String) : Maybe<AuthResult> {
+    override fun signInWithEmailAndPassword(email: String, password: String): Maybe<AuthResult> {
         return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
             .subscribeOn(Schedulers.io())
     }
 
-    override fun signInWithCredential(idToken: String, credential: AuthCredential) : Maybe<AuthResult> {
+    override fun signInWithCredential(
+        idToken: String,
+        credential: AuthCredential
+    ): Maybe<AuthResult> {
         return RxFirebaseAuth.signInWithCredential(firebaseAuth, credential)
             .subscribeOn(Schedulers.io())
     }
 
     override fun setCurrentUser(firebaseUser: FirebaseUser) {
-        val user = SignUpUser(firebaseAuth.uid, firebaseUser.displayName, null, null, firebaseUser.photoUrl.toString(), null)
+        val user = SignUpUser(
+            firebaseAuth.uid,
+            firebaseUser.displayName,
+            null,
+            null,
+            firebaseUser.photoUrl.toString(),
+            null
+        )
         setUserInDatabase(user)
     }
 
@@ -53,6 +73,34 @@ class UserRepositoryImpl(private val firebaseAuth: FirebaseAuth,
 
     override fun logoutUser() {
         return firebaseAuth.signOut()
+    }
+
+    override fun observeListOfUsers(): Observable<List<SignUpUser>> = listOfUsers
+
+    override fun startListeningToUsers() {
+        if (userListeners != null) {
+            Log.w("UserRepositoryImpl", " Calling start listening while already started")
+            return
+        }
+        userListeners =
+            database.child("Users").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val list = mutableListOf<SignUpUser>()
+                    snapshot.children.forEach { children ->
+                        val users = children.getValue(SignUpUser::class.java)
+                        users?.let(list::add)
+                    }
+                    listOfUsers.onNext(list)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // TODO
+                }
+            })
+    }
+
+    override fun stopListeningToUsers() {
+        userListeners?.let { database.child("Users").removeEventListener(it) }
     }
 
     private fun setUserInDatabase(user: SignUpUser) {

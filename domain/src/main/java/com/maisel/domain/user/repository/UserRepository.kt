@@ -3,7 +3,9 @@ package com.maisel.domain.user.repository
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
+import com.maisel.domain.user.entity.SignUpUser
 import io.reactivex.Maybe
+import io.reactivex.Observable
 
 interface UserRepository {
 
@@ -30,4 +32,10 @@ interface UserRepository {
     fun setCurrentUser(firebaseUser: FirebaseUser)
 
     fun logoutUser()
+
+    fun startListeningToUsers()
+
+    fun stopListeningToUsers()
+
+    fun observeListOfUsers(): Observable<List<SignUpUser>>
 }

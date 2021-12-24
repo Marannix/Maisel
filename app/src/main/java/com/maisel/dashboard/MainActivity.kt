@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -13,11 +14,13 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.maisel.R
 import com.maisel.common.BaseFragmentActivity
 import com.maisel.databinding.ActivityMainBinding
-import com.maisel.signin.OLDSignInActivity
+import com.maisel.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_main.view.*
 
+@ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
+//TODO: RENAME DASHBOARD
 class MainActivity : BaseFragmentActivity() {
 
     companion object {
@@ -78,10 +81,20 @@ class MainActivity : BaseFragmentActivity() {
             }
             R.id.logout -> {
                 viewModel.logOutUser()
-                OLDSignInActivity.createIntent(this).also { startActivity(it) }
+                SignInActivity.createIntent(this).also { startActivity(it) }
                 finish()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.startListeningToUser()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.stopListeningToUser()
     }
 }

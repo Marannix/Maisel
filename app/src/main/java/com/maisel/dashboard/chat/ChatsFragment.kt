@@ -1,60 +1,75 @@
 package com.maisel.dashboard.chat
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.maisel.R
+import androidx.lifecycle.ViewModelProvider
+import com.maisel.dashboard.DashboardViewModel
+import com.maisel.dashboard.chat.composables.ChatsList
+import com.maisel.domain.user.usecase.GetUsersUseCase
+import com.maisel.ui.MainTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@ExperimentalComposeUiApi
+@AndroidEntryPoint
 class ChatsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private val viewModel: DashboardViewModel by lazy {
+        ViewModelProvider(this).get(
+            DashboardViewModel::class.java
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        observeViewState()
+        viewModel.getUsers()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chats, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChatsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                val users =
+                    viewModel.viewState.observeAsState().value?.users ?: emptyList()
+                MainTheme {
+                    Surface(color = MaterialTheme.colors.background) {
+                        ChatsList(users)
+                    }
                 }
             }
+        }
+    }
+
+    private fun observeViewState() {
+        viewModel.viewState.observe(this) { state ->
+            render(state)
+        }
+    }
+
+    private fun render(state: DashboardViewState) {
+        when (state.use) {
+            GetUsersUseCase.UserDataState.Error -> {
+                Toast.makeText(activity, "Chats Fragment Error", Toast.LENGTH_SHORT).show()
+            }
+            GetUsersUseCase.UserDataState.Loading -> {
+                Toast.makeText(activity, "Chats Fragment Loading", Toast.LENGTH_SHORT).show()
+            }
+            is GetUsersUseCase.UserDataState.Success -> {
+                Toast.makeText(activity, "Chats Fragment Success", Toast.LENGTH_SHORT).show()
+                Log.d("joshua123", state.use.toString())
+            }
+        }
     }
 }
