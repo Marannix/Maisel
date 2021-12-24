@@ -6,11 +6,13 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
@@ -28,6 +30,7 @@ import com.maisel.signin.SignInViewModel
 import com.maisel.ui.shapes
 
 @Composable
+@ExperimentalComposeUiApi
 @Preview(device = PIXEL_4)
 fun SignInPage(
     viewModel: SignInViewModel,
@@ -133,6 +136,7 @@ fun SignUpMainCard(
 
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun ValidationUI(
     viewModel: SignInViewModel,
@@ -148,7 +152,7 @@ private fun ValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, false, modifier)
+    CreatePasswordTextField(passwordState, false, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword(modifier, onForgotPasswordClicked)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
@@ -181,45 +185,6 @@ fun IncorrectEmailOrPassword(
         }
     }
 }
-
-//@Composable
-//fun CreateEmailAddressTextField(
-//    emailState: MutableState<TextFieldValue>,
-//    showEmailError: Boolean,
-//    modifier: Modifier,
-//    focusRequester: FocusRequester
-//) {
-//
-//    OutlinedTextField(
-//        modifier = modifier,
-//        value = emailState.value, onValueChange = {
-//            emailState.value = it
-//        },
-//        label = {
-//            Text(text = "Email")
-//        },
-//        placeholder = {
-//            Text(text = "Email")
-//        },
-//        isError = showEmailError,
-//        singleLine = true,
-//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-//        keyboardActions = KeyboardActions(
-//            onNext = { focusRequester.requestFocus() }
-//        )
-//    )
-//    if (showEmailError) {
-//        Text(
-//            text = "Please enter a valid email",
-//            textAlign = TextAlign.Start,
-//            color = MaterialTheme.colors.error,
-//            style = MaterialTheme.typography.caption,
-//            modifier = Modifier
-//                .padding(start = 16.dp)
-//                .fillMaxWidth()
-//        )
-//    }
-//}
 
 @Composable
 private fun ForgotPassword(modifier: Modifier, onForgotPasswordClicked: () -> Unit) {

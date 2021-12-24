@@ -1,8 +1,13 @@
 package com.maisel.domain.user.entity
 
-data class SignUpUser(val userId: String?,
-                      val username: String?,
-                      val emailAddress: String?,
-                      val password: String?,
-                      val profilePicture : String?,
-                      val lastMessage: String?)
+//TODO: Rename to User
+data class SignUpUser(var userId: String?,
+                      var username: String?,
+                      var emailAddress: String?,
+                      var password: String?,
+                      var profilePicture : String?,
+                      var lastMessage: String?) {
+    constructor() : this (null, null, null, null, null, null) {
+
+    }
+}

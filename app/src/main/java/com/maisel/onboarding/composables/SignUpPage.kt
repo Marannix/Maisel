@@ -15,6 +15,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -121,6 +122,7 @@ fun SignUpMainCard(viewModel: SignUpViewModel, showNameError: Boolean, showEmail
 
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun SignUpValidationUI(
     viewModel: SignUpViewModel,
@@ -138,7 +140,7 @@ private fun SignUpValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, showPasswordError, modifier)
+    CreatePasswordTextField(passwordState, showPasswordError, modifier, focusRequester)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     SignUpLoginButton(viewModel, nameState, emailState, passwordState, modifier)
 }
