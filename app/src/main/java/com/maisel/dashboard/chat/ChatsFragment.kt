@@ -1,5 +1,6 @@
 package com.maisel.dashboard.chat
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ChatsFragment : Fragment() {
 
+    private var callback: ChatsFragmentCallback? = null
+
+    interface ChatsFragmentCallback {
+        fun onOpenChatsDetails()
+    }
+
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(this).get(
             DashboardViewModel::class.java
@@ -34,6 +41,17 @@ class ChatsFragment : Fragment() {
         viewModel.getUsers()
     }
 
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        callback = try {
+            activity as ChatsFragmentCallback
+        } catch (e: ClassCastException) {
+            throw ClassCastException(
+                "$activity must implement ChatsFragmentCallback "
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,7 +62,7 @@ class ChatsFragment : Fragment() {
                     viewModel.viewState.observeAsState().value?.users ?: emptyList()
                 MainTheme {
                     Surface(color = MaterialTheme.colors.background) {
-                        ChatsList(users)
+                        ChatsList(users, callback)
                     }
                 }
             }
@@ -69,5 +87,10 @@ class ChatsFragment : Fragment() {
                 Toast.makeText(activity, "Chats Fragment Success", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callback = null
     }
 }

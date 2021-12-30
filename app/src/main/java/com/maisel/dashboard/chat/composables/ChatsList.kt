@@ -1,6 +1,7 @@
 package com.maisel.dashboard.chat.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,36 +11,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.ImagePainter
-import coil.compose.ImagePainter.State.Empty.painter
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
+import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.domain.user.entity.SignUpUser
 
 @Composable
 @ExperimentalComposeUiApi
 @Preview(device = Devices.PIXEL_4)
-fun ChatsList(chats: List<SignUpUser>) {
+fun ChatsList(chats: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCallback?) {
+   // val uiState = viewModel.viewUiState
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(chats) { chat ->
-                ChatListItem(chat, Modifier.fillMaxWidth())
+                ChatListItem(listener, chat, Modifier.fillMaxWidth())
             }
         }
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
-fun ChatListItem(chat: SignUpUser, modifier: Modifier) {
+fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, chat: SignUpUser, modifier: Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .padding(4.dp)
+            .fillMaxWidth().padding(4.dp).clickable { listener?.onOpenChatsDetails() }
     ) {
         Image(
             painter = rememberImagePainter(

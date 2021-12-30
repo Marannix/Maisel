@@ -12,7 +12,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.material.tabs.TabLayoutMediator
 import com.maisel.R
+import com.maisel.chat.ChatDetailActivity
 import com.maisel.common.BaseFragmentActivity
+import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_main.view.*
@@ -21,7 +23,7 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
 //TODO: RENAME DASHBOARD
-class MainActivity : BaseFragmentActivity() {
+class MainActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback {
 
     companion object {
         fun createIntent(context: Context): Intent {
@@ -44,10 +46,10 @@ class MainActivity : BaseFragmentActivity() {
         setContentView(binding.root)
         binding.root.toolbar.inflateMenu(R.menu.menu)
         binding.root.toolbar.title = "Maisel"
-        render()
+        setUp()
     }
 
-    private fun render() {
+    private fun setUp() {
         createViewPager()
         setTabLayout()
     }
@@ -68,6 +70,19 @@ class MainActivity : BaseFragmentActivity() {
             }
         }.attach()
     }
+
+//    private fun observeViewState() {
+//        viewModel.viewState.observe(this) { state ->
+//            render(state)
+//        }
+//    }
+//
+//    private fun render(state: DashboardViewState) {
+//        state.getSelectedUser?.let {
+//            openChatsDetailScreen()
+//            viewModel.selectedUser(null)
+//        }
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -96,5 +111,9 @@ class MainActivity : BaseFragmentActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.stopListeningToUser()
+    }
+
+    override fun onOpenChatsDetails() {
+        ChatDetailActivity.createIntent(this).also { startActivity(it) }
     }
 }
