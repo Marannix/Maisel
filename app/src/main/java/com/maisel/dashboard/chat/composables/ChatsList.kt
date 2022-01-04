@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
@@ -22,7 +22,7 @@ import com.maisel.domain.user.entity.SignUpUser
 
 @Composable
 @ExperimentalComposeUiApi
-@Preview(device = Devices.PIXEL_4)
+@Preview(device = PIXEL_4)
 fun ChatsList(chats: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCallback?) {
    // val uiState = viewModel.viewUiState
     Box(Modifier.fillMaxSize()) {
