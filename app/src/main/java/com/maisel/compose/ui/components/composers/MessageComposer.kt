@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.compose.state.messages.compose.MessageComposerState
+import com.maisel.compose.ui.theme.ChatTheme
 
 /**
  * Default MessageComposer component that relies on [MessageComposerViewModel] to handle data and
@@ -34,6 +35,15 @@ fun MessageComposer(
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit = { DefaultComposerLabel() },
     onValueChange: (String) -> Unit = { },
+    onAttachmentsClick: () -> Unit = { },
+    onCameraClick: () -> Unit = { },
+    integrations: @Composable RowScope.(MessageComposerState) -> Unit = {
+        DefaultComposerIntegrations(
+            messageInputState = it,
+            onAttachmentsClick = onAttachmentsClick,
+            onCameraClick = onCameraClick
+        )
+    },
     input: @Composable RowScope.(MessageComposerState) -> Unit = {
         MessageInput(
             modifier = Modifier
@@ -58,6 +68,7 @@ fun MessageComposer(
 //
 //            onSendMessage(messageWithData)
         },
+        integrations = integrations,
         input = input,
         messageComposerState = MessageComposerState(
             inputValue = value,
@@ -86,10 +97,12 @@ fun MessageComposer(
  * @param input Composable that represents the input field in the composer.
  */
 @Composable
-public fun MessageComposer(
+fun MessageComposer(
     messageComposerState: MessageComposerState,
     onSendMessage: (String) -> Unit,
     modifier: Modifier = Modifier,
+    shouldShowIntegrations: Boolean = true,
+    integrations: @Composable RowScope.(MessageComposerState) -> Unit,
     input: @Composable RowScope.(MessageComposerState) -> Unit,
 ) {
     val (value, cooldownTimer) = messageComposerState
@@ -97,7 +110,7 @@ public fun MessageComposer(
     Surface(
         modifier = modifier,
         elevation = 4.dp,
-       // color = ChatTheme.colors.barsBackground,
+        color = ChatTheme.colors.barsBackground,
     ) {
         Column(Modifier.padding(vertical = 4.dp)) {
             //headerContent(messageComposerState)
@@ -107,6 +120,14 @@ public fun MessageComposer(
                 verticalAlignment = Alignment.Bottom
             ) {
 
+                if (shouldShowIntegrations) {
+                    integrations(messageComposerState)
+                } else {
+                    Spacer(
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+
                 input(messageComposerState)
 
                 if (cooldownTimer > 0) {
@@ -115,10 +136,11 @@ public fun MessageComposer(
                     val isInputValid = value.isNotEmpty()
 
                     IconButton(
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         enabled = isInputValid,
                         content = {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_dough),
+                                painter = painterResource(id = R.drawable.ic_send),
                                 contentDescription = stringResource(id = R.string.compose_message_label),
                                 tint = if (isInputValid) MaterialTheme.colors.primary else  MaterialTheme.colors.secondary
                             )
@@ -135,10 +157,65 @@ public fun MessageComposer(
     }
 }
 
+/**
+ * Composable that represents the message composer integrations (special actions).
+ *
+ * Currently just shows the Attachment picker action.
+ *
+ * @param messageInputState The state of the input.
+ * @param onAttachmentsClick Handler when the user selects attachments.
+ * @param onCameraClick Handler when the user selects camera.
+ */
+@Composable
+internal fun DefaultComposerIntegrations(
+    messageInputState: MessageComposerState,
+    onAttachmentsClick: () -> Unit,
+    onCameraClick: () -> Unit,
+) {
+    val hasTextInput = messageInputState.inputValue.isNotEmpty()
+    val hasCommandInput = messageInputState.inputValue.startsWith("/")
+
+    Row(
+        modifier = Modifier
+            .height(54.dp)
+            .padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            enabled = !hasCommandInput,
+            modifier = Modifier
+                .size(32.dp)
+                .padding(4.dp),
+            content = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_attachments),
+                    contentDescription = "",
+                    tint = if (hasCommandInput) ChatTheme.colors.disabled else ChatTheme.colors.textLowEmphasis,
+                )
+            },
+            onClick = onAttachmentsClick
+        )
+
+        IconButton(
+            modifier = Modifier
+                .size(32.dp)
+                .padding(4.dp),
+            enabled = !hasTextInput,
+            content = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_camera),
+                    contentDescription = null,
+                )
+            },
+            onClick = onCameraClick
+        )
+    }
+}
+
 @Composable
 internal fun DefaultComposerLabel() {
     Text(
-        text = stringResource(id = R.string.compose_message_label)
-       // , color = ChatTheme.colors.textLowEmphasis
+        text = stringResource(id = R.string.compose_message_label),
+        color = ChatTheme.colors.textLowEmphasis
     )
 }

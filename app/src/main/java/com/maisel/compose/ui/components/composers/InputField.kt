@@ -1,8 +1,11 @@
 package com.maisel.compose.ui.components.composers
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -13,6 +16,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.maisel.compose.ui.theme.ChatTheme
 
 
 /**
@@ -36,7 +40,7 @@ fun InputField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
-  //  border: BorderStroke = BorderStroke(1.dp, ChatTheme.colors.borders),
+    border: BorderStroke = BorderStroke(1.dp, ChatTheme.colors.borders),
     innerPadding: Dp = 8.dp,
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
 ) {
@@ -56,9 +60,10 @@ fun InputField(
 
     BasicTextField(
         modifier = modifier
-            //.border(border = border, shape = ChatTheme.shapes.inputField)
+            // .border(border = border, shape = ChatTheme.shapes.inputField)
+            .border(border = border, shape = RoundedCornerShape(24.dp))
             .clip(MaterialTheme.shapes.medium.copy(CornerSize(24.dp)))
-                //.background(ChatTheme.colors.inputBackground)
+            .background(ChatTheme.colors.inputBackground)
             .padding(innerPadding),
         value = textFieldValue,
         onValueChange = {
@@ -67,10 +72,9 @@ fun InputField(
                 onValueChange(it.text)
             }
         },
-        textStyle = MaterialTheme.typography.body1,
-//        textStyle = MainTheme.typography.body.copy(
-//            color = ChatTheme.colors.textHighEmphasis,
-//        ),
+        textStyle = ChatTheme.typography.body1.copy(
+            color = ChatTheme.colors.textHighEmphasis,
+        ),
         cursorBrush = SolidColor(MaterialTheme.colors.primary),
         decorationBox = { innerTextField -> decorationBox(innerTextField) },
         maxLines = maxLines,

@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.maisel.chat.composables.ChatDetailScreen
 import com.maisel.common.BaseActivity
-import com.maisel.ui.MainTheme
+import com.maisel.compose.ui.theme.ChatTheme
 
 @ExperimentalComposeUiApi
 class ChatDetailActivity : BaseActivity() {
@@ -24,8 +23,8 @@ class ChatDetailActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainTheme {
-                Surface(color = MaterialTheme.colors.background) {
+            ChatTheme {
+                Surface {
                     ChatDetailScreen()
                 }
             }
