@@ -134,6 +134,5 @@ fun MessageBox() {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .navigationBarsWithImePadding()
     )
 }

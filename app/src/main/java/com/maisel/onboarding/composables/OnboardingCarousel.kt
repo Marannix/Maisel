@@ -39,7 +39,7 @@ fun OnboardingCarousel(launchLoginActivity: () -> Unit) {
 
     Column(Modifier.fillMaxSize()) {
         val items = OnboardingCarouseltem.get()
-        val state = rememberPagerState(pageCount = 3)
+        val state = rememberPagerState()
 
         OnboardingCarouselTopSection(launchLoginActivity, state, scope)
 
@@ -47,7 +47,8 @@ fun OnboardingCarousel(launchLoginActivity: () -> Unit) {
             state = state,
             modifier = Modifier
                 .fillMaxSize()
-                .weight(1f)
+                .weight(1f),
+            count = 3
         ) { page ->
             OnboardingCarouselItem(item = items[page])
         }
