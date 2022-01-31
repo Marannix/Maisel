@@ -9,11 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
@@ -70,6 +71,8 @@ fun SignUpMainCard(
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val scrollState = rememberScrollState()
     val focusRequester = remember { FocusRequester() }
+    val localFocusRequester = LocalFocusManager.current
+    localFocusRequester.moveFocus(FocusDirection.Down)
 
     val modifier = Modifier
         .fillMaxWidth()
@@ -104,7 +107,7 @@ fun SignUpMainCard(
             showEmailError,
             passwordState,
             modifier.focusRequester(focusRequester),
-            focusRequester,
+            localFocusRequester,
             onForgotPasswordClicked,
             showErrorDialog
         )
@@ -145,15 +148,23 @@ private fun ValidationUI(
     showEmailError: Boolean,
     passwordState: MutableState<TextFieldValue>,
     modifier: Modifier,
-    focusRequester: FocusRequester,
+    focusRequester: FocusManager,
     onForgotPasswordClicked: () -> Unit,
     showErrorDialog: Boolean
 ) {
     IncorrectEmailOrPassword(modifier, showErrorDialog)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
+    CreateEmailAddressTextField(emailState, showEmailError, modifier) {
+        focusRequester.moveFocus(
+            FocusDirection.Down
+        )
+    }
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, false, modifier, focusRequester)
+    CreatePasswordTextField(passwordState, false, modifier)  {
+        focusRequester.moveFocus(
+            FocusDirection.Down
+        )
+    }
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword(modifier, onForgotPasswordClicked)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))

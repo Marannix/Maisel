@@ -14,8 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -31,13 +29,13 @@ fun CreatePasswordTextField(
     passwordState: MutableState<TextFieldValue>,
     showPasswordError: Boolean = false,
     modifier: Modifier,
-    focusRequester: FocusRequester
+    onImeAction: () -> Unit
 ) {
     val showPassword = remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
-        modifier = modifier.focusRequester(focusRequester).testTag("password"),
+        modifier = modifier.testTag("password"),
         value = passwordState.value, onValueChange = {
             passwordState.value = it
         },
@@ -50,7 +48,10 @@ fun CreatePasswordTextField(
         visualTransformation = setPasswordVisualTransformation(showPassword),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
-            onDone = { keyboardController?.hide() }
+            onDone = {
+                keyboardController?.hide()
+                onImeAction()
+            }
         ),
         trailingIcon = { SetPasswordTrailingIcon(showPassword) },
         singleLine = true
@@ -101,11 +102,11 @@ fun CreateEmailAddressTextField(
     emailState: MutableState<TextFieldValue>,
     showEmailError: Boolean,
     modifier: Modifier,
-    focusRequester: FocusRequester
+    onImeAction: () -> Unit
 ) {
 
     OutlinedTextField(
-        modifier = modifier.focusRequester(focusRequester).testTag("email"),
+        modifier = modifier.testTag("email"),
         value = emailState.value, onValueChange = {
             emailState.value = it
         },
@@ -119,7 +120,7 @@ fun CreateEmailAddressTextField(
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
-            onNext = { focusRequester.requestFocus() }
+            onNext = { onImeAction() }
         )
     )
     if (showEmailError) {
@@ -140,10 +141,10 @@ fun CreateNameTextField(
     nameState: MutableState<TextFieldValue>,
     showNameError: Boolean,
     modifier: Modifier,
-    focusRequester: FocusRequester
+    onImeAction: () -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier.focusRequester(focusRequester).testTag("name"),
+        modifier = modifier.testTag("name"),
         value = nameState.value, onValueChange = {
             nameState.value = it
         },
@@ -157,7 +158,7 @@ fun CreateNameTextField(
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
-            onNext = { focusRequester.requestFocus() }
+            onNext = { onImeAction() }
         )
     )
     if (showNameError) {

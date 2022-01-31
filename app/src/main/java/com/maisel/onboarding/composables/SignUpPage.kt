@@ -17,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -53,7 +55,8 @@ fun SignUpMainCard(viewModel: SignUpViewModel, showNameError: Boolean, showEmail
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val scrollState = rememberScrollState()
-    val focusRequester = remember { FocusRequester() }
+    val focusRequester = LocalFocusManager.current
+    focusRequester.moveFocus(FocusDirection.Down)
 
     val modifier = Modifier
         .fillMaxWidth()
@@ -130,17 +133,28 @@ private fun SignUpValidationUI(
     emailState: MutableState<TextFieldValue>,
     passwordState: MutableState<TextFieldValue>,
     modifier: Modifier,
-    focusRequester: FocusRequester,
+    focusRequester: FocusManager,
     showNameError: Boolean,
     showEmailError: Boolean,
     showPasswordError: Boolean
 )
 {
-    CreateNameTextField(nameState, showNameError, modifier, focusRequester)
+    CreateNameTextField(nameState, showNameError, modifier) {
+        focusRequester.moveFocus(
+            FocusDirection.Down
+        )
+    }
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreateEmailAddressTextField(emailState, showEmailError, modifier, focusRequester)
+    CreateEmailAddressTextField(emailState, showEmailError, modifier)
+    {
+        focusRequester.moveFocus(
+            FocusDirection.Down
+        )
+    }
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, showPasswordError, modifier, focusRequester)
+    CreatePasswordTextField(passwordState, showPasswordError, modifier) {
+        focusRequester.clearFocus()
+    }
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     SignUpLoginButton(viewModel, nameState, emailState, passwordState, modifier)
 }
