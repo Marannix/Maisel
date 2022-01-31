@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.theme.ChatTheme
@@ -27,12 +29,12 @@ import com.maisel.compose.ui.theme.ChatTheme
 @ExperimentalComposeUiApi
 @Preview(device = Devices.PIXEL_4)
 fun ChatDetailScreen() {
-    TopAppBar()
+    Screen()
 }
 
 @ExperimentalComposeUiApi
 @Composable
-fun TopAppBar() {
+fun Screen() {
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -40,6 +42,7 @@ fun TopAppBar() {
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.navigationBarsWithImePadding().statusBarsPadding(),
                     navigationIcon = {
                         // show drawer icon
                         IconButton(
@@ -123,7 +126,7 @@ fun TopAppBar() {
                 )
             },
             bottomBar = { MessageBox() },
-            content = { }
+            content = { padding -> Content(padding) }
         )
     }
 }
@@ -134,5 +137,13 @@ fun MessageBox() {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .navigationBarsWithImePadding()
     )
+}
+
+@Composable
+fun Content(padding: PaddingValues) {
+//    Column(Modifier.fillMaxSize().navigationBarsWithImePadding()) {
+//
+//    }
 }

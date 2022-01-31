@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +59,7 @@ fun OnboardingCarousel(launchLoginActivity: () -> Unit) {
             index = state.currentPage
         ) {
             if (state.currentPage + 1 < items.size) {
-                scope.launch {
+                scope.launch { //TODO: Crashed on Api 23
                     state.scrollToPage(state.currentPage + 1)
                 }
             } else {
@@ -180,7 +181,8 @@ fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.verticalScroll(descriptionScrollState)
+            modifier = Modifier
+                .verticalScroll(descriptionScrollState)
                 .weight(0.5f)
                 .padding(16.dp),
         ) {
