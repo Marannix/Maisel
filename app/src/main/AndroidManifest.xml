@@ -14,6 +14,7 @@
         android:theme="@style/Theme.Maisel">
         <activity
             android:name=".chat.ChatDetailActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true" />
         <activity
             android:name=".signin.SignInActivity"
