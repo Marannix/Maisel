@@ -14,11 +14,13 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -89,7 +91,8 @@ fun SignUpMainCard(
         CreateEmailAddressTextField(
             state = it.validationState,
             emailState = signInState.emailInputState,
-            modifier = Modifier.focusRequester(signInState.focusRequester) //TODO: Delete probably
+            modifier = Modifier
+                .focusRequester(signInState.focusRequester) //TODO: Delete probably
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
@@ -102,7 +105,8 @@ fun SignUpMainCard(
         CreatePasswordTextField(
             passwordState = signInState.passwordInputValue,
             showPasswordError = false, //TODO: Actually show error
-            modifier = Modifier.focusRequester(signInState.focusRequester) //TODO: Delete probably
+            modifier = Modifier
+                .focusRequester(signInState.focusRequester) //TODO: Delete probably
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
@@ -110,6 +114,13 @@ fun SignUpMainCard(
                 FocusDirection.Down
             )
         }
+    }, errorBanner: @Composable (SignInState) -> Unit = {
+        SignInErrorBanner(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            signInState.showErrorBanner
+        )
     }
 ) {
 
@@ -139,7 +150,8 @@ fun SignUpMainCard(
         Text(
             text = "Login to your Account",
             style = MaterialTheme.typography.h3,
-            modifier = modifier.padding(bottom = 12.dp)
+            modifier = modifier.padding(bottom = 12.dp),
+            fontWeight = FontWeight.SemiBold
         )
 
         ValidationUI(
@@ -148,7 +160,8 @@ fun SignUpMainCard(
             modifier, //TODO: Delete this
             onForgotPasswordClicked,
             emailContent,
-            passwordContent
+            passwordContent,
+            errorBanner
         )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
@@ -157,7 +170,7 @@ fun SignUpMainCard(
 
         val signUpText = buildAnnotatedString {
             append("Don't have an account? ")
-            withStyle(SpanStyle(color = MaterialTheme.colors.primary)) {
+            withStyle(SpanStyle(color = MaterialTheme.colors.primary, fontWeight = FontWeight.SemiBold)) {
                 append("Sign up")
             }
         }
@@ -187,10 +200,11 @@ private fun ValidationUI(
     signInState: SignInState,
     modifier: Modifier,
     onForgotPasswordClicked: () -> Unit,
-    emailContent: @Composable ((SignInState) -> Unit),
-    passwordContent: @Composable ((SignInState) -> Unit)
+    emailContent: @Composable (SignInState) -> Unit,
+    passwordContent: @Composable (SignInState) -> Unit,
+    errorBanner: @Composable (SignInState) -> Unit
 ) {
-    IncorrectEmailOrPassword(modifier, signInState.showErrorDialog)
+    errorBanner(signInState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     emailContent(signInState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
@@ -202,29 +216,34 @@ private fun ValidationUI(
 }
 
 @Composable
-fun IncorrectEmailOrPassword( //TODO: Rename SignInErrorDialog
+fun SignInErrorBanner(
     modifier: Modifier,
-    showErrorDialog: Boolean
+    showErrorBanner: Boolean
 ) {
-    if (showErrorDialog) { //TODO: Rename SignInError
-        Row(
+    if (showErrorBanner) {
+        Box(
             modifier = modifier
-                .padding(4.dp)
-                .clip(shapes.medium)
-                .background(colorResource(id = R.color.grayBackground)),
-            verticalAlignment = Alignment.CenterVertically
+                .clip(shapes.small)
+                .background(colorResource(id = R.color.maisel_compose_error_accent))
         ) {
-            Image(
-                modifier = Modifier.padding(4.dp),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_lock),
-                contentDescription = "Facebook icon",
-            )
-            Text(
-                "Your email address or password is incorrect",
-                color = colorResource(id = R.color.red),
-                style = MaterialTheme.typography.subtitle2
-            )
+            Row(
+                modifier = modifier.padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_error),
+                    contentDescription = "Facebook icon",
+                )
+                Text(
+                    text = "Your email address or password is incorrect",
+                    color = colorResource(id = R.color.white),
+                    style = MaterialTheme.typography.subtitle2,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
+
     }
 }
 
@@ -271,7 +290,8 @@ private fun SignInWith(onGoogleClicked: () -> Unit, onFacebookClicked: () -> Uni
         Text(
             text = "- Or sign in with -",
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.SemiBold
         )
 
         Spacer(modifier = Modifier.padding(vertical = 20.dp))
