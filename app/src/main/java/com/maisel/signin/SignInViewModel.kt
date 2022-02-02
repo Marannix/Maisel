@@ -31,7 +31,7 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
 
     private fun currentViewState(): SignInViewState = viewState.value!!
 
-    fun signInWithEmailAndPassword(email: String, password: String) {
+    private fun signInWithEmailAndPassword(email: String, password: String) {
         signInUseCase.invoke(email, password)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState.value = currentViewState().copy(authResultState = AuthResultState.Loading  )}
@@ -64,7 +64,7 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
             .addDisposable()
     }
 
-    fun isEmailAddressValid(email: String) : Boolean {
+    private fun isEmailAddressValid(email: String) : Boolean {
         return if (email.isNotEmpty() && Validator().isEmailValid(email)) {
             viewState.value = currentViewState().copy(signInValidator = currentViewState().signInValidator.copy(showEmailError = false))
             true

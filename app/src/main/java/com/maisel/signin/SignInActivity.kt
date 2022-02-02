@@ -32,13 +32,14 @@ import com.maisel.ui.MainTheme
 class SignInActivity : BaseActivity() {
 
     companion object {
+        private const val RC_SIGN_IN = 65
+
         fun createIntent(context: Context): Intent {
             return Intent(context, SignInActivity::class.java)
         }
     }
 
     private lateinit var googleSignInClient: GoogleSignInClient
-    private val RC_SIGN_IN = 65
 
     private val viewModel: SignInViewModel by lazy {
         ViewModelProvider(this).get(
@@ -51,16 +52,10 @@ class SignInActivity : BaseActivity() {
         signInCurrentUser()
 
         setContent {
-            val showEmailError =
-                viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
-            val showErrorDialog =
-                viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
             MainTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     SignInPage(
                         viewModel,
-                        showEmailError,
-                        showErrorDialog,
                         ::signInWithGoogle,
                         ::signInWithFacebook,
                         ::forgotPassword,

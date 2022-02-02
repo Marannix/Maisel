@@ -19,24 +19,9 @@
         <activity
             android:name=".signin.SignInActivity"
             android:exported="true">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".signin.OLDSignInActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Maisel" />
-        <activity
             android:name=".dashboard.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Maisel" />
-        <activity
-            android:name=".signup.OLDSignUpActivity"
             android:exported="true"
             android:theme="@style/Theme.Maisel" />
         <activity
@@ -54,5 +39,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

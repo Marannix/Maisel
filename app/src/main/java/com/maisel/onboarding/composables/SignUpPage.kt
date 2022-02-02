@@ -145,12 +145,12 @@ private fun SignUpValidationUI(
         )
     }
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreateEmailAddressTextField(emailState, showEmailError, modifier)
-    {
-        focusRequester.moveFocus(
-            FocusDirection.Down
-        )
-    }
+//    CreateEmailAddressTextField(emailState, showEmailError, modifier)
+//    {
+//        focusRequester.moveFocus(
+//            FocusDirection.Down
+//        )
+//    }
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     CreatePasswordTextField(passwordState, showPasswordError, modifier) {
         focusRequester.clearFocus()

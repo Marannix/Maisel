@@ -5,12 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,7 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.common.composable.CreateEmailAddressTextField
 import com.maisel.common.composable.CreatePasswordTextField
+import com.maisel.signin.SignInState
 import com.maisel.signin.SignInViewModel
+import com.maisel.signin.ValidationState
+import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
 
 @Composable
@@ -36,43 +39,81 @@ import com.maisel.ui.shapes
 @Preview(device = PIXEL_4)
 fun SignInPage(
     viewModel: SignInViewModel,
-    showEmailError: Boolean = false,
-    showErrorDialog: Boolean,
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
-    onSignUpClicked: () -> Unit
+    onSignUpClicked: () -> Unit,
 ) {
     Column(Modifier.fillMaxSize()) {
-        //TODO: Can I save these into a variable?
+        val validationError: Boolean =
+            viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
+        val showErrorDialog: Boolean =
+            viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
+        val emailState = remember { mutableStateOf(TextFieldValue("")) }
+        val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+        val focusRequester = remember { FocusRequester() }
+        val localFocusRequester = LocalFocusManager.current
+        localFocusRequester.moveFocus(FocusDirection.Down)
+
         SignUpMainCard(
-            viewModel,
-            showEmailError,
-            showErrorDialog,
-            onGoogleClicked,
-            onFacebookClicked,
-            onForgotPasswordClicked,
-            onSignUpClicked
+            viewModel = viewModel,
+            signInState = SignInState(
+                ValidationState(
+                    showEmailError = validationError,
+                    showPasswordError = false
+                ),
+                showErrorDialog,
+                emailState,
+                passwordState,
+                focusRequester,
+                localFocusRequester
+            ),
+            onGoogleClicked = onGoogleClicked,
+            onFacebookClicked = onFacebookClicked,
+            onForgotPasswordClicked = onForgotPasswordClicked,
+            onSignUpClicked = onSignUpClicked
         )
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 fun SignUpMainCard(
     viewModel: SignInViewModel,
-    showEmailError: Boolean,
-    showErrorDialog: Boolean,
+    signInState: SignInState,
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
-    onSignUpClicked: () -> Unit
+    onSignUpClicked: () -> Unit,
+    emailContent: @Composable (SignInState) -> Unit = {
+        CreateEmailAddressTextField(
+            state = it.validationState,
+            emailState = signInState.emailInputState,
+            modifier = Modifier.focusRequester(signInState.focusRequester) //TODO: Delete probably
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            signInState.localFocusRequester.moveFocus(
+                FocusDirection.Down
+            )
+        }
+    },
+    passwordContent: @Composable (SignInState) -> Unit = {
+        CreatePasswordTextField(
+            passwordState = signInState.passwordInputValue,
+            showPasswordError = false, //TODO: Actually show error
+            modifier = Modifier.focusRequester(signInState.focusRequester) //TODO: Delete probably
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            signInState.localFocusRequester.moveFocus(
+                FocusDirection.Down
+            )
+        }
+    }
 ) {
-    val emailState = remember { mutableStateOf(TextFieldValue("")) }
-    val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+
     val scrollState = rememberScrollState()
-    val focusRequester = remember { FocusRequester() }
-    val localFocusRequester = LocalFocusManager.current
-    localFocusRequester.moveFocus(FocusDirection.Down)
 
     val modifier = Modifier
         .fillMaxWidth()
@@ -103,13 +144,11 @@ fun SignUpMainCard(
 
         ValidationUI(
             viewModel,
-            emailState,
-            showEmailError,
-            passwordState,
-            modifier.focusRequester(focusRequester),
-            localFocusRequester,
+            signInState,
+            modifier, //TODO: Delete this
             onForgotPasswordClicked,
-            showErrorDialog
+            emailContent,
+            passwordContent
         )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
@@ -133,50 +172,41 @@ fun SignUpMainCard(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(vertical = 24.dp)
-                    .fillMaxWidth().clickable { onSignUpClicked() }
+                    .fillMaxWidth()
+                    .clickable { onSignUpClicked() }
             )
         }
     }
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
 @Composable
 private fun ValidationUI(
     viewModel: SignInViewModel,
-    emailState: MutableState<TextFieldValue>,
-    showEmailError: Boolean,
-    passwordState: MutableState<TextFieldValue>,
+    signInState: SignInState,
     modifier: Modifier,
-    focusRequester: FocusManager,
     onForgotPasswordClicked: () -> Unit,
-    showErrorDialog: Boolean
+    emailContent: @Composable ((SignInState) -> Unit),
+    passwordContent: @Composable ((SignInState) -> Unit)
 ) {
-    IncorrectEmailOrPassword(modifier, showErrorDialog)
+    IncorrectEmailOrPassword(modifier, signInState.showErrorDialog)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreateEmailAddressTextField(emailState, showEmailError, modifier) {
-        focusRequester.moveFocus(
-            FocusDirection.Down
-        )
-    }
+    emailContent(signInState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, false, modifier)  {
-        focusRequester.moveFocus(
-            FocusDirection.Down
-        )
-    }
+    passwordContent(signInState)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword(modifier, onForgotPasswordClicked)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
-    LoginButton(viewModel, emailState, passwordState, modifier)
+    LoginButton(viewModel, signInState.emailInputState, signInState.passwordInputValue, modifier)
 }
 
 @Composable
-fun IncorrectEmailOrPassword(
+fun IncorrectEmailOrPassword( //TODO: Rename SignInErrorDialog
     modifier: Modifier,
     showErrorDialog: Boolean
 ) {
-    if (showErrorDialog) {
+    if (showErrorDialog) { //TODO: Rename SignInError
         Row(
             modifier = modifier
                 .padding(4.dp)

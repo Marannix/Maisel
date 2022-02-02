@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
+import com.maisel.signin.ValidationState
 
 
 @ExperimentalComposeUiApi
@@ -100,9 +101,9 @@ private fun setPasswordVisualTransformation(showPassword: MutableState<Boolean>)
 @Composable
 fun CreateEmailAddressTextField(
     emailState: MutableState<TextFieldValue>,
-    showEmailError: Boolean,
     modifier: Modifier,
-    onImeAction: () -> Unit
+    state: ValidationState,
+    onImeAction: () -> Unit,
 ) {
 
     OutlinedTextField(
@@ -116,14 +117,14 @@ fun CreateEmailAddressTextField(
         placeholder = {
             Text(text = "Email")
         },
-        isError = showEmailError,
+        isError = state.showEmailError,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
             onNext = { onImeAction() }
         )
     )
-    if (showEmailError) {
+    if (state.showEmailError) {
         Text(
             text = "Please enter a valid email",
             textAlign = TextAlign.Start,

@@ -26,7 +26,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
 
     private fun currentViewState(): SignUpViewState = viewState.value!!
 
-    fun registerUser(name: String, email: String, password: String) {
+    private fun registerUser(name: String, email: String, password: String) {
         signUpUseCase.invoke(name, email, password)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
@@ -47,7 +47,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             .addDisposable()
     }
 
-    fun isEmailAddressValid(email: String): Boolean {
+    private fun isEmailAddressValid(email: String): Boolean {
         return if (email.isNotEmpty() && Validator().isEmailValid(email)) {
             viewState.value = currentViewState().copy(
                 signUpValidator = currentViewState().signUpValidator.copy(showEmailError = false)
@@ -61,7 +61,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         }
     }
 
-    fun isPasswordValid(password: String): Boolean {
+    private fun isPasswordValid(password: String): Boolean {
         return if (password.isNotEmpty() && Validator().isPasswordValid(password)) {
             viewState.value = currentViewState().copy(
                 signUpValidator = currentViewState().signUpValidator.copy(showPasswordError = false)
@@ -75,7 +75,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         }
     }
 
-    fun isNameValid(name: String): Boolean {
+    private fun isNameValid(name: String): Boolean {
         return if (name.isNotEmpty()) {
             viewState.value = currentViewState().copy(
                 signUpValidator = currentViewState().signUpValidator.copy(showNameError = false)
