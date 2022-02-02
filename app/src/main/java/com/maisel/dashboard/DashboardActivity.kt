@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModelProvider
@@ -22,22 +22,13 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
-//TODO: RENAME DASHBOARD
-class MainActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback {
-
-    companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, MainActivity::class.java)
-        }
-    }
+class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback {
 
    private lateinit var binding: ActivityMainBinding
    private lateinit var viewPager2: ViewPager2
 
     private val viewModel: DashboardViewModel by lazy {
-        ViewModelProvider(this).get(
-            DashboardViewModel::class.java
-        )
+        ViewModelProvider(this)[DashboardViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +37,7 @@ class MainActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback
         setContentView(binding.root)
         binding.root.toolbar.inflateMenu(R.menu.menu)
         binding.root.toolbar.title = "Maisel"
+        binding.root.toolbar.setOnMenuItemClickListener(toolbarListener)
         setUp()
     }
 
@@ -84,23 +76,28 @@ class MainActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback
 //        }
 //    }
 
+    /**
+     * For some odd reason onCreateOptionsMenu and onOptionsItemSelected are not being called
+     * I manually attach the listeners to toolbar as a temp solution
+     */
+    private val toolbarListener =
+        Toolbar.OnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.settings -> {
+                    notImplementedYet()
+                }
+                R.id.logout -> {
+                    viewModel.logOutUser()
+                    SignInActivity.createIntent(this@DashboardActivity).also { startActivity(it) }
+                    finish()
+                }
+            }
+            false
+        }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.settings -> {
-
-            }
-            R.id.logout -> {
-                viewModel.logOutUser()
-                SignInActivity.createIntent(this).also { startActivity(it) }
-                finish()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
@@ -113,7 +110,18 @@ class MainActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback
         viewModel.stopListeningToUser()
     }
 
+    override fun onDestroy() {
+        binding.root.toolbar.setOnMenuItemClickListener(null)
+        super.onDestroy()
+    }
+
     override fun onOpenChatsDetails() {
         ChatDetailActivity.createIntent(this).also { startActivity(it) }
+    }
+
+    companion object {
+        fun createIntent(context: Context): Intent {
+            return Intent(context, DashboardActivity::class.java)
+        }
     }
 }

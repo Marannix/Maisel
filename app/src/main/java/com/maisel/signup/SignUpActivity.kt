@@ -13,7 +13,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
-import com.maisel.dashboard.MainActivity
+import com.maisel.dashboard.DashboardActivity
 import com.maisel.onboarding.composables.SignUpPage
 import com.maisel.state.AuthResultState
 import com.maisel.ui.MainTheme
@@ -68,7 +68,7 @@ class SignUpActivity : BaseActivity() {
             is AuthResultState.Success -> {
                 makeToastShort("Account Created")
                 viewModel.setUser(state.authResultState.user)
-                MainActivity.createIntent(this).also { startActivity(it) }
+                DashboardActivity.createIntent(this).also { startActivity(it) }
                 finishAffinity()
             }
             AuthResultState.Idle -> {

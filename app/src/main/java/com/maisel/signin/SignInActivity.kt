@@ -9,7 +9,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -20,7 +19,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
 import com.maisel.common.BaseActivity
-import com.maisel.dashboard.MainActivity
+import com.maisel.dashboard.DashboardActivity
 import com.maisel.onboarding.composables.SignInPage
 import com.maisel.signup.SignUpActivity
 import com.maisel.state.AuthResultState
@@ -87,7 +86,7 @@ class SignInActivity : BaseActivity() {
             is AuthResultState.Success -> {
                 viewModel.setUser(state.authResultState.user)
                 Log.d("joshua", "activity success")
-                MainActivity.createIntent(this).also { startActivity(it) }
+                DashboardActivity.createIntent(this).also { startActivity(it) }
                 finish()
             }
             AuthResultState.Error -> {
@@ -102,7 +101,7 @@ class SignInActivity : BaseActivity() {
      */
     private fun signInCurrentUser() {
         if (viewModel.isUserLoggedIn()) {
-            MainActivity.createIntent(this).also { startActivity(it) }
+            DashboardActivity.createIntent(this).also { startActivity(it) }
             finish()
         }
     }

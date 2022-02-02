@@ -46,17 +46,17 @@ fun SignInPage(
     onForgotPasswordClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
 ) {
-    Column(Modifier.fillMaxSize()) {
-        val validationError: Boolean =
-            viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
-        val showErrorDialog: Boolean =
-            viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
-        val emailState = remember { mutableStateOf(TextFieldValue("")) }
-        val passwordState = remember { mutableStateOf(TextFieldValue("")) }
-        val focusRequester = remember { FocusRequester() }
-        val localFocusRequester = LocalFocusManager.current
-        localFocusRequester.moveFocus(FocusDirection.Down)
+    val validationError: Boolean =
+        viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
+    val showErrorDialog: Boolean =
+        viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
+    val emailState = remember { mutableStateOf(TextFieldValue("")) }
+    val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+    val focusRequester = remember { FocusRequester() }
+    val localFocusRequester = LocalFocusManager.current
+    localFocusRequester.moveFocus(FocusDirection.Down)
 
+    Column(Modifier.fillMaxSize()) {
         SignUpMainCard(
             viewModel = viewModel,
             signInState = SignInState(

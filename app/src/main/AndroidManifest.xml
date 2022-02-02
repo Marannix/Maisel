@@ -21,7 +21,7 @@
             android:exported="true">
         </activity>
         <activity
-            android:name=".dashboard.MainActivity"
+            android:name=".dashboard.DashboardActivity"
             android:exported="true"
             android:theme="@style/Theme.Maisel" />
         <activity

@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
-import com.maisel.dashboard.MainActivity
+import com.maisel.dashboard.DashboardActivity
 import com.maisel.onboarding.composables.OnboardingCarousel
 import com.maisel.signin.SignInActivity
 import com.maisel.ui.MainTheme
@@ -49,7 +49,7 @@ class OnboardingCarouselActivity : BaseActivity() {
 
     private fun signInCurrentUser() {
         if (viewModel.isUserLoggedIn()) {
-            MainActivity.createIntent(this).also { startActivity(it) }
+            DashboardActivity.createIntent(this).also { startActivity(it) }
             finish()
         }
     }
