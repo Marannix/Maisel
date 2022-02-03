@@ -3,6 +3,7 @@ package com.maisel.signup
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
+import com.maisel.compose.state.onboarding.compose.SignUpForm
 import com.maisel.domain.user.usecase.SetCurrentUserUseCase
 import com.maisel.domain.user.usecase.SignUpUseCase
 import com.maisel.state.AuthResultState

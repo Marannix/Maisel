@@ -1,10 +1,9 @@
-package com.maisel.signup
+package com.maisel.compose.state.onboarding.compose
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.input.TextFieldValue
-import com.maisel.signin.ValidationState
 
 /**
  * Represents the state within the sign up screen
@@ -23,19 +22,6 @@ data class SignUpState(
     val focusRequester: FocusRequester,
     val localFocusRequester: FocusManager
 )
-
-///**
-// * Represents the validation state within the sign up screen
-// *
-// * @param showNameError The current validation state of name
-// * @param showEmailError The current validation state of error
-// * @param showPasswordError The current validation state of password
-// */
-//data class ValidationState(
-//    val showNameError: Boolean = false,
-//    val showEmailError: Boolean = false,
-//    val showPasswordError: Boolean = false
-//)
 
 /**
  * Represents the sign up form state within the sign up screen

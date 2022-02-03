@@ -21,12 +21,11 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.signin.ValidationState
-
+import com.maisel.compose.state.onboarding.compose.ValidationState
 
 @ExperimentalComposeUiApi
 @Composable
-fun CreatePasswordTextField(
+fun DefaultPasswordContent(
     state: ValidationState,
     passwordState: MutableState<TextFieldValue>,
     modifier: Modifier,
@@ -99,7 +98,7 @@ private fun setPasswordVisualTransformation(showPassword: MutableState<Boolean>)
     }
 
 @Composable
-fun CreateEmailAddressTextField(
+fun DefaultEmailAddressContent(
     emailState: MutableState<TextFieldValue>,
     modifier: Modifier,
     state: ValidationState,
@@ -138,7 +137,7 @@ fun CreateEmailAddressTextField(
 }
 
 @Composable
-fun CreateNameTextField(
+fun DefaultNameContent(
     nameState: MutableState<TextFieldValue>,
     modifier: Modifier,
     state: ValidationState,

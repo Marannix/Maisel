@@ -26,11 +26,13 @@ import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.common.composable.CreateEmailAddressTextField
-import com.maisel.common.composable.CreatePasswordTextField
-import com.maisel.signin.SignInState
+import com.maisel.common.composable.DefaultEmailAddressContent
+import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.compose.state.onboarding.compose.SignInForm
+import com.maisel.compose.state.onboarding.compose.SignInState
+import com.maisel.compose.state.onboarding.compose.ValidationState
+import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.signin.SignInViewModel
-import com.maisel.signin.ValidationState
 import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
 
@@ -64,6 +66,10 @@ fun SignInPage(
                 showErrorDialog,
                 emailState,
                 passwordState,
+                signInForm = SignInForm(
+                    emailState.value.text,
+                    passwordState.value.text
+                ),
                 focusRequester,
                 localFocusRequester
             ),
@@ -83,9 +89,10 @@ fun SignUpMainCard(
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
+    onSignIn: () -> Unit = { viewModel.onLoginClicked(signInState.signInForm) },
     onSignUpClicked: () -> Unit,
     emailContent: @Composable (SignInState) -> Unit = {
-        CreateEmailAddressTextField(
+        DefaultEmailAddressContent(
             state = it.validationState,
             emailState = it.emailInputState,
             modifier = Modifier
@@ -96,7 +103,7 @@ fun SignUpMainCard(
         }
     },
     passwordContent: @Composable (SignInState) -> Unit = {
-        CreatePasswordTextField(
+        DefaultPasswordContent(
             state = it.validationState,
             passwordState = it.passwordInputValue,
             modifier = Modifier
@@ -146,13 +153,13 @@ fun SignUpMainCard(
         )
 
         ValidationUI(
-            viewModel,
             signInState,
             modifier, //TODO: Delete this
             onForgotPasswordClicked,
             emailContent,
             passwordContent,
-            errorBanner
+            errorBanner,
+            onSignIn
         )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
@@ -192,13 +199,13 @@ fun SignUpMainCard(
 @ExperimentalComposeUiApi
 @Composable
 private fun ValidationUI(
-    viewModel: SignInViewModel,
     signInState: SignInState,
     modifier: Modifier,
     onForgotPasswordClicked: () -> Unit,
     emailContent: @Composable (SignInState) -> Unit,
     passwordContent: @Composable (SignInState) -> Unit,
-    errorBanner: @Composable (SignInState) -> Unit
+    errorBanner: @Composable (SignInState) -> Unit,
+    onSignIn: () -> Unit
 ) {
     errorBanner(signInState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
@@ -208,7 +215,7 @@ private fun ValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword(modifier, onForgotPasswordClicked)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
-    LoginButton(viewModel, signInState.emailInputState, signInState.passwordInputValue, modifier)
+    DefaultCallToActionButton(onSignIn, "Sign in")
 }
 
 @Composable
@@ -254,25 +261,6 @@ private fun ForgotPassword(modifier: Modifier, onForgotPasswordClicked: () -> Un
         )
     }
 }
-
-@Composable
-private fun LoginButton(
-    viewModel: SignInViewModel,
-    emailState: MutableState<TextFieldValue>,
-    passwordState: MutableState<TextFieldValue>,
-    modifier: Modifier
-) {
-    Button(
-        onClick = { viewModel.onLoginClicked(emailState, passwordState) },
-        shape = MaterialTheme.shapes.medium.copy(CornerSize(8.dp)),
-        contentPadding = PaddingValues(16.dp),
-        elevation = ButtonDefaults.elevation(defaultElevation = 8.dp),
-        modifier = modifier.padding(top = 8.dp)
-    ) {
-        Text(text = "Log In", textAlign = TextAlign.Center)
-    }
-}
-
 
 @Composable
 private fun SignInWith(onGoogleClicked: () -> Unit, onFacebookClicked: () -> Unit) {

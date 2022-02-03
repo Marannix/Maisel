@@ -19,7 +19,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
@@ -32,12 +31,14 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.common.composable.CreateEmailAddressTextField
-import com.maisel.common.composable.CreateNameTextField
-import com.maisel.common.composable.CreatePasswordTextField
-import com.maisel.signin.ValidationState
-import com.maisel.signup.SignUpForm
-import com.maisel.signup.SignUpState
+import com.maisel.common.CallToActionButton
+import com.maisel.common.composable.DefaultEmailAddressContent
+import com.maisel.common.composable.DefaultNameContent
+import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.compose.state.onboarding.compose.ValidationState
+import com.maisel.compose.state.onboarding.compose.SignUpForm
+import com.maisel.compose.state.onboarding.compose.SignUpState
+import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.signup.SignUpViewModel
 
 @ExperimentalComposeUiApi
@@ -57,7 +58,6 @@ fun SignUpPage(
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
-    //localFocusRequester.moveFocus(FocusDirection.Down)
 
     Column(Modifier.fillMaxSize()) {
         SignUpMainCard(
@@ -88,9 +88,9 @@ fun SignUpPage(
 fun SignUpMainCard(
     viewModel: SignUpViewModel,
     signUpState: SignUpState,
-    onSignUp: (SignUpState) -> Unit = { viewModel.onSignUpClicked(it.signUpForm) },
+    onSignUp: () -> Unit = { viewModel.onSignUpClicked(signUpState.signUpForm) },
     nameContent: @Composable (SignUpState) -> Unit = {
-        CreateNameTextField(
+        DefaultNameContent(
             state = it.validationState,
             nameState = it.nameInputState,
             modifier = Modifier
@@ -101,7 +101,7 @@ fun SignUpMainCard(
         }
     },
     emailContent: @Composable (SignUpState) -> Unit = {
-        CreateEmailAddressTextField(
+        DefaultEmailAddressContent(
             state = it.validationState,
             emailState = it.emailInputState,
             modifier = Modifier
@@ -112,7 +112,7 @@ fun SignUpMainCard(
         }
     },
     passwordContent: @Composable (SignUpState) -> Unit = {
-        CreatePasswordTextField(
+        DefaultPasswordContent(
             state = it.validationState,
             passwordState = it.passwordInputValue,
             modifier = Modifier
@@ -186,7 +186,6 @@ fun SignUpMainCard(
             )
         }
     }
-
 }
 
 @ExperimentalComposeUiApi
@@ -196,7 +195,7 @@ private fun SignUpValidationUI(
     nameContent: @Composable (SignUpState) -> Unit,
     emailContent: @Composable (SignUpState) -> Unit,
     passwordContent: @Composable (SignUpState) -> Unit,
-    onSignUp: (SignUpState) -> Unit
+    onSignUp: () -> Unit
 ) {
     nameContent(signUpState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
@@ -204,28 +203,8 @@ private fun SignUpValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     passwordContent(signUpState)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
-    SignUpLoginButton(signUpState, onSignUp)
+    DefaultCallToActionButton(onSignUp, "Sign up")
 }
-
-@Composable
-private fun SignUpLoginButton(
-    signUpState: SignUpState,
-    onSignUp: (SignUpState) -> Unit
-) {
-    Button(
-        onClick = { onSignUp(signUpState) },
-        shape = MaterialTheme.shapes.medium.copy(CornerSize(8.dp)),
-        contentPadding = PaddingValues(16.dp),
-        elevation = ButtonDefaults.elevation(defaultElevation = 8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 8.dp)
-    ) {
-        Text(text = "Sign up", textAlign = TextAlign.Center)
-    }
-}
-
 
 @Composable
 private fun SignInWith() {
