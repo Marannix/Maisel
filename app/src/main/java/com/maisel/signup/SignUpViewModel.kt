@@ -1,7 +1,5 @@
 package com.maisel.signup
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
@@ -89,13 +87,9 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         }
     }
 
-    fun onSignUpClicked(
-        nameState: MutableState<TextFieldValue>,
-        emailState: MutableState<TextFieldValue>,
-        passwordState: MutableState<TextFieldValue>
-    ) {
-        if (isNameValid(nameState.value.text) && isEmailAddressValid(emailState.value.text) && isPasswordValid(passwordState.value.text)) {
-            registerUser(nameState.value.text, emailState.value.text, passwordState.value.text)
+    fun onSignUpClicked(signUpForm: SignUpForm) {
+        if (isNameValid(signUpForm.name) && isEmailAddressValid(signUpForm.email) && isPasswordValid(signUpForm.password)) {
+            registerUser(signUpForm.name, signUpForm.email, signUpForm.password)
         }
     }
 

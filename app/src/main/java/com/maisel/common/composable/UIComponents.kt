@@ -27,8 +27,8 @@ import com.maisel.signin.ValidationState
 @ExperimentalComposeUiApi
 @Composable
 fun CreatePasswordTextField(
+    state: ValidationState,
     passwordState: MutableState<TextFieldValue>,
-    showPasswordError: Boolean = false,
     modifier: Modifier,
     onImeAction: () -> Unit
 ) {
@@ -58,7 +58,7 @@ fun CreatePasswordTextField(
         singleLine = true
     )
 
-    if (showPasswordError) {
+    if (state.showPasswordError) {
         Text(
             text = "Password must be 8 characters long",
             textAlign = TextAlign.Start,
@@ -140,9 +140,9 @@ fun CreateEmailAddressTextField(
 @Composable
 fun CreateNameTextField(
     nameState: MutableState<TextFieldValue>,
-    showNameError: Boolean,
     modifier: Modifier,
-    onImeAction: () -> Unit
+    state: ValidationState,
+    onImeAction: () -> Unit,
 ) {
     OutlinedTextField(
         modifier = modifier.testTag("name"),
@@ -155,14 +155,14 @@ fun CreateNameTextField(
         placeholder = {
             Text(text = "Name")
         },
-        isError = showNameError,
+        isError = state.showNameError,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
             onNext = { onImeAction() }
         )
     )
-    if (showNameError) {
+    if (state.showNameError) {
         Text(
             text = "Please enter a valid name",
             textAlign = TextAlign.Start,

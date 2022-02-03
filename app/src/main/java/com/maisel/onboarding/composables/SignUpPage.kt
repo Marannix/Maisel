@@ -11,14 +11,15 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
@@ -34,29 +35,96 @@ import com.maisel.R
 import com.maisel.common.composable.CreateEmailAddressTextField
 import com.maisel.common.composable.CreateNameTextField
 import com.maisel.common.composable.CreatePasswordTextField
+import com.maisel.signin.ValidationState
+import com.maisel.signup.SignUpForm
+import com.maisel.signup.SignUpState
 import com.maisel.signup.SignUpViewModel
 
+@ExperimentalComposeUiApi
 @Composable
 @Preview(device = Devices.PIXEL_4)
 fun SignUpPage(
-    viewModel: SignUpViewModel,
-    showNameError: Boolean,
-    showEmailError: Boolean,
-    showPasswordError: Boolean
+    viewModel: SignUpViewModel
 ) {
-    Column(Modifier.fillMaxSize()) {
-        SignUpMainCard(viewModel, showNameError, showEmailError, showPasswordError)
-    }
-}
-
-@Composable
-fun SignUpMainCard(viewModel: SignUpViewModel, showNameError: Boolean, showEmailError: Boolean, showPasswordError: Boolean) {
+    val showNameError =
+        viewModel.viewState.observeAsState().value?.signUpValidator?.showNameError ?: false
+    val showEmailError =
+        viewModel.viewState.observeAsState().value?.signUpValidator?.showEmailError ?: false
+    val showPasswordError =
+        viewModel.viewState.observeAsState().value?.signUpValidator?.showPasswordError ?: false
     val nameState = remember { mutableStateOf(TextFieldValue("")) }
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+    val focusRequester = remember { FocusRequester() }
+    val localFocusRequester = LocalFocusManager.current
+    //localFocusRequester.moveFocus(FocusDirection.Down)
+
+    Column(Modifier.fillMaxSize()) {
+        SignUpMainCard(
+            viewModel = viewModel,
+            signUpState = SignUpState(
+                ValidationState(
+                    showNameError = showNameError,
+                    showEmailError = showEmailError,
+                    showPasswordError = showPasswordError
+                ),
+                nameInputState = nameState,
+                emailInputState = emailState,
+                passwordInputValue = passwordState,
+                signUpForm = SignUpForm(
+                    nameState.value.text,
+                    emailState.value.text,
+                    passwordState.value.text
+                ),
+                focusRequester,
+                localFocusRequester
+            )
+        )
+    }
+}
+
+@ExperimentalComposeUiApi
+@Composable
+fun SignUpMainCard(
+    viewModel: SignUpViewModel,
+    signUpState: SignUpState,
+    onSignUp: (SignUpState) -> Unit = { viewModel.onSignUpClicked(it.signUpForm) },
+    nameContent: @Composable (SignUpState) -> Unit = {
+        CreateNameTextField(
+            state = it.validationState,
+            nameState = it.nameInputState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+                 it.localFocusRequester.moveFocus(FocusDirection.Down)
+        }
+    },
+    emailContent: @Composable (SignUpState) -> Unit = {
+        CreateEmailAddressTextField(
+            state = it.validationState,
+            emailState = it.emailInputState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+                it.localFocusRequester.moveFocus(FocusDirection.Down)
+        }
+    },
+    passwordContent: @Composable (SignUpState) -> Unit = {
+        CreatePasswordTextField(
+            state = it.validationState,
+            passwordState = it.passwordInputValue,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
+        }
+    }
+) {
+
     val scrollState = rememberScrollState()
-    val focusRequester = LocalFocusManager.current
-    focusRequester.moveFocus(FocusDirection.Down)
 
     val modifier = Modifier
         .fillMaxWidth()
@@ -86,15 +154,11 @@ fun SignUpMainCard(viewModel: SignUpViewModel, showNameError: Boolean, showEmail
         )
 
         SignUpValidationUI(
-            viewModel,
-            nameState,
-            emailState,
-            passwordState,
-            modifier,
-            focusRequester,
-            showNameError,
-            showEmailError,
-            showPasswordError
+            signUpState,
+            nameContent,
+            emailContent,
+            passwordContent,
+            onSignUp
         )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
@@ -125,54 +189,38 @@ fun SignUpMainCard(viewModel: SignUpViewModel, showNameError: Boolean, showEmail
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
 @Composable
 private fun SignUpValidationUI(
-    viewModel: SignUpViewModel,
-    nameState: MutableState<TextFieldValue>,
-    emailState: MutableState<TextFieldValue>,
-    passwordState: MutableState<TextFieldValue>,
-    modifier: Modifier,
-    focusRequester: FocusManager,
-    showNameError: Boolean,
-    showEmailError: Boolean,
-    showPasswordError: Boolean
-)
-{
-    CreateNameTextField(nameState, showNameError, modifier) {
-        focusRequester.moveFocus(
-            FocusDirection.Down
-        )
-    }
+    signUpState: SignUpState,
+    nameContent: @Composable (SignUpState) -> Unit,
+    emailContent: @Composable (SignUpState) -> Unit,
+    passwordContent: @Composable (SignUpState) -> Unit,
+    onSignUp: (SignUpState) -> Unit
+) {
+    nameContent(signUpState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-//    CreateEmailAddressTextField(emailState, showEmailError, modifier)
-//    {
-//        focusRequester.moveFocus(
-//            FocusDirection.Down
-//        )
-//    }
+    emailContent(signUpState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    CreatePasswordTextField(passwordState, showPasswordError, modifier) {
-        focusRequester.clearFocus()
-    }
+    passwordContent(signUpState)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
-    SignUpLoginButton(viewModel, nameState, emailState, passwordState, modifier)
+    SignUpLoginButton(signUpState, onSignUp)
 }
 
 @Composable
 private fun SignUpLoginButton(
-    viewModel: SignUpViewModel,
-    nameState: MutableState<TextFieldValue>,
-    emailState: MutableState<TextFieldValue>,
-    passwordState: MutableState<TextFieldValue>,
-    modifier: Modifier
+    signUpState: SignUpState,
+    onSignUp: (SignUpState) -> Unit
 ) {
     Button(
-        onClick = { viewModel.onSignUpClicked(nameState, emailState, passwordState) },
+        onClick = { onSignUp(signUpState) },
         shape = MaterialTheme.shapes.medium.copy(CornerSize(8.dp)),
         contentPadding = PaddingValues(16.dp),
         elevation = ButtonDefaults.elevation(defaultElevation = 8.dp),
-        modifier = modifier.padding(top = 8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 8.dp)
     ) {
         Text(text = "Sign up", textAlign = TextAlign.Center)
     }

@@ -13,7 +13,7 @@ import androidx.compose.ui.text.input.TextFieldValue
  * @param emailInputState The current text value that's within the input.
  * @param passwordInputValue The current text value that's within the input.
  */
-data class SignInState( //TODO: Create SignInState and reuse Validation State inside
+data class SignInState(
     val validationState: ValidationState = ValidationState(),
     val showErrorBanner: Boolean = false,
     val emailInputState: MutableState<TextFieldValue>,
@@ -25,7 +25,6 @@ data class SignInState( //TODO: Create SignInState and reuse Validation State in
 /**
  * Represents the validation state within the sign in screen
  *
- * @param showNameError The current validation state of name
  * @param showEmailError The current validation state of error
  * @param showPasswordError The current validation state of password
  */

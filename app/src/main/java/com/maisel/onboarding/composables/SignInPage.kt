@@ -12,9 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
@@ -54,7 +52,6 @@ fun SignInPage(
     val passwordState = remember { mutableStateOf(TextFieldValue("")) }
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
-    localFocusRequester.moveFocus(FocusDirection.Down)
 
     Column(Modifier.fillMaxSize()) {
         SignUpMainCard(
@@ -90,36 +87,30 @@ fun SignUpMainCard(
     emailContent: @Composable (SignInState) -> Unit = {
         CreateEmailAddressTextField(
             state = it.validationState,
-            emailState = signInState.emailInputState,
+            emailState = it.emailInputState,
             modifier = Modifier
-                .focusRequester(signInState.focusRequester) //TODO: Delete probably
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            signInState.localFocusRequester.moveFocus(
-                FocusDirection.Down
-            )
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
     },
     passwordContent: @Composable (SignInState) -> Unit = {
         CreatePasswordTextField(
-            passwordState = signInState.passwordInputValue,
-            showPasswordError = false, //TODO: Actually show error
+            state = it.validationState,
+            passwordState = it.passwordInputValue,
             modifier = Modifier
-                .focusRequester(signInState.focusRequester) //TODO: Delete probably
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            signInState.localFocusRequester.moveFocus(
-                FocusDirection.Down
-            )
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
     }, errorBanner: @Composable (SignInState) -> Unit = {
         SignInErrorBanner(
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            signInState.showErrorBanner
+            it.showErrorBanner
         )
     }
 ) {
@@ -170,7 +161,12 @@ fun SignUpMainCard(
 
         val signUpText = buildAnnotatedString {
             append("Don't have an account? ")
-            withStyle(SpanStyle(color = MaterialTheme.colors.primary, fontWeight = FontWeight.SemiBold)) {
+            withStyle(
+                SpanStyle(
+                    color = MaterialTheme.colors.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            ) {
                 append("Sign up")
             }
         }
