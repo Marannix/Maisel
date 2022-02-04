@@ -39,13 +39,17 @@ import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.state.onboarding.compose.SignUpForm
 import com.maisel.compose.state.onboarding.compose.SignUpState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
+import com.maisel.compose.ui.components.DefaultHeader
+import com.maisel.compose.ui.components.onboarding.DefaultOnboardingFooter
 import com.maisel.signup.SignUpViewModel
 
 @ExperimentalComposeUiApi
 @Composable
 @Preview(device = Devices.PIXEL_4)
 fun SignUpPage(
-    viewModel: SignUpViewModel
+    viewModel: SignUpViewModel,
+    onGoogleClicked: () -> Unit = { },
+    onFacebookClicked: () -> Unit = { }
 ) {
     val showNameError =
         viewModel.viewState.observeAsState().value?.signUpValidator?.showNameError ?: false
@@ -77,8 +81,10 @@ fun SignUpPage(
                     passwordState.value.text
                 ),
                 focusRequester,
-                localFocusRequester
-            )
+                localFocusRequester,
+            ),
+            onGoogleClicked = onGoogleClicked,
+            onFacebookClicked = onFacebookClicked
         )
     }
 }
@@ -89,6 +95,8 @@ fun SignUpMainCard(
     viewModel: SignUpViewModel,
     signUpState: SignUpState,
     onSignUp: () -> Unit = { viewModel.onSignUpClicked(signUpState.signUpForm) },
+    onGoogleClicked: () -> Unit,
+    onFacebookClicked: () -> Unit,
     nameContent: @Composable (SignUpState) -> Unit = {
         DefaultNameContent(
             state = it.validationState,
@@ -147,11 +155,7 @@ fun SignUpMainCard(
                 .padding(vertical = 24.dp),
         )
 
-        Text(
-            text = "Create your Account",
-            style = MaterialTheme.typography.h3,
-            modifier = modifier.padding(bottom = 12.dp)
-        )
+        DefaultHeader("Create your Account", modifier.padding(bottom = 12.dp))
 
         SignUpValidationUI(
             signUpState,
@@ -171,7 +175,8 @@ fun SignUpMainCard(
                 append("Sign In")
             }
         }
-        SignInWith()
+
+        DefaultOnboardingFooter(onGoogleClicked, onFacebookClicked, "- Or sign up with -")
 
         Column(
             verticalArrangement = Arrangement.Bottom,
@@ -204,36 +209,4 @@ private fun SignUpValidationUI(
     passwordContent(signUpState)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     DefaultCallToActionButton(onSignUp, "Sign up")
-}
-
-@Composable
-private fun SignInWith() {
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(vertical = 16.dp)
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = "- Or sign up with -",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.subtitle1
-        )
-
-        Spacer(modifier = Modifier.padding(vertical = 20.dp))
-        Row {
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_fb),
-                contentDescription = "Facebook icon",
-                modifier = Modifier.clickable { }
-            )
-            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_google),
-                contentDescription = "Google icon",
-                modifier = Modifier.clickable { },
-            )
-        }
-    }
 }

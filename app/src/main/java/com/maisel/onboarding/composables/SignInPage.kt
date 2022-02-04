@@ -32,6 +32,9 @@ import com.maisel.compose.state.onboarding.compose.SignInForm
 import com.maisel.compose.state.onboarding.compose.SignInState
 import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
+import com.maisel.compose.ui.components.DefaultHeader
+import com.maisel.compose.ui.components.onboarding.DefaultOnboardingFooter
+import com.maisel.compose.ui.components.onboarding.ForgotPassword
 import com.maisel.signin.SignInViewModel
 import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
@@ -145,12 +148,7 @@ fun SignUpMainCard(
                 .padding(vertical = 24.dp),
         )
 
-        Text(
-            text = "Login to your Account",
-            style = MaterialTheme.typography.h3,
-            modifier = modifier.padding(bottom = 12.dp),
-            fontWeight = FontWeight.SemiBold
-        )
+        DefaultHeader("Login to your Account", modifier.padding(bottom = 12.dp))
 
         ValidationUI(
             signInState,
@@ -177,7 +175,8 @@ fun SignUpMainCard(
                 append("Sign up")
             }
         }
-        SignInWith(onGoogleClicked, onFacebookClicked)
+
+        DefaultOnboardingFooter(onGoogleClicked, onFacebookClicked, "- Or sign in with -")
 
         Column(
             verticalArrangement = Arrangement.Bottom,
@@ -213,7 +212,7 @@ private fun ValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
     passwordContent(signInState)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
-    ForgotPassword(modifier, onForgotPasswordClicked)
+    ForgotPassword("Forgot Password?", onForgotPasswordClicked, modifier)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
     DefaultCallToActionButton(onSignIn, "Sign in")
 }
@@ -247,18 +246,6 @@ fun SignInErrorBanner(
             }
         }
 
-    }
-}
-
-@Composable
-private fun ForgotPassword(modifier: Modifier, onForgotPasswordClicked: () -> Unit) {
-    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-        Text(
-            "Forgot Password?",
-            textAlign = TextAlign.End,
-            modifier = modifier.clickable { onForgotPasswordClicked() },
-            style = MaterialTheme.typography.subtitle2
-        )
     }
 }
 
