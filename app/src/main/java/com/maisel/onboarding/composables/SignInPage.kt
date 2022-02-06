@@ -2,7 +2,6 @@ package com.maisel.onboarding.composables
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -16,12 +15,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,9 +27,10 @@ import com.maisel.compose.state.onboarding.compose.SignInForm
 import com.maisel.compose.state.onboarding.compose.SignInState
 import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
-import com.maisel.compose.ui.components.DefaultHeader
-import com.maisel.compose.ui.components.onboarding.DefaultOnboardingFooter
+import com.maisel.compose.ui.components.OnboardingUserHeader
+import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
 import com.maisel.compose.ui.components.onboarding.ForgotPassword
+import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.signin.SignInViewModel
 import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
@@ -148,7 +144,7 @@ fun SignUpMainCard(
                 .padding(vertical = 24.dp),
         )
 
-        DefaultHeader("Login to your Account", modifier.padding(bottom = 12.dp))
+        OnboardingUserHeader("Login to your Account", modifier.padding(bottom = 12.dp))
 
         ValidationUI(
             signInState,
@@ -164,35 +160,10 @@ fun SignUpMainCard(
 
         Spacer(modifier = Modifier.padding(vertical = 24.dp))
 
-        val signUpText = buildAnnotatedString {
-            append("Don't have an account? ")
-            withStyle(
-                SpanStyle(
-                    color = MaterialTheme.colors.primary,
-                    fontWeight = FontWeight.SemiBold
-                )
-            ) {
-                append("Sign up")
-            }
-        }
+        OnboardingAlternativeLoginFooter(onGoogleClicked, onFacebookClicked, "- Or sign in with -")
 
-        DefaultOnboardingFooter(onGoogleClicked, onFacebookClicked, "- Or sign in with -")
-
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = signUpText, style = MaterialTheme.typography.subtitle1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(vertical = 24.dp)
-                    .fillMaxWidth()
-                    .clickable { onSignUpClicked() }
-            )
-        }
+        OnboardingUserFooter("Don't have an account? ", "Sign up", onSignUpClicked)
     }
-
 }
 
 @ExperimentalComposeUiApi
@@ -246,38 +217,5 @@ fun SignInErrorBanner(
             }
         }
 
-    }
-}
-
-@Composable
-private fun SignInWith(onGoogleClicked: () -> Unit, onFacebookClicked: () -> Unit) {
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(vertical = 16.dp)
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = "- Or sign in with -",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.SemiBold
-        )
-
-        Spacer(modifier = Modifier.padding(vertical = 20.dp))
-        Row {
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_fb),
-                contentDescription = "Facebook icon",
-                modifier = Modifier.clickable { onFacebookClicked() }
-            )
-            Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_google),
-                contentDescription = "Google icon",
-                modifier = Modifier.clickable { onGoogleClicked() },
-            )
-        }
     }
 }

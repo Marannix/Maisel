@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.maisel.R
 
 @Composable
-fun DefaultOnboardingFooter(
+fun OnboardingAlternativeLoginFooter(
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     label: String) {

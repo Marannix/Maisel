@@ -1,15 +1,9 @@
 package com.maisel.onboarding.composables
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -22,16 +16,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.common.CallToActionButton
 import com.maisel.common.composable.DefaultEmailAddressContent
 import com.maisel.common.composable.DefaultNameContent
 import com.maisel.common.composable.DefaultPasswordContent
@@ -39,8 +28,9 @@ import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.state.onboarding.compose.SignUpForm
 import com.maisel.compose.state.onboarding.compose.SignUpState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
-import com.maisel.compose.ui.components.DefaultHeader
-import com.maisel.compose.ui.components.onboarding.DefaultOnboardingFooter
+import com.maisel.compose.ui.components.OnboardingUserHeader
+import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
+import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.signup.SignUpViewModel
 
 @ExperimentalComposeUiApi
@@ -95,6 +85,7 @@ fun SignUpMainCard(
     viewModel: SignUpViewModel,
     signUpState: SignUpState,
     onSignUp: () -> Unit = { viewModel.onSignUpClicked(signUpState.signUpForm) },
+    onSignIn: () -> Unit = { },
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     nameContent: @Composable (SignUpState) -> Unit = {
@@ -155,7 +146,7 @@ fun SignUpMainCard(
                 .padding(vertical = 24.dp),
         )
 
-        DefaultHeader("Create your Account", modifier.padding(bottom = 12.dp))
+        OnboardingUserHeader("Create your Account", modifier.padding(bottom = 12.dp))
 
         SignUpValidationUI(
             signUpState,
@@ -169,27 +160,9 @@ fun SignUpMainCard(
 
         Spacer(modifier = Modifier.padding(vertical = 24.dp))
 
-        val signUpText = buildAnnotatedString {
-            append("Already have an account? ")
-            withStyle(SpanStyle(color = MaterialTheme.colors.primary)) {
-                append("Sign In")
-            }
-        }
+        OnboardingAlternativeLoginFooter(onGoogleClicked, onFacebookClicked, "- Or sign up with -")
 
-        DefaultOnboardingFooter(onGoogleClicked, onFacebookClicked, "- Or sign up with -")
-
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = signUpText, style = MaterialTheme.typography.subtitle1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(vertical = 24.dp)
-                    .fillMaxWidth()
-            )
-        }
+        OnboardingUserFooter("Already have an account? ", "Sign in", onSignIn)
     }
 }
 

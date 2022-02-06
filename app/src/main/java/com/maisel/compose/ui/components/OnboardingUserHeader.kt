@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun DefaultHeader(label: String, modifier: Modifier) {
+fun OnboardingUserHeader(label: String, modifier: Modifier) {
     Text(
         text = label,
         style = MaterialTheme.typography.h3,
