@@ -1,4 +1,4 @@
-package com.maisel.onboarding
+package com.maisel.showcase
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -13,18 +13,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
 import com.maisel.dashboard.DashboardActivity
-import com.maisel.onboarding.composables.OnboardingCarousel
+import com.maisel.showcase.composables.Showcase
 import com.maisel.signin.SignInActivity
 import com.maisel.ui.MainTheme
 
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
-class OnboardingCarouselActivity : BaseActivity() {
+class ShowcaseActivity : BaseActivity() {
 
-    private val viewModel: OnboardingCarouselViewModel by lazy {
+    private val viewModel: ShowcaseViewModel by lazy {
         ViewModelProvider(this).get(
-            OnboardingCarouselViewModel::class.java
+            ShowcaseViewModel::class.java
         )
     }
 
@@ -41,7 +41,7 @@ class OnboardingCarouselActivity : BaseActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    OnboardingCarousel(::launchLoginActivity)
+                    Showcase(::launchLoginActivity)
                 }
             }
         }

@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
 import com.maisel.dashboard.DashboardActivity
-import com.maisel.onboarding.composables.SignUpPage
+import com.maisel.showcase.composables.SignUpPage
 import com.maisel.state.AuthResultState
 import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint

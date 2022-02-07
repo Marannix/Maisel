@@ -1,4 +1,4 @@
-package com.maisel.onboarding.composables
+package com.maisel.showcase.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.onboarding.composables.provider.OnboardingProvider
+import com.maisel.showcase.composables.provider.ShowcaseProvider
 import com.maisel.ui.orangish
 
 //TODO: Support multi size
@@ -33,7 +33,7 @@ import com.maisel.ui.orangish
 // https://www.youtube.com/watch?v=iUIXsHiuRfY
 @Preview(showBackground = true)
 @Composable
-fun LoginPage(@PreviewParameter(OnboardingProvider::class) onLoginClicked: () -> Unit) {
+fun LoginPage(@PreviewParameter(ShowcaseProvider::class) onLoginClicked: () -> Unit) {
 
     Box {
         BackgroundCard()

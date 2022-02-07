@@ -1,8 +1,8 @@
-package com.maisel.onboarding.composables.provider
+package com.maisel.showcase.composables.provider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
-class OnboardingProvider: PreviewParameterProvider<Unit> {
+class ShowcaseProvider: PreviewParameterProvider<Unit> {
     override val values: Sequence<Unit>
         get() = sequenceOf(Unit)
 

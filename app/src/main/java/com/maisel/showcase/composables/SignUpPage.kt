@@ -1,4 +1,4 @@
-package com.maisel.onboarding.composables
+package com.maisel.showcase.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

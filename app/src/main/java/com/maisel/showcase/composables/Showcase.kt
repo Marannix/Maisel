@@ -1,4 +1,4 @@
-package com.maisel.onboarding.composables
+package com.maisel.showcase.composables
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -35,14 +33,14 @@ import kotlinx.coroutines.launch
 @ExperimentalPagerApi
 @Composable
 @Preview
-fun OnboardingCarousel(launchLoginActivity: () -> Unit) {
+fun Showcase(launchLoginActivity: () -> Unit) {
     val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
-        val items = OnboardingCarouseltem.get()
+        val items = ShowcaseItem.get()
         val state = rememberPagerState()
 
-        OnboardingCarouselTopSection(launchLoginActivity, state, scope)
+        ShowcaseTopSection(launchLoginActivity, state, scope)
 
         HorizontalPager(
             state = state,
@@ -51,10 +49,10 @@ fun OnboardingCarousel(launchLoginActivity: () -> Unit) {
                 .weight(1f),
             count = 3
         ) { page ->
-            OnboardingCarouselItem(item = items[page])
+            ShowcaseItem(item = items[page])
         }
 
-        OnboardingCarouselBottomSection(
+        ShowcaseBottomSection(
             size = items.size,
             index = state.currentPage
         ) {
@@ -70,13 +68,13 @@ fun OnboardingCarousel(launchLoginActivity: () -> Unit) {
 }
 
 @Composable
-fun OnboardingCarouselBottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
+fun ShowcaseBottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        OnboardingCarouselOnboardingCarouselIndicators(size = size, index = index)
+        ShowcaseShowcaseIndicators(size = size, index = index)
 
         //next button
         FloatingActionButton(
@@ -93,7 +91,7 @@ fun OnboardingCarouselBottomSection(size: Int, index: Int, onNextClicked: () -> 
 @ExperimentalPagerApi
 @Composable
 @Preview
-fun OnboardingCarouselTopSection(
+fun ShowcaseTopSection(
     launchLoginActivity: () -> Unit,
     state: PagerState,
     scope: CoroutineScope
@@ -132,20 +130,20 @@ fun goBack(state: PagerState, scope: CoroutineScope) {
 }
 
 @Composable
-fun BoxScope.OnboardingCarouselOnboardingCarouselIndicators(size: Int, index: Int) {
+fun BoxScope.ShowcaseShowcaseIndicators(size: Int, index: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.align(Alignment.CenterStart)
     ) {
         repeat(size) {
-            OnboardingCarouselIndicator(isSelected = it == index)
+            ShowcaseIndicator(isSelected = it == index)
         }
     }
 }
 
 @Composable
-fun OnboardingCarouselIndicator(isSelected: Boolean) {
+fun ShowcaseIndicator(isSelected: Boolean) {
     val width = animateDpAsState(
         targetValue = if (isSelected) 25.dp else 10.dp,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
@@ -167,7 +165,7 @@ fun OnboardingCarouselIndicator(isSelected: Boolean) {
 }
 
 @Composable
-fun OnboardingCarouselItem(item: OnboardingCarouseltem) {
+fun ShowcaseItem(item: ShowcaseItem) {
     val descriptionScrollState = rememberScrollState()
 
     Column(
