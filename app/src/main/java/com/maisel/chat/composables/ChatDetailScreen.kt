@@ -27,23 +27,23 @@ import com.maisel.chat.ChatDetailViewModel
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.SignUpUser
-import com.maisel.state.AuthResultState
 
 @Composable
 @ExperimentalComposeUiApi
 @Preview(device = Devices.PIXEL_4)
-fun ChatDetailScreen(viewModel: ChatDetailViewModel) {
+fun ChatDetailScreen(viewModel: ChatDetailViewModel, onBackButton: () -> Unit) {
     val user: SignUpUser =
         viewModel.viewState.observeAsState().value?.user ?: throw Exception() //TODO: Handle this better
 
-    Screen(viewModel, user)
+    Screen(viewModel, user, onBackButton)
 }
 
 @ExperimentalComposeUiApi
 @Composable
 fun Screen(
     viewModel: ChatDetailViewModel,
-    user: SignUpUser
+    user: SignUpUser,
+    onBackButton: () -> Unit
 ) {
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
@@ -58,6 +58,7 @@ fun Screen(
                         IconButton(
                             onClick = {
                                 result.value = "Back Arrow icon clicked"
+                                onBackButton()
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")

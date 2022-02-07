@@ -4,16 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.chat.composables.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.SignUpUser
 
+@ExperimentalAnimationApi
+@ExperimentalPagerApi
 @ExperimentalComposeUiApi
 class ChatDetailActivity : BaseActivity() {
 
@@ -33,7 +37,7 @@ class ChatDetailActivity : BaseActivity() {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Surface {
                         viewModel.setUser(user)
-                        ChatDetailScreen(viewModel)
+                        ChatDetailScreen(viewModel, ::onBackPressed)
                     }
                 }
             }
