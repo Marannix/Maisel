@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,19 +23,28 @@ import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
+import com.maisel.chat.ChatDetailViewModel
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.state.AuthResultState
 
 @Composable
 @ExperimentalComposeUiApi
 @Preview(device = Devices.PIXEL_4)
-fun ChatDetailScreen() {
-    Screen()
+fun ChatDetailScreen(viewModel: ChatDetailViewModel) {
+    val user: SignUpUser =
+        viewModel.viewState.observeAsState().value?.user ?: throw Exception() //TODO: Handle this better
+
+    Screen(viewModel, user)
 }
 
 @ExperimentalComposeUiApi
 @Composable
-fun Screen() {
+fun Screen(
+    viewModel: ChatDetailViewModel,
+    user: SignUpUser
+) {
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -56,7 +66,7 @@ fun Screen() {
                     title = {
                         Image(
                             painter = rememberImagePainter(
-                                data = R.drawable.ic_son_goku,
+                                data = user.profilePicture ?: R.drawable.ic_son_goku,
                                 builder = {
                                     crossfade(true)
                                     placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
@@ -72,7 +82,7 @@ fun Screen() {
                         )
 
                         Text(
-                            "User",
+                            user.username ?: "User",
                             style = ChatTheme.typography.h4,
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )

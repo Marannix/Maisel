@@ -7,13 +7,21 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.maisel.chat.composables.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.domain.user.entity.SignUpUser
 
 @ExperimentalComposeUiApi
 class ChatDetailActivity : BaseActivity() {
+
+    private val user : SignUpUser by lazy { requireNotNull(intent.getParcelableExtra(USER)) }
+
+    private val viewModel: ChatDetailViewModel by lazy {
+        ViewModelProvider(this)[ChatDetailViewModel::class.java]
+    }
 
     //https://android--code.blogspot.com/2021/03/jetpack-compose-how-to-use-topappbar.html
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +32,8 @@ class ChatDetailActivity : BaseActivity() {
             ChatTheme {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Surface {
-                        ChatDetailScreen()
+                        viewModel.setUser(user)
+                        ChatDetailScreen(viewModel)
                     }
                 }
             }
@@ -32,8 +41,11 @@ class ChatDetailActivity : BaseActivity() {
     }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, ChatDetailActivity::class.java)
+        private const val USER = "USER"
+        fun createIntent(context: Context, user: SignUpUser): Intent {
+            return Intent(context, ChatDetailActivity::class.java).apply {
+                putExtra(USER, user)
+            }
         }
     }
 }

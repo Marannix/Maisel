@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.composables.ChatsList
+import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.usecase.GetUsersUseCase
 import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +27,7 @@ class ChatsFragment : Fragment() {
     private var callback: ChatsFragmentCallback? = null
 
     interface ChatsFragmentCallback {
-        fun onOpenChatsDetails()
+        fun onOpenChatsDetails(user: SignUpUser)
     }
 
     private val viewModel: DashboardViewModel by lazy {

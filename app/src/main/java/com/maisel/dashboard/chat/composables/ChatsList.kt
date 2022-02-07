@@ -23,12 +23,12 @@ import com.maisel.domain.user.entity.SignUpUser
 @Composable
 @ExperimentalComposeUiApi
 @Preview(device = PIXEL_4)
-fun ChatsList(chats: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCallback?) {
+fun ChatsList(users: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCallback?) {
    // val uiState = viewModel.viewUiState
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
-            items(chats) { chat ->
-                ChatListItem(listener, chat, Modifier.fillMaxWidth())
+            items(users) { user ->
+                ChatListItem(listener, user, Modifier.fillMaxWidth())
             }
         }
     }
@@ -36,14 +36,14 @@ fun ChatsList(chats: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCall
 
 @ExperimentalComposeUiApi
 @Composable
-fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, chat: SignUpUser, modifier: Modifier) {
+fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, user: SignUpUser, modifier: Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .fillMaxWidth().padding(4.dp).clickable { listener?.onOpenChatsDetails() }
+            .fillMaxWidth().padding(4.dp).clickable { listener?.onOpenChatsDetails(user) }
     ) {
         Image(
             painter = rememberImagePainter(
-                data = chat.profilePicture ?: R.drawable.ic_son_goku,
+                data = user.profilePicture ?: R.drawable.ic_son_goku,
                 builder = {
                     crossfade(true)
                     placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
@@ -59,7 +59,7 @@ fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, chat: SignUpUse
         )
         Column {
             Text(
-                chat.username.toString(),
+                user.username.toString(),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )

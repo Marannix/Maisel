@@ -16,6 +16,7 @@ import com.maisel.chat.ChatDetailActivity
 import com.maisel.common.BaseFragmentActivity
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.databinding.ActivityMainBinding
+import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.signin.SignInActivity
 import kotlinx.android.synthetic.main.activity_main.view.*
 
@@ -115,8 +116,10 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
         super.onDestroy()
     }
 
-    override fun onOpenChatsDetails() {
-        ChatDetailActivity.createIntent(this).also { startActivity(it) }
+    override fun onOpenChatsDetails(user: SignUpUser) {
+        ChatDetailActivity.createIntent(this, user).also {
+            startActivity(it)
+        }
     }
 
     companion object {

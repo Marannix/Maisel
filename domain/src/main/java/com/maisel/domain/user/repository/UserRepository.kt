@@ -38,4 +38,6 @@ interface UserRepository {
     fun stopListeningToUsers()
 
     fun observeListOfUsers(): Observable<List<SignUpUser>>
+
+    fun getSendingUid(): String?
 }

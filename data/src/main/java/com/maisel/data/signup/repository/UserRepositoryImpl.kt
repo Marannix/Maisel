@@ -104,6 +104,10 @@ class UserRepositoryImpl(
         userListeners?.let { database.child("Users").removeEventListener(it) }
     }
 
+    override fun getSendingUid(): String? {
+        return firebaseAuth.uid
+    }
+
     private fun setUserInDatabase(user: SignUpUser) {
         //TODO: Maybe throw an exception if current user is null?
         val id = firebaseAuth.currentUser!!.uid
