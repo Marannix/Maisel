@@ -1,6 +1,7 @@
 package com.maisel.chat.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +27,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.chat.ChatDetailViewModel
 import com.maisel.compose.ui.components.composers.MessageComposer
+import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.SignUpUser
 
@@ -52,7 +55,8 @@ fun Screen(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopAppBar(
-                    modifier = Modifier.navigationBarsWithImePadding().statusBarsPadding(),
+                    modifier = Modifier.statusBarsPadding(),
+                 //   modifier = Modifier.navigationBarsWithImePadding().statusBarsPadding(), // Is this needed?
                     navigationIcon = {
                         // show drawer icon
                         IconButton(
@@ -154,7 +158,15 @@ fun MessageBox() {
 
 @Composable
 fun Content(padding: PaddingValues) {
-//    Column(Modifier.fillMaxSize().navigationBarsWithImePadding()) {
-//
-//    }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(ChatTheme.colors.appBackground)
+            .padding(8.dp)) {
+
+        RecipientMessageBox {
+            Text(text = "jojdgaogj oadjgd ojgoaj gadg jdogjodajg ", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
+        }
+        
+    }
 }

@@ -1,6 +1,5 @@
 package com.maisel.compose.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import com.maisel.compose.ui.theme.ChatTheme.colors
 
@@ -29,7 +28,8 @@ private val LocalTypography = compositionLocalOf<MaiselTypography> {
  */
 @Composable
 fun ChatTheme(
-    isInDarkMode: Boolean = isSystemInDarkTheme(),
+   // isInDarkMode: Boolean = isSystemInDarkTheme(),
+    isInDarkMode: Boolean = false,
     colours: MaiselColour = if (isInDarkMode) MaiselColour.defaultDarkColors() else MaiselColour.defaultColors(),
     typography: MaiselTypography = MaiselTypography.defaultTypography(),
    // shapes: MaiselShapes = MaiselShapes.defaultShapes(),
