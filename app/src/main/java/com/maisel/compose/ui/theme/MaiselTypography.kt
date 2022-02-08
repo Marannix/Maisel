@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.maisel.ui.QuickSand
 
+//TODO: Update this
 /**
  * Contains all the typography we provide for our components.
  *

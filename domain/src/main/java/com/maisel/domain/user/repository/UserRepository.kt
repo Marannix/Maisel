@@ -39,5 +39,5 @@ interface UserRepository {
 
     fun observeListOfUsers(): Observable<List<SignUpUser>>
 
-    fun getSendingUid(): String?
+    fun getSenderUid(): String?
 }

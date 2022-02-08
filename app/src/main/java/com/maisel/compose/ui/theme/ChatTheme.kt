@@ -3,7 +3,7 @@ package com.maisel.compose.ui.theme
 import androidx.compose.runtime.*
 import com.maisel.compose.ui.theme.ChatTheme.colors
 
-
+//TODO: Update this file
 /**
  * Local providers for various properties we connect to our components, for styling.
  */
@@ -20,7 +20,7 @@ private val LocalTypography = compositionLocalOf<MaiselTypography> {
  *
  * @param isInDarkMode If we're currently in the dark mode or not. Affects only the default color palette that's
  * provided. If you customize [colors], make sure to add your own logic for dark/light colors.
- * @param colors The set of colors we provide, wrapped in [MaiselColour].
+ * @param colours The set of colors we provide, wrapped in [MaiselColour].
  * @param dimens The set of dimens we provide, wrapped in [MaiselDimens].
  * @param typography The set of typography styles we provide, wrapped in [MaiselTypography].
  * @param shapes The set of shapes we provide, wrapped in [MaiselShapes].

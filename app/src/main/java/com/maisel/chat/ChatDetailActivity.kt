@@ -22,6 +22,8 @@ import com.maisel.domain.user.entity.SignUpUser
 class ChatDetailActivity : BaseActivity() {
 
     private val user : SignUpUser by lazy { requireNotNull(intent.getParcelableExtra(USER)) }
+    private lateinit var senderRoom : String
+    private lateinit var receiverRoom: String
 
     private val viewModel: ChatDetailViewModel by lazy {
         ViewModelProvider(this)[ChatDetailViewModel::class.java]
@@ -42,6 +44,27 @@ class ChatDetailActivity : BaseActivity() {
                 }
             }
         }
+
+        setup()
+    }
+
+    private fun setup() {
+        if (user.userId == null || viewModel.getSenderUid() == null) {
+            finish() //TODO: Is this possible?
+        }
+
+        senderRoom = user.userId + viewModel.getSenderUid()
+        receiverRoom =  viewModel.getSenderUid() + user.userId
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.startListeningToMessages(senderRoom)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.stopListeningToMessages(senderRoom)
     }
 
     companion object {

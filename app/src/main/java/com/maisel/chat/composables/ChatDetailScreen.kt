@@ -163,10 +163,20 @@ fun Content(padding: PaddingValues) {
             .fillMaxSize()
             .background(ChatTheme.colors.appBackground)
             .padding(8.dp)) {
-
-        RecipientMessageBox {
-            Text(text = "jojdgaogj oadjgd ojgoaj gadg jdogjodajg ", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
-        }
         
+    }
+}
+
+@Composable
+fun SenderCard() {
+    RecipientMessageBox {
+        Text(text = "Sender Card", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+fun ReceiverCard() {
+    RecipientMessageBox {
+        Text(text = "Receiver Card", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
     }
 }

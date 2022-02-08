@@ -57,7 +57,7 @@ class UserRepositoryImpl(
 
     override fun setCurrentUser(firebaseUser: FirebaseUser) {
         val user = SignUpUser(
-            firebaseAuth.uid,
+            firebaseUser.uid,
             firebaseUser.displayName,
             null,
             null,
@@ -85,6 +85,7 @@ class UserRepositoryImpl(
         userListeners =
             database.child("Users").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    listOfUsers.onNext(emptyList())
                     val list = mutableListOf<SignUpUser>()
                     snapshot.children.forEach { children ->
                         val users = children.getValue(SignUpUser::class.java)
@@ -104,7 +105,7 @@ class UserRepositoryImpl(
         userListeners?.let { database.child("Users").removeEventListener(it) }
     }
 
-    override fun getSendingUid(): String? {
+    override fun getSenderUid(): String? {
         return firebaseAuth.uid
     }
 
