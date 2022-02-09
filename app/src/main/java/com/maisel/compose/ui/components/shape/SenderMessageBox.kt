@@ -34,14 +34,14 @@ fun SenderMessageBox(state: MessageItem.SenderMessageItem) {
                 .heightIn(30.dp, 400.dp) //mention max height here
                 .widthIn(20.dp, 310.dp) //mention max width here
                 .clip(
-                    shape = RoundedCornerShape(16.dp).copy(
+                    shape = RoundedCornerShape(8.dp).copy(
                         bottomEnd = ZeroCornerSize,
                     )
                 )
                 .background(Color.White)
                 .border(
                     BorderStroke(1.dp, colorResource(R.color.maisel_compose_borders)),
-                    RoundedCornerShape(16.dp).copy(
+                    RoundedCornerShape(8.dp).copy(
                         bottomEnd = ZeroCornerSize,
                     )
                 )
@@ -61,5 +61,4 @@ fun SenderMessageBox(state: MessageItem.SenderMessageItem) {
             style = MaterialTheme.typography.subtitle2
         )
     }
-
 }
