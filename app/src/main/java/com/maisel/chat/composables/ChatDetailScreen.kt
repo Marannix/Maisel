@@ -30,6 +30,7 @@ import com.maisel.R
 import com.maisel.chat.ChatDetailViewModel
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.components.shape.RecipientMessageBox
+import com.maisel.compose.ui.components.shape.SenderMessageBox
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.message.MessageViewModel
@@ -216,22 +217,10 @@ fun messageColumn(messageItems: List<MessageItem>) {
 
 @Composable
 fun SenderCard(state: MessageItem.SenderMessageItem, modifier: Modifier) {
-    RecipientMessageBox {
-        Text(
-            text = "Sender Card",
-            style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.SemiBold
-        )
-    }
+    SenderMessageBox(state)
 }
 
 @Composable
 fun ReceiverCard(state: MessageItem.ReceiverMessageItem, modifier: Modifier) {
-    RecipientMessageBox {
-        Text(
-            text = "Receiver Card",
-            style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.SemiBold
-        )
-    }
+    RecipientMessageBox(state)
 }

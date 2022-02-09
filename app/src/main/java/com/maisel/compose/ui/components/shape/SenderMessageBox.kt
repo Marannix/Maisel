@@ -15,31 +15,34 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.chat.composables.MessageItem
 import com.maisel.compose.ui.theme.ChatTheme
 
 @Composable
-fun RecipientMessageBox(state: MessageItem.ReceiverMessageItem) {
+fun SenderMessageBox(state: MessageItem.SenderMessageItem) {
     Column(
         modifier = Modifier
-            .wrapContentSize() //mention max width here
+            .wrapContentSize()
+            .fillMaxWidth()
     ) {
         Box(
             modifier = Modifier
+                .align(End)
                 .heightIn(30.dp, 400.dp) //mention max height here
                 .widthIn(20.dp, 310.dp) //mention max width here
                 .clip(
                     shape = RoundedCornerShape(16.dp).copy(
-                        bottomStart = ZeroCornerSize,
+                        bottomEnd = ZeroCornerSize,
                     )
                 )
                 .background(Color.White)
                 .border(
                     BorderStroke(1.dp, colorResource(R.color.maisel_compose_borders)),
                     RoundedCornerShape(16.dp).copy(
-                        bottomStart = ZeroCornerSize,
+                        bottomEnd = ZeroCornerSize,
                     )
                 )
                 .padding(8.dp)
@@ -48,12 +51,12 @@ fun RecipientMessageBox(state: MessageItem.ReceiverMessageItem) {
                 text = state.message,
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.SemiBold
-            )
-        }
+            )        }
 
         Text(
-            modifier = Modifier.align(End),
+            modifier = Modifier.fillMaxWidth(),
             text = "13:37 pm",
+            textAlign = TextAlign.End,
             color = ChatTheme.colors.textLowEmphasis,
             style = MaterialTheme.typography.subtitle2
         )
