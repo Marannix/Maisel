@@ -181,7 +181,7 @@ fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
             .fillMaxSize()
             .background(ChatTheme.colors.appBackground)
             .padding(padding)
-            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .padding(horizontal = 8.dp)
     ) {
         messageColumn(messageItems)
     }
@@ -198,6 +198,7 @@ fun messageColumn(messageItems: List<MessageItem>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(messageItems) { item ->
+                Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 when (item) {
                     is MessageItem.SenderMessageItem -> SenderCard(
                         state = item,
@@ -210,6 +211,7 @@ fun messageColumn(messageItems: List<MessageItem>) {
                             .padding(horizontal = 0.8.dp)
                     )
                 }
+                Spacer(modifier = Modifier.padding(vertical = 4.dp))
             }
         }
     }
