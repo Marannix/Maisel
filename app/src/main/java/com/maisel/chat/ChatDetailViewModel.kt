@@ -6,6 +6,7 @@ import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.message.usecase.GetSenderUidUseCase
 import com.maisel.domain.user.entity.SignUpUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,6 +19,7 @@ class ChatDetailViewModel @Inject constructor(
 
     init {
         viewState.value = ChatDetailViewState()
+        getMessageItems()
     }
 
     private fun currentViewState(): ChatDetailViewState = viewState.value!!
@@ -34,7 +36,25 @@ class ChatDetailViewModel @Inject constructor(
         messagesUseCase.stopListeningToMessages(senderRoom)
     }
 
-    fun getSenderUid() : String? {
-        return senderUidUseCase.invoke()
+    fun getSenderUid(): String? {
+        val senderUid = senderUidUseCase.invoke()
+        viewState.value = currentViewState().copy(senderUid = senderUid)
+        return senderUid
+    }
+
+    private fun getMessageItems() {
+        messagesUseCase.invoke()
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                viewState.value =
+                    currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Loading)
+            }
+            .subscribe({
+                viewState.value = currentViewState().copy(messageItemState = it)
+            }, {
+                viewState.value =
+                    currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Error)
+            })
+            .addDisposable()
     }
 }

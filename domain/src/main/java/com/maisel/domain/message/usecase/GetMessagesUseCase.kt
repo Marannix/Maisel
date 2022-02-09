@@ -24,7 +24,7 @@ class GetMessagesUseCase @Inject constructor(private val messageRepository: Mess
 
     sealed class MessageDataState {
         object Loading: MessageDataState()
-        data class Success(val user: List<MessageModel>): MessageDataState()
+        data class Success(val messages: List<MessageModel>): MessageDataState()
         object Error : MessageDataState()
     }
 }

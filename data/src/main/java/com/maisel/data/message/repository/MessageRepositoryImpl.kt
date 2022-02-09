@@ -33,7 +33,7 @@ class MessageRepositoryImpl(
                             val messageModel = children.getValue(MessageModel::class.java)
                             messageModel?.let(list::add)
                         }
-                        listOfMessages.onNext(list)
+                        listOfMessages.onNext(fakeMessages())
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -42,6 +42,26 @@ class MessageRepositoryImpl(
                 })
     }
 
+    private fun fakeMessages() : List<MessageModel> {
+        val list = mutableListOf<MessageModel>()
+        list.add(MessageModel("123", "peanut butter", 213L))
+        list.add(MessageModel("123", "peanut butter", 213L))
+        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 215L))
+        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 219L))
+        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 220L))
+        list.add(MessageModel("123", "peanut butter", 222L))
+        list.add(MessageModel("123", "peanut butter", 222L))
+        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 222L))
+        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 222L))
+        list.add(MessageModel("123", "peanut butter", 222L))
+        list.add(MessageModel("123", "peanut butter", 222L))
+        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 222L))
+        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 222L))
+        list.add(MessageModel("123", "peanut butter", 222L))
+        return list
+    }
+
+    //TODO: Store in room database
     override fun observeListOfMessages(): Observable<List<MessageModel>> = listOfMessages
 
     override fun stopListeningToMessages(senderRoom: String) {

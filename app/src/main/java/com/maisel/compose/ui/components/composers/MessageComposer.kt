@@ -3,6 +3,7 @@ package com.maisel.compose.ui.components.composers
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -11,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.compose.state.messages.compose.MessageComposerState
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.message.MessageViewModel
 
 /**
  * Default MessageComposer component that relies on [MessageComposerViewModel] to handle data and
@@ -32,9 +34,10 @@ import com.maisel.compose.ui.theme.ChatTheme
  */
 @Composable
 fun MessageComposer(
+    messageViewModel: MessageViewModel,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit = { DefaultComposerLabel() },
-    onValueChange: (String) -> Unit = { },
+    onValueChange: (String) -> Unit = { messageViewModel.setMessageInput(it) },
     onAttachmentsClick: () -> Unit = { },
     onCameraClick: () -> Unit = { },
     integrations: @Composable RowScope.(MessageComposerState) -> Unit = {
@@ -56,9 +59,11 @@ fun MessageComposer(
         )
     },
 ) {
+
   //  val value by viewModel.input.collectAsState()
+    val value: String =
+        messageViewModel.state.observeAsState().value?.input ?: ""
     //    val cooldownTimer by viewModel.cooldownTimer.collectAsState()
-    val value = ""
     val cooldownTimer = 0
 
     MessageComposer(

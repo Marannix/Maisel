@@ -3,6 +3,8 @@ package com.maisel.chat.composables
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -30,24 +32,35 @@ import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.message.MessageViewModel
 
 @Composable
 @ExperimentalComposeUiApi
 @Preview(device = Devices.PIXEL_4)
-fun ChatDetailScreen(viewModel: ChatDetailViewModel, onBackButton: () -> Unit) {
+fun ChatDetailScreen(
+    viewModel: ChatDetailViewModel,
+    messageViewModel: MessageViewModel,
+    onBackButton: () -> Unit
+) {
     val user: SignUpUser =
-        viewModel.viewState.observeAsState().value?.user ?: throw Exception() //TODO: Handle this better
+        viewModel.viewState.observeAsState().value?.user
+            ?: throw Exception() //TODO: Handle this better
 
-    Screen(viewModel, user, onBackButton)
+    Screen(viewModel, messageViewModel, user, onBackButton)
 }
 
 @ExperimentalComposeUiApi
 @Composable
 fun Screen(
     viewModel: ChatDetailViewModel,
+    messageViewModel: MessageViewModel,
     user: SignUpUser,
     onBackButton: () -> Unit
 ) {
+
+    val messageItems: List<MessageItem> =
+        viewModel.viewState.observeAsState().value?.getMessagesItem() ?: emptyList()
+
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -56,7 +69,7 @@ fun Screen(
             topBar = {
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
-                 //   modifier = Modifier.navigationBarsWithImePadding().statusBarsPadding(), // Is this needed?
+                    //   modifier = Modifier.navigationBarsWithImePadding().statusBarsPadding(), // Is this needed?
                     navigationIcon = {
                         // show drawer icon
                         IconButton(
@@ -101,7 +114,10 @@ fun Screen(
                         IconButton(onClick = {
                             result.value = " Video icon clicked"
                         }) {
-                            Icon(Icons.Rounded.Videocam, contentDescription = "") //TODO: Update asset
+                            Icon(
+                                Icons.Rounded.Videocam,
+                                contentDescription = ""
+                            ) //TODO: Update asset
                         }
                         Box(
                             Modifier
@@ -140,43 +156,82 @@ fun Screen(
                     backgroundColor = ChatTheme.colors.barsBackground
                 )
             },
-            bottomBar = { MessageBox() },
-            content = { padding -> Content(padding) }
+            bottomBar = { MessageBox(messageViewModel) },
+            content = { padding -> Content(padding, messageItems) }
         )
     }
 }
 
 @Composable
-fun MessageBox() {
+fun MessageBox(messageViewModel: MessageViewModel) {
     MessageComposer(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .navigationBarsWithImePadding()
+            .navigationBarsWithImePadding(),
+        messageViewModel = messageViewModel
     )
 }
 
 @Composable
-fun Content(padding: PaddingValues) {
+fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
     Column(
         Modifier
             .fillMaxSize()
             .background(ChatTheme.colors.appBackground)
-            .padding(8.dp)) {
-        
+            .padding(padding)
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+    ) {
+        messageColumn(messageItems)
+    }
+}
+
+//https://medium.com/nerd-for-tech/creating-a-heterogeneous-list-with-jetpack-compose-138d3698c4cc
+
+@Composable
+fun messageColumn(messageItems: List<MessageItem>) {
+    Box(Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(messageItems) { item ->
+                when (item) {
+                    is MessageItem.SenderMessageItem -> SenderCard(
+                        state = item,
+                        modifier = Modifier.fillMaxWidth(.85f)
+                    )
+                    is MessageItem.ReceiverMessageItem -> ReceiverCard(
+                        state = item,
+                        modifier = Modifier
+                            .fillMaxWidth(.85f)
+                            .padding(horizontal = 0.8.dp)
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun SenderCard() {
+fun SenderCard(state: MessageItem.SenderMessageItem, modifier: Modifier) {
     RecipientMessageBox {
-        Text(text = "Sender Card", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = "Sender Card",
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
 @Composable
-fun ReceiverCard() {
+fun ReceiverCard(state: MessageItem.ReceiverMessageItem, modifier: Modifier) {
     RecipientMessageBox {
-        Text(text = "Receiver Card", style = MaterialTheme.typography.subtitle1, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = "Receiver Card",
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

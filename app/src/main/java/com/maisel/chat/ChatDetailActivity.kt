@@ -15,6 +15,7 @@ import com.maisel.chat.composables.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.message.MessageViewModel
 
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -29,6 +30,10 @@ class ChatDetailActivity : BaseActivity() {
         ViewModelProvider(this)[ChatDetailViewModel::class.java]
     }
 
+    private val messageViewModel: MessageViewModel by lazy {
+        ViewModelProvider(this)[MessageViewModel::class.java]
+    }
+
     //https://android--code.blogspot.com/2021/03/jetpack-compose-how-to-use-topappbar.html
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +44,7 @@ class ChatDetailActivity : BaseActivity() {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Surface {
                         viewModel.setUser(user)
-                        ChatDetailScreen(viewModel, ::onBackPressed)
+                        ChatDetailScreen(viewModel, messageViewModel, ::onBackPressed)
                     }
                 }
             }
