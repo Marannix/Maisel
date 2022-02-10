@@ -67,8 +67,10 @@ fun MessageComposer(
     val cooldownTimer = 0
 
     MessageComposer(
+        messageViewModel = messageViewModel,
         modifier = modifier,
         onSendMessage = { text ->
+            messageViewModel.sendMessage(text)
 //            val messageWithData = viewModel.buildNewMessage(text, attachments)
 //
 //            onSendMessage(messageWithData)
@@ -103,8 +105,9 @@ fun MessageComposer(
  */
 @Composable
 fun MessageComposer(
+    messageViewModel: MessageViewModel,
     messageComposerState: MessageComposerState,
-    onSendMessage: (String) -> Unit,
+    onSendMessage: (String) -> Unit = { messageViewModel.sendMessage(it) },
     modifier: Modifier = Modifier,
     shouldShowIntegrations: Boolean = true,
     integrations: @Composable RowScope.(MessageComposerState) -> Unit,

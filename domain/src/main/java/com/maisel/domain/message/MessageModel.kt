@@ -4,4 +4,8 @@ data class MessageModel(
     val uid: String,
     val message: String,
     val timestamp: Long
-)
+) {
+    constructor() : this ("", "", 0L) {
+
+    }
+}

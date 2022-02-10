@@ -64,7 +64,7 @@ class UserRepositoryImpl(
             firebaseUser.photoUrl.toString(),
             null
         )
-        setUserInDatabase(user)
+      //  setUserInDatabase(user)
     }
 
     override fun getCurrentUser(): FirebaseUser? {
@@ -112,7 +112,8 @@ class UserRepositoryImpl(
     private fun setUserInDatabase(user: SignUpUser) {
         //TODO: Maybe throw an exception if current user is null?
         val id = firebaseAuth.currentUser!!.uid
-        database.child("Users").child(id).setValue(user)
+        val userWithId = user.copy(userId = id)
+        database.child("Users").child(id).setValue(userWithId)
             .addOnSuccessListener {
                 Log.d("Joshua123", "database created successfully")
             }

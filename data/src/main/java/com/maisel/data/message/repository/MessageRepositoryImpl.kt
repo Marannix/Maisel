@@ -18,12 +18,13 @@ class MessageRepositoryImpl(
 
     private var listOfMessages = BehaviorSubject.create<List<MessageModel>>()
     private var messageListeners: ValueEventListener? = null
+    private var sendMessageListeners: ValueEventListener? = null
 
     override fun startListeningToMessages(senderRoom: String) {
-        if (messageListeners != null) {
-            Log.w("MessageRepositoryImpl", " Calling start listening while already started")
-            return
-        }
+//        if (messageListeners != null) {
+//            Log.w("MessageRepositoryImpl", " Calling start listening while already started")
+//            return
+//        }
         messageListeners =
             database.ref.child("chats")
                 .child(senderRoom).addValueEventListener(object : ValueEventListener {
@@ -33,7 +34,8 @@ class MessageRepositoryImpl(
                             val messageModel = children.getValue(MessageModel::class.java)
                             messageModel?.let(list::add)
                         }
-                        listOfMessages.onNext(fakeMessages())
+                       // listOfMessages.onNext(fakeMessages())
+                        listOfMessages.onNext(list)
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -42,31 +44,37 @@ class MessageRepositoryImpl(
                 })
     }
 
-    private fun fakeMessages() : List<MessageModel> {
-        val list = mutableListOf<MessageModel>()
-        list.add(MessageModel("123", "peanut butter", 213L))
-        list.add(MessageModel("123", "peanut butter", 213L))
-        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 215L))
-        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 219L))
-        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 220L))
-        list.add(MessageModel("123", "very long message about nothing that is important in the world apart from carrot cake", 222L))
-        list.add(MessageModel("123", "peanut butter", 222L))
-        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 222L))
-        list.add(MessageModel(getSenderUid() ?: "", "let's see how this ui looks like with a long text that has no meaning to anything in life", 222L))
-        list.add(MessageModel("123", "peanut butter", 222L))
-        list.add(MessageModel("123", "peanut butter", 222L))
-        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 222L))
-        list.add(MessageModel(getSenderUid() ?: "", "peanut butter", 222L))
-        list.add(MessageModel("123", "peanut butter", 222L))
-        return list
-    }
-
     //TODO: Store in room database
     override fun observeListOfMessages(): Observable<List<MessageModel>> = listOfMessages
+
+    override fun getSenderUid(): String? { return firebaseAuth.uid }
+
+    override fun sendMessage(input: String, senderRoom: String, receiverRoom: String, model: MessageModel) {
+        if (sendMessageListeners != null) {
+            Log.w("Message Repo send:", " Calling start listening while already started")
+            return
+        }
+
+        database.ref.child("chats")
+            .child(senderRoom)
+            .push()
+            .setValue(model)
+            .addOnSuccessListener {
+                database.ref.child("chats")
+                    .child(receiverRoom)
+                    .push()
+                    .setValue(model)
+                    .addOnSuccessListener {
+
+                    }
+            }
+    }
 
     override fun stopListeningToMessages(senderRoom: String) {
         messageListeners?.let { database.ref.child("chats").child(senderRoom).removeEventListener(it) }
     }
 
-    override fun getSenderUid(): String? { return firebaseAuth.uid }
+    override fun stopListeningToSendMessages(senderRoom: String) {
+        sendMessageListeners?.let { database.ref.child("chats").child(senderRoom).removeEventListener(it) }
+    }
 }

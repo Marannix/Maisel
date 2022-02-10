@@ -8,7 +8,11 @@ interface MessageRepository {
 
     fun stopListeningToMessages(senderRoom: String)
 
+    fun stopListeningToSendMessages(senderRoom: String)
+
     fun observeListOfMessages(): Observable<List<MessageModel>>
 
     fun getSenderUid(): String?
+
+    fun sendMessage(input: String, senderRoom: String, receiverRoom: String, model: MessageModel)
 }
