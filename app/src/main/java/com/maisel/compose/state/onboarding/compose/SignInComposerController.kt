@@ -61,9 +61,9 @@ class SignInComposerController @Inject constructor(
         //handleValidationErrors()
     }
 
-    fun signIn(value: SignInForm) {
+    fun makeLoginRequest(value: SignInForm) {
         scope.launch {
-            val result = signInUseCase.makeLoginRequest(value.email, value.password)
+            val result = signInUseCase.invoke(value.email, value.password)
             if (result != null && result.user != null) {
                 _stateFlow.update { it.copy(authResultState = AuthResultState.Success(result.user!!)) }
             } else {
