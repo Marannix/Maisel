@@ -10,7 +10,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,6 +27,9 @@ import com.maisel.showcase.composables.SignInPage
 import com.maisel.signup.SignUpActivity
 import com.maisel.state.AuthResultState
 import com.maisel.ui.MainTheme
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.onEach
 
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
@@ -64,7 +70,8 @@ class SignInActivity : BaseActivity() {
             }
         }
 
-        observeViewState()
+        // observeViewState()
+        observeViewState2()
 
         createGoogleSignInClient()
     }
@@ -72,6 +79,14 @@ class SignInActivity : BaseActivity() {
     private fun observeViewState() {
         viewModel.viewState.observe(this) { state ->
             render(state)
+        }
+    }
+
+    private fun observeViewState2() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collectLatest {
+                render(it)
+            }
         }
     }
 

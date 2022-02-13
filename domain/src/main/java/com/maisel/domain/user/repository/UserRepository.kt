@@ -21,6 +21,8 @@ interface UserRepository {
      */
     fun signInWithEmailAndPassword(email: String, password: String) : Maybe<AuthResult>
 
+    suspend fun makeLoginRequest(email: String, password: String): AuthResult?
+
     /**
      * Gets current user logged in
      * @return either a user if successful or null

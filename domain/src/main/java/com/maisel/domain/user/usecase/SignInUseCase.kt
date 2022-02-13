@@ -9,4 +9,8 @@ class SignInUseCase @Inject constructor(private val userRepository: UserReposito
     operator fun invoke(email: String, password: String): Maybe<AuthResult> {
         return userRepository.signInWithEmailAndPassword(email, password)
     }
+
+    suspend fun makeLoginRequest(email: String, password: String): AuthResult? {
+        return userRepository.makeLoginRequest(email, password)
+    }
 }

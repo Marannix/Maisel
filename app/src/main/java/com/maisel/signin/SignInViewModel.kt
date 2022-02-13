@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
+import com.maisel.compose.state.onboarding.compose.SignInComposerController
 import com.maisel.compose.state.onboarding.compose.SignInForm
 import com.maisel.domain.user.usecase.GetCurrentUser
 import com.maisel.domain.user.usecase.SetCurrentUserUseCase
@@ -13,16 +14,20 @@ import com.maisel.state.AuthResultState
 import com.maisel.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCase,
                                           private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
                                           private val currentUser: GetCurrentUser,
-                                          private val setCurrentUser: SetCurrentUserUseCase
+                                          private val setCurrentUser: SetCurrentUserUseCase,
+                                          private val signInComposerController: SignInComposerController
 ) : BaseViewModel() {
 
     val viewState = MutableLiveData<SignInViewState>()
+
+    val state : StateFlow<SignInViewState> = signInComposerController.state
 
     init {
         viewState.value = SignInViewState()
@@ -45,6 +50,10 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
                 viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
             })
             .addDisposable()
+    }
+
+  private fun signInWithEmailAndPassword2(email: String, password: String) {
+      signInComposerController.signIn(SignInForm(email = email, password = password))
     }
 
     fun signInWithCredential(idToken: String, credential: AuthCredential) {
@@ -83,7 +92,7 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
 
     fun onLoginClicked(signInForm: SignInForm) {
         if (isEmailAddressValid(signInForm.email)) {
-            signInWithEmailAndPassword(email = signInForm.email, password = signInForm.password)
+            signInWithEmailAndPassword2(email = signInForm.email, password = signInForm.password)
         }
     }
 }
