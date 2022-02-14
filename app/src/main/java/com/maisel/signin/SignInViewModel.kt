@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
+import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInComposerController
 import com.maisel.compose.state.onboarding.compose.SignInForm
 import com.maisel.domain.user.usecase.GetCurrentUser
@@ -27,6 +28,10 @@ class SignInViewModel @Inject constructor(
     val viewState = MutableLiveData<SignInViewState>()
 
     val state: StateFlow<SignInViewState> = signInComposerController.state
+
+    val email: StateFlow<String> = signInComposerController.email
+
+    val password: StateFlow<String> = signInComposerController.password
 
     init {
         viewState.value = SignInViewState()
@@ -81,9 +86,24 @@ class SignInViewModel @Inject constructor(
         setCurrentUser.invoke(user)
     }
 
-    fun onLoginClicked(signInForm: SignInForm) {
+    fun onLoginClicked(signInForm: AuthenticationState) {
         if (isEmailAddressValid(signInForm.email)) {
             signInWithEmailAndPassword(email = signInForm.email, password = signInForm.password)
         }
+    }
+
+    /**
+     * Called when the input changes and the internal state needs to be updated.
+     *
+     * @param value Current state value.
+     */
+     fun setSignInInput(value: AuthenticationState): Unit = signInComposerController.setSignInInput(value)
+
+    /**
+     * Disposes the inner [SignInComposerController].
+     */
+    override fun onCleared() {
+        super.onCleared()
+        signInComposerController.onCleared()
     }
 }

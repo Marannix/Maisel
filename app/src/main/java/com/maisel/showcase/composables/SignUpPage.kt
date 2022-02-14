@@ -11,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
@@ -21,9 +20,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.common.composable.DefaultEmailAddressContent
-import com.maisel.common.composable.DefaultNameContent
-import com.maisel.common.composable.DefaultPasswordContent
 import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.state.onboarding.compose.SignUpForm
 import com.maisel.compose.state.onboarding.compose.SignUpState
@@ -88,39 +84,39 @@ fun SignUpMainCard(
     onSignIn: () -> Unit = { },
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
-    nameContent: @Composable (SignUpState) -> Unit = {
-        DefaultNameContent(
-            state = it.validationState,
-            nameState = it.nameInputState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-                 it.localFocusRequester.moveFocus(FocusDirection.Down)
-        }
-    },
-    emailContent: @Composable (SignUpState) -> Unit = {
-        DefaultEmailAddressContent(
-            state = it.validationState,
-            emailState = it.emailInputState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-                it.localFocusRequester.moveFocus(FocusDirection.Down)
-        }
-    },
-    passwordContent: @Composable (SignUpState) -> Unit = {
-        DefaultPasswordContent(
-            state = it.validationState,
-            passwordState = it.passwordInputValue,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            it.localFocusRequester.moveFocus(FocusDirection.Down)
-        }
-    }
+//    nameContent: @Composable (SignUpState) -> Unit = {
+//        DefaultNameContent(
+//            state = it.validationState,
+//            nameState = it.nameInputState,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 16.dp)
+//        ) {
+//                 it.localFocusRequester.moveFocus(FocusDirection.Down)
+//        }
+//    },
+//    emailContent: @Composable (SignUpState) -> Unit = {
+//        DefaultEmailAddressContent(
+//            state = it.validationState,
+//            emailState = it.emailInputState,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 16.dp)
+//        ) {
+//                it.localFocusRequester.moveFocus(FocusDirection.Down)
+//        }
+//    },
+//    passwordContent: @Composable (SignUpState) -> Unit = {
+//        DefaultPasswordContent(
+//            state = it.validationState,
+//            passwordState = it.passwordInputValue,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 16.dp)
+//        ) {
+//            it.localFocusRequester.moveFocus(FocusDirection.Down)
+//        }
+//    }
 ) {
 
     val scrollState = rememberScrollState()
@@ -148,13 +144,13 @@ fun SignUpMainCard(
 
         OnboardingUserHeader("Create your Account", modifier.padding(bottom = 12.dp))
 
-        SignUpValidationUI(
-            signUpState,
-            nameContent,
-            emailContent,
-            passwordContent,
-            onSignUp
-        )
+//        SignUpValidationUI(
+//            signUpState,
+//            nameContent,
+//            emailContent,
+//            passwordContent,
+//            onSignUp
+//        )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
 

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.common.composable.DefaultEmailAddressContent
 import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInForm
 import com.maisel.compose.state.onboarding.compose.SignInState
 import com.maisel.compose.state.onboarding.compose.ValidationState
@@ -49,13 +50,15 @@ fun SignInPage(
         viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
     val showErrorDialog: Boolean =
         viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
-    val emailState = remember { mutableStateOf(TextFieldValue("")) }
-    val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
 
     Column(Modifier.fillMaxSize()) {
-        SignUpMainCard(
+        SignInMainCard(
             viewModel = viewModel,
             signInState = SignInState(
                 ValidationState(
@@ -63,11 +66,11 @@ fun SignInPage(
                     showPasswordError = false
                 ),
                 showErrorDialog,
-                emailState,
-                passwordState,
-                signInForm = SignInForm(
-                    email = emailState.value.text,
-                    password = passwordState.value.text
+                email,
+                password,
+                signInForm = AuthenticationState( //TODO: Delete this
+                    email = email,
+                    password = password
                 ),
                 focusRequester,
                 localFocusRequester
@@ -82,18 +85,20 @@ fun SignInPage(
 
 @ExperimentalComposeUiApi
 @Composable
-fun SignUpMainCard(
+fun SignInMainCard(
     viewModel: SignInViewModel,
     signInState: SignInState,
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
+    onSignInFormValueChange: (AuthenticationState) -> Unit = { viewModel.setSignInInput(it) },
     onSignIn: () -> Unit = { viewModel.onLoginClicked(signInState.signInForm) },
     onSignUpClicked: () -> Unit,
     emailContent: @Composable (SignInState) -> Unit = {
         DefaultEmailAddressContent(
             state = it.validationState,
-            emailState = it.emailInputState,
+            value = it.signInForm,
+            onValueChange = onSignInFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -104,7 +109,8 @@ fun SignUpMainCard(
     passwordContent: @Composable (SignInState) -> Unit = {
         DefaultPasswordContent(
             state = it.validationState,
-            passwordState = it.passwordInputValue,
+            value = it.signInForm,
+            onValueChange = onSignInFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)

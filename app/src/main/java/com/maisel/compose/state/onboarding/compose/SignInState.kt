@@ -1,9 +1,7 @@
 package com.maisel.compose.state.onboarding.compose
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.text.input.TextFieldValue
 
 /**
  * Represents the state within the sign in screen
@@ -16,9 +14,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 data class SignInState(
     val validationState: ValidationState = ValidationState(),
     val showErrorBanner: Boolean = false,
-    val emailInputState: MutableState<TextFieldValue>,
-    val passwordInputValue: MutableState<TextFieldValue>,
-    val signInForm: SignInForm = SignInForm(),
+    val emailInputState: String,
+    val passwordInputValue: String,
+    val signInForm: AuthenticationState = AuthenticationState(),
     val focusRequester: FocusRequester,
     val localFocusRequester: FocusManager
 )

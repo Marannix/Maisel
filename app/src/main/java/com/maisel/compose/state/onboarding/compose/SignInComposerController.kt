@@ -5,6 +5,7 @@ import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.signin.SignInViewState
 import com.maisel.state.AuthResultState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -31,7 +32,17 @@ class SignInComposerController @Inject constructor(
     /**
      * UI state of the current composer input.
      */
-    val input: MutableStateFlow<SignInForm> = MutableStateFlow(SignInForm())
+    val input: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState())
+
+    /**
+     * UI state of the current composer input.
+     */
+    val email: MutableStateFlow<String> = MutableStateFlow("")
+
+    /**
+     * UI state of the current composer input.
+     */
+    val password: MutableStateFlow<String> = MutableStateFlow("")
 
     /**
      * Gets the current name text input in the message composer.
@@ -56,8 +67,10 @@ class SignInComposerController @Inject constructor(
      *
      * @param value Current state value.
      */
-    fun setSignInInput(value: SignInForm) {
+    fun setSignInInput(value: AuthenticationState) {
         this.input.value = value
+        this.email.value = value.email
+        this.password.value = value.password
         //handleValidationErrors()
     }
 
@@ -70,5 +83,12 @@ class SignInComposerController @Inject constructor(
                 _stateFlow.update { it.copy(authResultState = AuthResultState.Error) }
             }
         }
+    }
+
+    /**
+     * Cancels any pending work when the parent ViewModel is about to be destroyed.
+     */
+    fun onCleared() {
+        scope.cancel()
     }
 }
