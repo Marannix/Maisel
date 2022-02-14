@@ -35,16 +35,6 @@ class SignInComposerController @Inject constructor(
     val input: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState())
 
     /**
-     * UI state of the current composer input.
-     */
-    val email: MutableStateFlow<String> = MutableStateFlow("")
-
-    /**
-     * UI state of the current composer input.
-     */
-    val password: MutableStateFlow<String> = MutableStateFlow("")
-
-    /**
      * Gets the current name text input in the message composer.
      */
     private val nameText: String
@@ -69,8 +59,6 @@ class SignInComposerController @Inject constructor(
      */
     fun setSignInInput(value: AuthenticationState) {
         this.input.value = value
-        this.email.value = value.email
-        this.password.value = value.password
         //handleValidationErrors()
     }
 

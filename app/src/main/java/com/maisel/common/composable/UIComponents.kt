@@ -102,7 +102,7 @@ private fun setPasswordVisualTransformation(showPassword: MutableState<Boolean>)
     }
 
 @Composable
-fun DefaultEmailAddressContent(
+fun DefaultEmailContent(
     state: ValidationState,
     value: AuthenticationState,
     onValueChange: (AuthenticationState) -> Unit,

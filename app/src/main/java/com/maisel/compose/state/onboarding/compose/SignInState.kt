@@ -14,9 +14,7 @@ import androidx.compose.ui.focus.FocusRequester
 data class SignInState(
     val validationState: ValidationState = ValidationState(),
     val showErrorBanner: Boolean = false,
-    val emailInputState: String,
-    val passwordInputValue: String,
-    val signInForm: AuthenticationState = AuthenticationState(),
+    val authenticationState: AuthenticationState = AuthenticationState(),
     val focusRequester: FocusRequester,
     val localFocusRequester: FocusManager
 )

@@ -29,9 +29,7 @@ class SignInViewModel @Inject constructor(
 
     val state: StateFlow<SignInViewState> = signInComposerController.state
 
-    val email: StateFlow<String> = signInComposerController.email
-
-    val password: StateFlow<String> = signInComposerController.password
+    val input: StateFlow<AuthenticationState> = signInComposerController.input
 
     init {
         viewState.value = SignInViewState()
