@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
@@ -20,6 +21,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
+import com.maisel.common.composable.DefaultEmailContent
+import com.maisel.common.composable.DefaultNameContent
+import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.state.onboarding.compose.SignUpForm
 import com.maisel.compose.state.onboarding.compose.SignUpState
@@ -43,9 +48,9 @@ fun SignUpPage(
         viewModel.viewState.observeAsState().value?.signUpValidator?.showEmailError ?: false
     val showPasswordError =
         viewModel.viewState.observeAsState().value?.signUpValidator?.showPasswordError ?: false
-    val nameState = remember { mutableStateOf(TextFieldValue("")) }
-    val emailState = remember { mutableStateOf(TextFieldValue("")) }
-    val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+
+    val authenticationState = remember { mutableStateOf(AuthenticationState()) }
+
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
 
@@ -58,14 +63,7 @@ fun SignUpPage(
                     showEmailError = showEmailError,
                     showPasswordError = showPasswordError
                 ),
-                nameInputState = nameState,
-                emailInputState = emailState,
-                passwordInputValue = passwordState,
-                signUpForm = SignUpForm(
-                    nameState.value.text,
-                    emailState.value.text,
-                    passwordState.value.text
-                ),
+                authenticationState = authenticationState,
                 focusRequester,
                 localFocusRequester,
             ),
@@ -80,43 +78,55 @@ fun SignUpPage(
 fun SignUpMainCard(
     viewModel: SignUpViewModel,
     signUpState: SignUpState,
-    onSignUp: () -> Unit = { viewModel.onSignUpClicked(signUpState.signUpForm) },
+    onSignUp: () -> Unit = {
+        viewModel.onSignUpClicked(
+            SignUpForm(
+                signUpState.authenticationState.value.name,
+                signUpState.authenticationState.value.email,
+                signUpState.authenticationState.value.password
+            )
+        )
+    },
+    onSignUpFormValueChange: (AuthenticationState) -> Unit = { signUpState.authenticationState.value = it },
     onSignIn: () -> Unit = { },
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
-//    nameContent: @Composable (SignUpState) -> Unit = {
-//        DefaultNameContent(
-//            state = it.validationState,
-//            nameState = it.nameInputState,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 16.dp)
-//        ) {
-//                 it.localFocusRequester.moveFocus(FocusDirection.Down)
-//        }
-//    },
-//    emailContent: @Composable (SignUpState) -> Unit = {
-//        DefaultEmailAddressContent(
-//            state = it.validationState,
-//            emailState = it.emailInputState,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 16.dp)
-//        ) {
-//                it.localFocusRequester.moveFocus(FocusDirection.Down)
-//        }
-//    },
-//    passwordContent: @Composable (SignUpState) -> Unit = {
-//        DefaultPasswordContent(
-//            state = it.validationState,
-//            passwordState = it.passwordInputValue,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 16.dp)
-//        ) {
-//            it.localFocusRequester.moveFocus(FocusDirection.Down)
-//        }
-//    }
+    nameContent: @Composable (SignUpState) -> Unit = {
+        DefaultNameContent(
+            state = it.validationState,
+            value = it.authenticationState.value,
+            onValueChange = onSignUpFormValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
+        }
+    },
+    emailContent: @Composable (SignUpState) -> Unit = {
+        DefaultEmailContent(
+            state = it.validationState,
+            value = it.authenticationState.value,
+            onValueChange = onSignUpFormValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
+        }
+    },
+    passwordContent: @Composable (SignUpState) -> Unit = {
+        DefaultPasswordContent(
+            state = it.validationState,
+            value = it.authenticationState.value,
+            onValueChange = onSignUpFormValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
+        }
+    }
 ) {
 
     val scrollState = rememberScrollState()
@@ -144,13 +154,13 @@ fun SignUpMainCard(
 
         OnboardingUserHeader("Create your Account", modifier.padding(bottom = 12.dp))
 
-//        SignUpValidationUI(
-//            signUpState,
-//            nameContent,
-//            emailContent,
-//            passwordContent,
-//            onSignUp
-//        )
+        SignUpValidationUI(
+            signUpState,
+            nameContent,
+            emailContent,
+            passwordContent,
+            onSignUp
+        )
 
         //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material/material/samples/src/main/java/androidx/compose/material/samples/ContentAlphaSamples.kt
 

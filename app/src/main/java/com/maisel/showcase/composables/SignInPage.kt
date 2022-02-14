@@ -64,10 +64,6 @@ fun SignInPage(
                 ),
                 showErrorDialog,
                 authenticationState,
-//                signInForm = AuthenticationState( //TODO: Delete this
-//                    email = input.email,
-//                    password = input.password
-//                ),
                 focusRequester,
                 localFocusRequester
             ),

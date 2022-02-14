@@ -6,7 +6,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInComposerController
-import com.maisel.compose.state.onboarding.compose.SignInForm
 import com.maisel.domain.user.usecase.GetCurrentUser
 import com.maisel.domain.user.usecase.SetCurrentUserUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
@@ -37,8 +36,8 @@ class SignInViewModel @Inject constructor(
 
     private fun currentViewState(): SignInViewState = viewState.value!!
 
-    private fun signInWithEmailAndPassword(email: String, password: String) {
-        signInComposerController.makeLoginRequest(SignInForm(email = email, password = password))
+    private fun signInWithEmailAndPassword(authenticationState: AuthenticationState) {
+        signInComposerController.makeLoginRequest(authenticationState)
     }
 
     fun signInWithCredential(idToken: String, credential: AuthCredential) {
@@ -84,9 +83,9 @@ class SignInViewModel @Inject constructor(
         setCurrentUser.invoke(user)
     }
 
-    fun onLoginClicked(signInForm: AuthenticationState) {
-        if (isEmailAddressValid(signInForm.email)) {
-            signInWithEmailAndPassword(email = signInForm.email, password = signInForm.password)
+    fun onLoginClicked(authenticationState: AuthenticationState) {
+        if (isEmailAddressValid(authenticationState.email)) {
+            signInWithEmailAndPassword(authenticationState)
         }
     }
 

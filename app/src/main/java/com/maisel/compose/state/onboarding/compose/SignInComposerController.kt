@@ -35,24 +35,6 @@ class SignInComposerController @Inject constructor(
     val input: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState())
 
     /**
-     * Gets the current name text input in the message composer.
-     */
-    private val nameText: String
-        get() = input.value.name
-
-    /**
-     * Gets the current email text input in the message composer.
-     */
-    private val emailText: String
-        get() = input.value.email
-
-    /**
-     * Gets the current password text input in the message composer.
-     */
-    private val passwordText: String
-        get() = input.value.password
-
-    /**
      * Called when the input changes and the internal state needs to be updated.
      *
      * @param value Current state value.
@@ -62,7 +44,7 @@ class SignInComposerController @Inject constructor(
         //handleValidationErrors()
     }
 
-    fun makeLoginRequest(value: SignInForm) {
+    fun makeLoginRequest(value: AuthenticationState) {
         scope.launch {
             val result = signInUseCase.invoke(value.email, value.password)
             if (result != null && result.user != null) {

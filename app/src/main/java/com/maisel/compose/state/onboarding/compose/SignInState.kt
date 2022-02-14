@@ -19,14 +19,3 @@ data class SignInState(
     val localFocusRequester: FocusManager
 )
 
-/**
- * Represents the sign up form state within the sign up screen
- *
- * @param email The users account creation email address
- * @param password The users account creation password
- */
-data class SignInForm(
-    val name: String = "",
-    val email: String = "",
-    val password: String = ""
-)
