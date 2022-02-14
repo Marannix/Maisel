@@ -18,13 +18,13 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
+import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
-import com.maisel.compose.state.onboarding.compose.ValidationState
 
 @ExperimentalComposeUiApi
 @Composable
 fun DefaultPasswordContent(
-    state: ValidationState,
+    state: ValidationError.AuthenticationError,
     value: AuthenticationState,
     onValueChange: (AuthenticationState) -> Unit,
     modifier: Modifier,
@@ -61,7 +61,7 @@ fun DefaultPasswordContent(
         singleLine = true
     )
 
-    if (state.showPasswordError) {
+    if (state.passwordError) {
         Text(
             text = "Password must be 8 characters long",
             textAlign = TextAlign.Start,
@@ -103,7 +103,7 @@ private fun setPasswordVisualTransformation(showPassword: MutableState<Boolean>)
 
 @Composable
 fun DefaultEmailContent(
-    state: ValidationState,
+    state: ValidationError.AuthenticationError,
     value: AuthenticationState,
     onValueChange: (AuthenticationState) -> Unit,
     modifier: Modifier,
@@ -125,14 +125,14 @@ fun DefaultEmailContent(
         placeholder = {
             Text(text = "Email")
         },
-        isError = state.showEmailError,
+        isError = state.emailError,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
             onNext = { onImeAction() }
         )
     )
-    if (state.showEmailError) {
+    if (state.emailError) {
         Text(
             text = "Please enter a valid email",
             textAlign = TextAlign.Start,
@@ -148,7 +148,7 @@ fun DefaultEmailContent(
 @Composable
 fun DefaultNameContent(
     modifier: Modifier,
-    state: ValidationState,
+    state: ValidationError.AuthenticationError,
     value: AuthenticationState,
     onValueChange: (AuthenticationState) -> Unit,
     onImeAction: () -> Unit,
@@ -170,14 +170,14 @@ fun DefaultNameContent(
         placeholder = {
             Text(text = "Name")
         },
-        isError = state.showNameError,
+        isError = state.nameError,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(
             onNext = { onImeAction() }
         )
     )
-    if (state.showNameError) {
+    if (state.nameError) {
         Text(
             text = "Please enter a valid name",
             textAlign = TextAlign.Start,

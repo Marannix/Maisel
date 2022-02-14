@@ -1,9 +1,11 @@
 package com.maisel.compose.state.onboarding.compose
 
+import com.maisel.common.state.ValidationError
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.signin.SignInViewState
 import com.maisel.state.AuthResultState
+import com.maisel.utils.Validator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +36,11 @@ class SignInComposerController @Inject constructor(
      */
     val input: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState())
 
+    /**ko
+     * Represents the validation errors for the current input
+     */
+    val validationErrors: MutableStateFlow<ValidationError.AuthenticationError> = MutableStateFlow(ValidationError.AuthenticationError())
+
     /**
      * Called when the input changes and the internal state needs to be updated.
      *
@@ -41,10 +48,22 @@ class SignInComposerController @Inject constructor(
      */
     fun setSignInInput(value: AuthenticationState) {
         this.input.value = value
-        //handleValidationErrors()
+    }
+
+    /**
+     * Checks the current input for validation errors.
+     */
+    private fun handleValidationErrors() {
+        validationErrors.value = ValidationError.AuthenticationError(
+            emailError = !(input.value.email.isNotEmpty() && Validator().isEmailValid(input.value.email))
+        )
     }
 
     fun makeLoginRequest(value: AuthenticationState) {
+        handleValidationErrors()
+        if (validationErrors.value.emailError) {
+            return
+        }
         scope.launch {
             val result = signInUseCase.invoke(value.email, value.password)
             if (result != null && result.user != null) {

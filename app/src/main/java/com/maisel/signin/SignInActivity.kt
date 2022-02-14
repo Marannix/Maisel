@@ -36,20 +36,10 @@ import kotlinx.coroutines.flow.onEach
 @ExperimentalPagerApi
 class SignInActivity : BaseActivity() {
 
-    companion object {
-        private const val RC_SIGN_IN = 65
-
-        fun createIntent(context: Context): Intent {
-            return Intent(context, SignInActivity::class.java)
-        }
-    }
-
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private val viewModel: SignInViewModel by lazy {
-        ViewModelProvider(this).get(
-            SignInViewModel::class.java
-        )
+        ViewModelProvider(this)[SignInViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,19 +60,12 @@ class SignInActivity : BaseActivity() {
             }
         }
 
-        // observeViewState()
-        observeViewState2()
+        observeViewState()
 
         createGoogleSignInClient()
     }
 
     private fun observeViewState() {
-        viewModel.viewState.observe(this) { state ->
-            render(state)
-        }
-    }
-
-    private fun observeViewState2() {
         lifecycleScope.launchWhenStarted {
             viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collectLatest {
                 render(it)
@@ -166,6 +149,14 @@ class SignInActivity : BaseActivity() {
                 // Google Sign In failed, update UI appropriately
                 Log.w("TAG", "Google sign in failed", e)
             }
+        }
+    }
+
+    companion object {
+        private const val RC_SIGN_IN = 65
+
+        fun createIntent(context: Context): Intent {
+            return Intent(context, SignInActivity::class.java)
         }
     }
 }

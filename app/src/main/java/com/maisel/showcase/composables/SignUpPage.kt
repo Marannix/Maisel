@@ -24,6 +24,7 @@ import com.maisel.R
 import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultNameContent
 import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.state.onboarding.compose.SignUpForm
@@ -58,10 +59,10 @@ fun SignUpPage(
         SignUpMainCard(
             viewModel = viewModel,
             signUpState = SignUpState(
-                ValidationState(
-                    showNameError = showNameError,
-                    showEmailError = showEmailError,
-                    showPasswordError = showPasswordError
+                ValidationError.AuthenticationError(
+                    nameError = showNameError,
+                    emailError = showEmailError,
+                    passwordError = showPasswordError
                 ),
                 authenticationState = authenticationState,
                 focusRequester,

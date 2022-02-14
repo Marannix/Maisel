@@ -44,6 +44,7 @@ class UserRepositoryImpl(
             .subscribeOn(Schedulers.io())
     }
 
+    //TODO: Delete
     override fun signInWithEmailAndPassword(email: String, password: String): Maybe<AuthResult> {
         return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
             .subscribeOn(Schedulers.io())

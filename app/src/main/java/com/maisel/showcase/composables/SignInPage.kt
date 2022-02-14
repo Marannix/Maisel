@@ -24,7 +24,6 @@ import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultPasswordContent
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInState
-import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
@@ -44,12 +43,11 @@ fun SignInPage(
     onForgotPasswordClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
 ) {
-    val validationError: Boolean =
-        viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
-    val showErrorDialog: Boolean =
-        viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
-
+    val viewState by viewModel.state.collectAsState()
     val authenticationState by viewModel.input.collectAsState()
+    val validationErrors by viewModel.validationErrors.collectAsState()
+
+    val showErrorDialog: Boolean = viewState.authResultState is AuthResultState.Error
 
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
@@ -58,10 +56,7 @@ fun SignInPage(
         SignInMainCard(
             viewModel = viewModel,
             signInState = SignInState(
-                ValidationState(
-                    showEmailError = validationError,
-                    showPasswordError = false
-                ),
+                validationErrors,
                 showErrorDialog,
                 authenticationState,
                 focusRequester,

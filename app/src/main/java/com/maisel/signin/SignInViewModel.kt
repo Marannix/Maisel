@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
+import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInComposerController
 import com.maisel.domain.user.usecase.GetCurrentUser
 import com.maisel.domain.user.usecase.SetCurrentUserUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.state.AuthResultState
-import com.maisel.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +29,8 @@ class SignInViewModel @Inject constructor(
     val state: StateFlow<SignInViewState> = signInComposerController.state
 
     val input: StateFlow<AuthenticationState> = signInComposerController.input
+
+    val validationErrors: StateFlow<ValidationError.AuthenticationError> = signInComposerController.validationErrors
 
     init {
         viewState.value = SignInViewState()
@@ -61,20 +63,6 @@ class SignInViewModel @Inject constructor(
             .addDisposable()
     }
 
-    private fun isEmailAddressValid(email: String): Boolean {
-        return if (email.isNotEmpty() && Validator().isEmailValid(email)) {
-            viewState.value = currentViewState().copy(
-                signInValidator = currentViewState().signInValidator.copy(showEmailError = false)
-            )
-            true
-        } else {
-            viewState.value = currentViewState().copy(
-                signInValidator = currentViewState().signInValidator.copy(showEmailError = true)
-            )
-            false
-        }
-    }
-
     fun isUserLoggedIn(): Boolean {
         return currentUser.invoke() != null
     }
@@ -84,9 +72,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onLoginClicked(authenticationState: AuthenticationState) {
-        if (isEmailAddressValid(authenticationState.email)) {
-            signInWithEmailAndPassword(authenticationState)
-        }
+        signInWithEmailAndPassword(authenticationState)
     }
 
     /**
