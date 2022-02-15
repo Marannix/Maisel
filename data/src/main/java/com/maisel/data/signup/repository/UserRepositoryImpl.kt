@@ -44,13 +44,6 @@ class UserRepositoryImpl(
             .subscribeOn(Schedulers.io())
     }
 
-    //TODO: Delete
-    override fun signInWithEmailAndPassword(email: String, password: String): Maybe<AuthResult> {
-        return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
-            .subscribeOn(Schedulers.io())
-    }
-
-
     override suspend fun makeLoginRequest(email: String, password: String): AuthResult? {
         return withContext(DispatcherProvider.IO) {
             try {
@@ -64,12 +57,19 @@ class UserRepositoryImpl(
         }
     }
 
-    override fun signInWithCredential(
-        idToken: String,
+    override suspend fun signInWithCredential(
         credential: AuthCredential
-    ): Maybe<AuthResult> {
-        return RxFirebaseAuth.signInWithCredential(firebaseAuth, credential)
-            .subscribeOn(Schedulers.io())
+    ): AuthResult? {
+        return withContext(DispatcherProvider.IO) {
+            try {
+                firebaseAuth
+                    .signInWithCredential(credential)
+                    .await()
+            } catch (e: Exception) {
+                Log.d("joshua exception", e.toString())
+                null
+            }
+        }
     }
 
     override fun setCurrentUser(firebaseUser: FirebaseUser) {
@@ -124,6 +124,16 @@ class UserRepositoryImpl(
 
     override fun getSenderUid(): String? {
         return firebaseAuth.uid
+    }
+
+    fun randomProfilePictureFromGivenList(): String {
+        val list = listOf(
+            "one",
+            "two",
+            "three",
+            "four",
+            "five")
+        return list.asSequence().shuffled().take(1).toString()
     }
 
     private fun setUserInDatabase(user: SignUpUser) {

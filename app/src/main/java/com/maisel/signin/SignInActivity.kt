@@ -94,7 +94,7 @@ class SignInActivity : BaseActivity() {
     }
 
     /**
-     * TODO: Create splash screen
+     *  TODO: Create splash screen
      *  Move this method to splash screen
      */
     private fun signInCurrentUser() {
@@ -131,7 +131,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        viewModel.signInWithCredential(idToken, GoogleAuthProvider.getCredential(idToken, null))
+        viewModel.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

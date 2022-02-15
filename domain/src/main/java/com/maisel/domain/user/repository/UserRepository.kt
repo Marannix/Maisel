@@ -19,8 +19,6 @@ interface UserRepository {
      * Sign in using email and password.
      * @return an AuthResult which is either a success or failure.
      */
-    fun signInWithEmailAndPassword(email: String, password: String) : Maybe<AuthResult>
-
     suspend fun makeLoginRequest(email: String, password: String): AuthResult?
 
     /**
@@ -29,7 +27,7 @@ interface UserRepository {
      */
     fun getCurrentUser() : FirebaseUser?
 
-    fun signInWithCredential(idToken: String, credential: AuthCredential): Maybe<AuthResult>
+    suspend fun signInWithCredential(credential: AuthCredential): AuthResult?
 
     fun setCurrentUser(firebaseUser: FirebaseUser)
 
