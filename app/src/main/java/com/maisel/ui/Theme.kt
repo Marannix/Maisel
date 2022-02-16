@@ -11,8 +11,8 @@ private val LightColorPalette = lightColors(
     surface = colorSurface,
     primaryVariant = colorPrimaryVariant,
     onPrimary = colorOnPrimary,
- //   onSurface = colorOnPrimary,
-   // background= colorOnPrimary
+    //   onSurface = colorOnPrimary,
+    // background= colorOnPrimary
 )
 
 private val DarkColorPalette = darkColors(
@@ -34,8 +34,8 @@ fun MainTheme(
 ) {
     MaterialTheme(
         colors = if (darkTheme) DarkColorPalette else LightColorPalette,
-          typography = QuickSandTypography,
-    //    shapes = shapes,
+        typography = HelventicaTypography,
+        //    shapes = shapes,
         content = content
     )
 }

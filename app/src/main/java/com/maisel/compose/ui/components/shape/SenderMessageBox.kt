@@ -1,8 +1,6 @@
 package com.maisel.compose.ui.components.shape
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.ZeroCornerSize
@@ -34,31 +32,26 @@ fun SenderMessageBox(state: MessageItem.SenderMessageItem) {
                 .heightIn(30.dp, 400.dp) //mention max height here
                 .widthIn(20.dp, 310.dp) //mention max width here
                 .clip(
-                    shape = RoundedCornerShape(8.dp).copy(
+                    shape = RoundedCornerShape(24.dp).copy(
                         bottomEnd = ZeroCornerSize,
                     )
                 )
-                .background(Color.White)
-                .border(
-                    BorderStroke(1.dp, colorResource(R.color.maisel_compose_borders)),
-                    RoundedCornerShape(8.dp).copy(
-                        bottomEnd = ZeroCornerSize,
-                    )
-                )
-                .padding(8.dp)
+                .background(colorResource(R.color.maisel_compose_sender_chat_background))
+                .padding(16.dp)
         ) {
             Text(
                 text = state.message,
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.SemiBold
-            )        }
+                color = Color.White,
+                style = MaterialTheme.typography.body1
+            )
+        }
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "13:37 pm",
+            text = "11:20",
             textAlign = TextAlign.End,
             color = ChatTheme.colors.textLowEmphasis,
-            style = MaterialTheme.typography.subtitle2
-        )
+            style = MaterialTheme.typography.subtitle2,
+            fontWeight = FontWeight.Normal)
     }
 }

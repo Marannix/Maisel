@@ -70,7 +70,6 @@ fun Screen(
             topBar = {
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
-                    //   modifier = Modifier.navigationBarsWithImePadding().statusBarsPadding(), // Is this needed?
                     navigationIcon = {
                         // show drawer icon
                         IconButton(
