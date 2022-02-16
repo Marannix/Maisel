@@ -126,16 +126,6 @@ class UserRepositoryImpl(
         return firebaseAuth.uid
     }
 
-    fun randomProfilePictureFromGivenList(): String {
-        val list = listOf(
-            "one",
-            "two",
-            "three",
-            "four",
-            "five")
-        return list.asSequence().shuffled().take(1).toString()
-    }
-
     private fun setUserInDatabase(user: SignUpUser) {
         //TODO: Maybe throw an exception if current user is null?
         val id = firebaseAuth.currentUser!!.uid
