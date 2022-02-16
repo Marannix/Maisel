@@ -3,7 +3,7 @@ package com.maisel.compose.state.onboarding.compose
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.text.input.TextFieldValue
+import com.maisel.common.state.ValidationError
 
 /**
  * Represents the state within the sign up screen
@@ -14,11 +14,8 @@ import androidx.compose.ui.text.input.TextFieldValue
  * @param passwordInputValue The current text value that's within the input.
  */
 data class SignUpState(
-    val validationState: ValidationState = ValidationState(),
-    val nameInputState: MutableState<TextFieldValue>,
-    val emailInputState: MutableState<TextFieldValue>,
-    val passwordInputValue: MutableState<TextFieldValue>,
-    val signUpForm: SignUpForm = SignUpForm(),
+    val validationState: ValidationError.AuthenticationError,
+    val authenticationState: MutableState<AuthenticationState>,
     val focusRequester: FocusRequester,
     val localFocusRequester: FocusManager
 )

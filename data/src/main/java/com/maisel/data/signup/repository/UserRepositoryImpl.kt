@@ -9,6 +9,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.maisel.data.coroutine.DispatcherProvider
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.repository.UserRepository
 import durdinapps.rxfirebase2.RxFirebaseAuth
@@ -16,12 +17,13 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 //TODO: Rename package to @user
 class UserRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
-    private val database: DatabaseReference
-) : UserRepository {
+    private val database: DatabaseReference) : UserRepository {
 
     private var listOfUsers = BehaviorSubject.create<List<SignUpUser>>()
     private var userListeners: ValueEventListener? = null
@@ -42,17 +44,32 @@ class UserRepositoryImpl(
             .subscribeOn(Schedulers.io())
     }
 
-    override fun signInWithEmailAndPassword(email: String, password: String): Maybe<AuthResult> {
-        return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
-            .subscribeOn(Schedulers.io())
+    override suspend fun makeLoginRequest(email: String, password: String): AuthResult? {
+        return withContext(DispatcherProvider.IO) {
+            try {
+                firebaseAuth
+                    .signInWithEmailAndPassword(email, password)
+                    .await()
+            } catch (e: Exception) {
+                Log.d("joshua exception", e.toString())
+                null
+            }
+        }
     }
 
-    override fun signInWithCredential(
-        idToken: String,
+    override suspend fun signInWithCredential(
         credential: AuthCredential
-    ): Maybe<AuthResult> {
-        return RxFirebaseAuth.signInWithCredential(firebaseAuth, credential)
-            .subscribeOn(Schedulers.io())
+    ): AuthResult? {
+        return withContext(DispatcherProvider.IO) {
+            try {
+                firebaseAuth
+                    .signInWithCredential(credential)
+                    .await()
+            } catch (e: Exception) {
+                Log.d("joshua exception", e.toString())
+                null
+            }
+        }
     }
 
     override fun setCurrentUser(firebaseUser: FirebaseUser) {
