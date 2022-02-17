@@ -16,16 +16,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.common.composable.DefaultEmailAddressContent
+import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultPasswordContent
-import com.maisel.compose.state.onboarding.compose.SignInForm
+import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInState
-import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
@@ -45,30 +43,22 @@ fun SignInPage(
     onForgotPasswordClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
 ) {
-    val validationError: Boolean =
-        viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
-    val showErrorDialog: Boolean =
-        viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
-    val emailState = remember { mutableStateOf(TextFieldValue("")) }
-    val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+    val viewState by viewModel.state.collectAsState()
+    val authenticationState by viewModel.input.collectAsState()
+    val validationErrors by viewModel.validationErrors.collectAsState()
+
+    val showErrorDialog: Boolean = viewState.authResultState is AuthResultState.Error
+
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
 
     Column(Modifier.fillMaxSize()) {
-        SignUpMainCard(
+        SignInMainCard(
             viewModel = viewModel,
             signInState = SignInState(
-                ValidationState(
-                    showEmailError = validationError,
-                    showPasswordError = false
-                ),
+                validationErrors,
                 showErrorDialog,
-                emailState,
-                passwordState,
-                signInForm = SignInForm(
-                    email = emailState.value.text,
-                    password = passwordState.value.text
-                ),
+                authenticationState,
                 focusRequester,
                 localFocusRequester
             ),
@@ -82,18 +72,20 @@ fun SignInPage(
 
 @ExperimentalComposeUiApi
 @Composable
-fun SignUpMainCard(
+fun SignInMainCard(
     viewModel: SignInViewModel,
     signInState: SignInState,
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
-    onSignIn: () -> Unit = { viewModel.onLoginClicked(signInState.signInForm) },
+    onSignInFormValueChange: (AuthenticationState) -> Unit = { viewModel.setSignInInput(it) },
+    onSignIn: () -> Unit = { viewModel.onLoginClicked(signInState.authenticationState) },
     onSignUpClicked: () -> Unit,
     emailContent: @Composable (SignInState) -> Unit = {
-        DefaultEmailAddressContent(
+        DefaultEmailContent(
             state = it.validationState,
-            emailState = it.emailInputState,
+            value = it.authenticationState,
+            onValueChange = onSignInFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -104,7 +96,8 @@ fun SignUpMainCard(
     passwordContent: @Composable (SignInState) -> Unit = {
         DefaultPasswordContent(
             state = it.validationState,
-            passwordState = it.passwordInputValue,
+            value = it.authenticationState,
+            onValueChange = onSignInFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)

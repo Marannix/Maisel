@@ -21,9 +21,11 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.common.composable.DefaultEmailAddressContent
+import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultNameContent
 import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.common.state.ValidationError
+import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.ValidationState
 import com.maisel.compose.state.onboarding.compose.SignUpForm
 import com.maisel.compose.state.onboarding.compose.SignUpState
@@ -47,9 +49,9 @@ fun SignUpPage(
         viewModel.viewState.observeAsState().value?.signUpValidator?.showEmailError ?: false
     val showPasswordError =
         viewModel.viewState.observeAsState().value?.signUpValidator?.showPasswordError ?: false
-    val nameState = remember { mutableStateOf(TextFieldValue("")) }
-    val emailState = remember { mutableStateOf(TextFieldValue("")) }
-    val passwordState = remember { mutableStateOf(TextFieldValue("")) }
+
+    val authenticationState = remember { mutableStateOf(AuthenticationState()) }
+
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
 
@@ -57,19 +59,12 @@ fun SignUpPage(
         SignUpMainCard(
             viewModel = viewModel,
             signUpState = SignUpState(
-                ValidationState(
-                    showNameError = showNameError,
-                    showEmailError = showEmailError,
-                    showPasswordError = showPasswordError
+                ValidationError.AuthenticationError(
+                    nameError = showNameError,
+                    emailError = showEmailError,
+                    passwordError = showPasswordError
                 ),
-                nameInputState = nameState,
-                emailInputState = emailState,
-                passwordInputValue = passwordState,
-                signUpForm = SignUpForm(
-                    nameState.value.text,
-                    emailState.value.text,
-                    passwordState.value.text
-                ),
+                authenticationState = authenticationState,
                 focusRequester,
                 localFocusRequester,
             ),
@@ -84,36 +79,48 @@ fun SignUpPage(
 fun SignUpMainCard(
     viewModel: SignUpViewModel,
     signUpState: SignUpState,
-    onSignUp: () -> Unit = { viewModel.onSignUpClicked(signUpState.signUpForm) },
+    onSignUp: () -> Unit = {
+        viewModel.onSignUpClicked(
+            SignUpForm(
+                signUpState.authenticationState.value.name,
+                signUpState.authenticationState.value.email,
+                signUpState.authenticationState.value.password
+            )
+        )
+    },
+    onSignUpFormValueChange: (AuthenticationState) -> Unit = { signUpState.authenticationState.value = it },
     onSignIn: () -> Unit = { },
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     nameContent: @Composable (SignUpState) -> Unit = {
         DefaultNameContent(
             state = it.validationState,
-            nameState = it.nameInputState,
+            value = it.authenticationState.value,
+            onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-                 it.localFocusRequester.moveFocus(FocusDirection.Down)
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
     },
     emailContent: @Composable (SignUpState) -> Unit = {
-        DefaultEmailAddressContent(
+        DefaultEmailContent(
             state = it.validationState,
-            emailState = it.emailInputState,
+            value = it.authenticationState.value,
+            onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-                it.localFocusRequester.moveFocus(FocusDirection.Down)
+            it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
     },
     passwordContent: @Composable (SignUpState) -> Unit = {
         DefaultPasswordContent(
             state = it.validationState,
-            passwordState = it.passwordInputValue,
+            value = it.authenticationState.value,
+            onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
