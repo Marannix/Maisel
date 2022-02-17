@@ -27,7 +27,7 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
     fun sendMessage(input: String) {
         state.value?.let {
             if (it.senderRoom != null && it.senderUid != null && it.receiverRoom != null) {
-                val model = MessageModel(it.senderUid, input, Date().time)
+                val model = MessageModel(it.senderUid, input, Date().time.toString())
 
                 sendMessageUseCase.invoke(input, it.senderRoom, it.receiverRoom, model)
                 state.value = currentViewState().copy(input = "")

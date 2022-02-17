@@ -48,10 +48,10 @@ fun SenderMessageBox(state: MessageItem.SenderMessageItem) {
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "11:20",
+            text = state.timestamp,
             textAlign = TextAlign.End,
             color = ChatTheme.colors.textLowEmphasis,
-            style = MaterialTheme.typography.subtitle2,
+            style = ChatTheme.typography.subtitle2,
             fontWeight = FontWeight.Normal)
     }
 }

@@ -1,11 +1,15 @@
 package com.maisel.data.message.repository
 
 import android.util.Log
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.maisel.data.message.model.MessageData
+import com.maisel.data.message.toMessageData
+import com.maisel.data.message.toMessageModel
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.MessageRepository
 import io.reactivex.Observable
@@ -18,23 +22,23 @@ class MessageRepositoryImpl(
 
     private var listOfMessages = BehaviorSubject.create<List<MessageModel>>()
     private var messageListeners: ValueEventListener? = null
-    private var sendMessageListeners: ValueEventListener? = null
+    private var sendMessageReceiverListeners: Task<Void>? = null
+    private var sendMessageSenderListeners: Task<Void>? = null
 
     override fun startListeningToMessages(senderRoom: String) {
-//        if (messageListeners != null) {
-//            Log.w("MessageRepositoryImpl", " Calling start listening while already started")
-//            return
-//        }
+        if (messageListeners != null) {
+            Log.w("MessageRepositoryImpl", " Calling start listening while already started")
+            return
+        }
         messageListeners =
             database.ref.child("chats")
                 .child(senderRoom).addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val list = mutableListOf<MessageModel>()
                         snapshot.children.forEach { children ->
-                            val messageModel = children.getValue(MessageModel::class.java)
-                            messageModel?.let(list::add)
+                            val messageData = children.getValue(MessageData::class.java)
+                            messageData?.toMessageModel()?.let(list::add)
                         }
-                       // listOfMessages.onNext(fakeMessages())
                         listOfMessages.onNext(list)
                     }
 
@@ -50,20 +54,19 @@ class MessageRepositoryImpl(
     override fun getSenderUid(): String? { return firebaseAuth.uid }
 
     override fun sendMessage(input: String, senderRoom: String, receiverRoom: String, model: MessageModel) {
-        if (sendMessageListeners != null) {
-            Log.w("Message Repo send:", " Calling start listening while already started")
-            return
-        }
-
-        database.ref.child("chats")
+//        if (sendMessageSenderListeners != null && sendMessageReceiverListeners != null) {
+//            Log.w("Message Repo send:", " Calling start listening while already started")
+//            return
+//        }
+        sendMessageSenderListeners = database.ref.child("chats")
             .child(senderRoom)
             .push()
-            .setValue(model)
+            .setValue(model.toMessageData())
             .addOnSuccessListener {
-                database.ref.child("chats")
+                sendMessageReceiverListeners = database.ref.child("chats")
                     .child(receiverRoom)
                     .push()
-                    .setValue(model)
+                    .setValue(model.toMessageData())
                     .addOnSuccessListener {
 
                     }
@@ -72,9 +75,12 @@ class MessageRepositoryImpl(
 
     override fun stopListeningToMessages(senderRoom: String) {
         messageListeners?.let { database.ref.child("chats").child(senderRoom).removeEventListener(it) }
+        messageListeners = null
+        listOfMessages.onNext(emptyList())
     }
 
     override fun stopListeningToSendMessages(senderRoom: String) {
-        sendMessageListeners?.let { database.ref.child("chats").child(senderRoom).removeEventListener(it) }
+//        sendMessageReceiverListeners = null
+//        sendMessageSenderListeners = null
     }
 }

@@ -3,9 +3,5 @@ package com.maisel.domain.message
 data class MessageModel(
     val uid: String,
     val message: String,
-    val timestamp: Long
-) {
-    constructor() : this ("", "", 0L) {
-
-    }
-}
+    val timestamp: String
+)
