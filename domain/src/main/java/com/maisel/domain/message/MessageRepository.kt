@@ -15,4 +15,8 @@ interface MessageRepository {
     fun getSenderUid(): String?
 
     fun sendMessage(input: String, senderRoom: String, receiverRoom: String, model: MessageModel)
+
+    fun startListeningToLastMessages(userId: String)
+
+    fun observeLastMessage(): Observable<String>
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
 import com.maisel.dashboard.chat.DashboardViewState
+import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.usecase.GetUsersUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val logOutUseCase: LogOutUseCase,
-    private val usersUseCase: GetUsersUseCase
+    private val usersUseCase: GetUsersUseCase,
+    private val getLastMessageUseCase: GetLastMessageUseCase
 ) : BaseViewModel() {
 
     val viewState = MutableLiveData<DashboardViewState>()
@@ -47,6 +49,20 @@ class DashboardViewModel @Inject constructor(
                 viewState.value = currentViewState().copy(use = it)
             }
             .addDisposable()
+    }
+
+    fun getLastMessages() {
+         getLastMessageUseCase.invoke()
+             .observeOn(AndroidSchedulers.mainThread())
+             .subscribeOn(Schedulers.io())
+             .subscribe {
+                 viewState.value = currentViewState().copy(lastMessage = it)
+             }
+             .addDisposable()
+    }
+
+    fun startListeningToLastMessage(userId: String) {
+        getLastMessageUseCase.startListeningToMessages(userId)
     }
 
     fun startListeningToUser() {

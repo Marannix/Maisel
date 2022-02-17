@@ -63,7 +63,7 @@ class ChatsFragment : Fragment() {
                     viewModel.viewState.observeAsState().value?.users ?: emptyList()
                 MainTheme {
                     Surface(color = MaterialTheme.colors.background) {
-                        ChatsList(users, callback)
+                        ChatsList(users, callback, viewModel)
                     }
                 }
             }

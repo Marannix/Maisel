@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -17,18 +18,23 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
+import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.domain.user.entity.SignUpUser
 
 @Composable
 @ExperimentalComposeUiApi
 @Preview(device = PIXEL_4)
-fun ChatsList(users: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCallback?) {
+fun ChatsList(
+    users: List<SignUpUser>,
+    listener: ChatsFragment.ChatsFragmentCallback?,
+    viewModel: DashboardViewModel
+) {
    // val uiState = viewModel.viewUiState
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(users) { user ->
-                ChatListItem(listener, user, Modifier.fillMaxWidth())
+                ChatListItem(listener, user, Modifier.fillMaxWidth(), viewModel)
             }
         }
     }
@@ -36,7 +42,19 @@ fun ChatsList(users: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCall
 
 @ExperimentalComposeUiApi
 @Composable
-fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, user: SignUpUser, modifier: Modifier) {
+fun ChatListItem(
+    listener: ChatsFragment.ChatsFragmentCallback?,
+    user: SignUpUser,
+    modifier: Modifier,
+    viewModel: DashboardViewModel,
+    listenToMessage: (String) -> Unit = { viewModel.startListeningToLastMessage(it) },
+    lastMessage: () -> Unit = { viewModel.getLastMessages() },
+) {
+    user.userId?.let(listenToMessage)
+    lastMessage()
+    val lastMessage2 =
+        viewModel.viewState.observeAsState().value?.lastMessage ?: ""
+
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth().clickable { listener?.onOpenChatsDetails(user) }.padding(4.dp)
@@ -64,7 +82,7 @@ fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, user: SignUpUse
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )
             Text(
-                "Last message",
+                lastMessage2,
                 style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
                 maxLines = 1

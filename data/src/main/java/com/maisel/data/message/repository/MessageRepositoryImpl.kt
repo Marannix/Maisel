@@ -25,6 +25,8 @@ class MessageRepositoryImpl(
     private var sendMessageReceiverListeners: Task<Void>? = null
     private var sendMessageSenderListeners: Task<Void>? = null
 
+    private var lastMessageListeners = BehaviorSubject.create<String>()
+
     override fun startListeningToMessages(senderRoom: String) {
         if (messageListeners != null) {
             Log.w("MessageRepositoryImpl", " Calling start listening while already started")
@@ -83,4 +85,26 @@ class MessageRepositoryImpl(
 //        sendMessageReceiverListeners = null
 //        sendMessageSenderListeners = null
     }
+
+    override fun startListeningToLastMessages(userId: String) {
+        database.ref.child("chats")
+            .child(firebaseAuth.uid + userId)
+            .orderByChild("timestamp")
+            .limitToLast(1)
+            .addListenerForSingleValueEvent( object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.hasChildren()) {
+                        lastMessageListeners.onNext(snapshot.children.firstOrNull()?.child("message")?.value.toString())
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+    }
+
+    override fun observeLastMessage(): Observable<String> = lastMessageListeners
+
 }
