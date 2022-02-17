@@ -39,7 +39,7 @@ fun ChatsList(users: List<SignUpUser>, listener: ChatsFragment.ChatsFragmentCall
 fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, user: SignUpUser, modifier: Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .fillMaxWidth().padding(4.dp).clickable { listener?.onOpenChatsDetails(user) }
+            .fillMaxWidth().clickable { listener?.onOpenChatsDetails(user) }.padding(4.dp)
     ) {
         Image(
             painter = rememberImagePainter(
@@ -52,12 +52,12 @@ fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, user: SignUpUse
             ),
             contentDescription = null,
             modifier = Modifier
-                .height(60.dp)
-                .width(60.dp)
+                .height(75.dp)
+                .width(75.dp)
                 .padding(start = 5.dp)
                 .padding(5.dp)
         )
-        Column {
+        Column(modifier = Modifier.padding(12.dp)){
             Text(
                 user.username.toString(),
                 style = MaterialTheme.typography.body1,
@@ -66,7 +66,8 @@ fun ChatListItem(listener: ChatsFragment.ChatsFragmentCallback?, user: SignUpUse
             Text(
                 "Last message",
                 style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp)
+                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+                maxLines = 1
             )
         }
     }

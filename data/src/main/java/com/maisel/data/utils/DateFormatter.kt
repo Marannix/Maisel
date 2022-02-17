@@ -6,6 +6,6 @@ import java.util.*
 class DateFormatter {
 
     fun getChatTime(timestamp: Long) : String {
-        return SimpleDateFormat("HH:mm", Locale.ENGLISH).format(timestamp * 1000L)
+        return SimpleDateFormat("HH:mm", Locale.ENGLISH).format(timestamp)
     }
 }

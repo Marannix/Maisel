@@ -16,6 +16,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import java.util.*
 
 //TODO: Rename package to @user
 class UserRepositoryImpl(
@@ -64,7 +65,7 @@ class UserRepositoryImpl(
             firebaseUser.photoUrl.toString(),
             null
         )
-      //  setUserInDatabase(user)
+        //  setUserInDatabase(user)
     }
 
     override fun getCurrentUser(): FirebaseUser? {
@@ -90,7 +91,14 @@ class UserRepositoryImpl(
                     snapshot.children.forEach { children ->
                         val users = children.getValue(SignUpUser::class.java)
                         users?.userId = children.key
-                        users?.let(list::add)
+
+                        users?.let { user ->
+                            list.add(user.copy(username = user.username?.replaceFirstChar {
+                                if (it.isLowerCase()) it.titlecase(
+                                    Locale.getDefault()
+                                ) else it.toString()
+                            }))
+                        }
                     }
                     listOfUsers.onNext(list)
                 }
