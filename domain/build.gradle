@@ -54,6 +54,9 @@ dependencies {
 
     implementation "javax.inject:javax.inject:1"
 
+    //Coroutine
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+
     //TEST
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.test.ext:junit:1.1.2'

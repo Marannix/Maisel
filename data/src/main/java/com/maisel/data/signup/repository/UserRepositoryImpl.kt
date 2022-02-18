@@ -17,11 +17,16 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
-import java.util.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.*
 
 //TODO: Rename package to @user
+@ExperimentalCoroutinesApi
 class UserRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
     private val database: DatabaseReference) : UserRepository {
@@ -95,39 +100,36 @@ class UserRepositoryImpl(
 
     override fun observeListOfUsers(): Observable<List<SignUpUser>> = listOfUsers
 
-    override fun startListeningToUsers() {
-        if (userListeners != null) {
-            Log.w("UserRepositoryImpl", " Calling start listening while already started")
-            return
-        }
-        userListeners =
-            database.child("Users").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    listOfUsers.onNext(emptyList())
-                    val list = mutableListOf<SignUpUser>()
-                    snapshot.children.forEach { children ->
-                        val users = children.getValue(SignUpUser::class.java)
-                        users?.userId = children.key
+    // https://medium.com/swlh/how-to-use-firebase-realtime-database-with-kotlin-coroutine-flow-946fe4cf2cd9
+    override fun fetchListOfUsers() = callbackFlow<Result<List<SignUpUser>>> {
+        val postListener = object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+            }
 
-                        users?.let { user ->
-                            list.add(user.copy(username = user.username?.replaceFirstChar {
-                                if (it.isLowerCase()) it.titlecase(
-                                    Locale.getDefault()
-                                ) else it.toString()
-                            }))
-                        }
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<SignUpUser>()
+                snapshot.children.forEach { children ->
+                    val users = children.getValue(SignUpUser::class.java)
+                    users?.userId = children.key
+
+                    users?.let { user ->
+                        list.add(user.copy(username = user.username?.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.getDefault()
+                            ) else it.toString()
+                        }))
                     }
-                    listOfUsers.onNext(list)
                 }
+                this@callbackFlow.sendBlocking(Result.success(list))
+            }
+        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // TODO
-                }
-            })
-    }
+        database.child("Users").addValueEventListener(postListener)
 
-    override fun stopListeningToUsers() {
-        userListeners?.let { database.child("Users").removeEventListener(it) }
+        awaitClose {
+            database.child("Users").removeEventListener(postListener)
+        }
     }
 
     override fun getSenderUid(): String? {

@@ -36,6 +36,7 @@ class ChatDetailViewModel @Inject constructor(
         messagesUseCase.stopListeningToMessages(senderRoom)
     }
 
+    //Current user is the sender
     fun getSenderUid(): String? {
         val senderUid = senderUidUseCase.invoke()
         viewState.value = currentViewState().copy(senderUid = senderUid)

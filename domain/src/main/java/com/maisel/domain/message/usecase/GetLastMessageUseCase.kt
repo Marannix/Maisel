@@ -1,25 +1,11 @@
 package com.maisel.domain.message.usecase
 
 import com.maisel.domain.message.MessageRepository
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetLastMessageUseCase @Inject constructor(private val messageRepository: MessageRepository){
-    operator fun invoke(): Observable<String> {
-        return messageRepository.observeLastMessage().map {it}
+    operator fun invoke(userId: String): Flow<Result<String>> {
+        return messageRepository.fetchLastMessage(userId)
     }
-
-    fun startListeningToMessages(userId: String) {
-        messageRepository.startListeningToLastMessages(userId)
-    }
-
-//    fun stopListeningToMessages() {
-//        messageRepository.stopListeningToLastMessages()
-//    }
-
-//    sealed class MessageDataState {
-//        object Loading: MessageDataState()
-//        data class Success(val messages: List<MessageModel>): MessageDataState()
-//        object Error : MessageDataState()
-//    }
 }

@@ -26,10 +26,10 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
 
     fun sendMessage(input: String) {
         state.value?.let {
-            if (it.senderRoom != null && it.senderUid != null && it.receiverRoom != null) {
+            if (it.senderRoom != null && it.senderUid != null && it.receiverRoom != null && it.receiverId != null) {
                 val model = MessageModel(it.senderUid, input, Date().time.toString())
 
-                sendMessageUseCase.invoke(input, it.senderRoom, it.receiverRoom, model)
+                sendMessageUseCase.invoke(input, it.senderRoom, it.receiverRoom, it.receiverId, model)
                 state.value = currentViewState().copy(input = "")
 
             } else {
@@ -53,6 +53,12 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
     fun setReceiverRoom(receiverRoom: String?) {
         if (receiverRoom != null) {
             state.value = currentViewState().copy(receiverRoom = receiverRoom)
+        }
+    }
+
+    fun setReceiverId(receiverId: String?) {
+        if (receiverId != null) {
+            state.value = currentViewState().copy(receiverId = receiverId)
         }
     }
 

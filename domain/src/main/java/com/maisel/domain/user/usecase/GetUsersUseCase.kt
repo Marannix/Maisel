@@ -15,11 +15,11 @@ class GetUsersUseCase @Inject constructor(private val userRepository: UserReposi
     }
 
     fun startListeningToUsers() {
-        userRepository.startListeningToUsers()
+        //userRepository.startListeningToUsers()
     }
 
     fun stopListeningToUsers() {
-        userRepository.stopListeningToUsers()
+   //     userRepository.stopListeningToUsers()
     }
 
     sealed class UserDataState {

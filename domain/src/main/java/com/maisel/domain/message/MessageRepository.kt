@@ -1,6 +1,7 @@
 package com.maisel.domain.message
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
 
@@ -14,9 +15,11 @@ interface MessageRepository {
 
     fun getSenderUid(): String?
 
-    fun sendMessage(input: String, senderRoom: String, receiverRoom: String, model: MessageModel)
+    fun sendMessage(input: String, senderRoom: String, receiverRoom: String, receiverId: String, model: MessageModel)
 
     fun startListeningToLastMessages(userId: String)
 
     fun observeLastMessage(): Observable<String>
+
+    fun fetchLastMessage(userId: String): Flow<Result<String>>
 }
