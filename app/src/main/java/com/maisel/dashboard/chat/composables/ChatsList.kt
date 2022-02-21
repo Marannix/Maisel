@@ -21,6 +21,7 @@ import coil.transform.CircleCropTransformation
 import com.maisel.R
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ChatsFragment
+import com.maisel.domain.message.MessageModel
 import com.maisel.domain.user.entity.SignUpUser
 
 @Composable
@@ -31,11 +32,12 @@ fun ChatsList(
     listener: ChatsFragment.ChatsFragmentCallback?,
 ) {
     val users by viewModel.users.collectAsState()
+    val latestMessages by viewModel.latestMessages.collectAsState()
 
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(users) { user ->
-                ChatListItem(viewModel, listener, user)
+                ChatListItem(viewModel, listener, user, latestMessages)
             }
         }
     }
@@ -46,7 +48,9 @@ fun ChatsList(
 fun ChatListItem(
     viewModel: DashboardViewModel,
     listener: ChatsFragment.ChatsFragmentCallback?,
-    user: SignUpUser) {
+    user: SignUpUser,
+    latestMessages: List<MessageModel>
+) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
@@ -76,12 +80,14 @@ fun ChatListItem(
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )
-            Text(
-                user.lastMessage.toString(),
-                style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
-                maxLines = 1
-            )
+
+            latestMessages.firstOrNull { it.receiverId == user.userId }?.message?.let { message ->
+                Text(text = message,
+                    style = MaterialTheme.typography.subtitle2,
+                    modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+                    maxLines = 1
+                )
+            }
         }
     }
 }

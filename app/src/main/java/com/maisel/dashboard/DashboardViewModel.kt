@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.dashboard.chat.DashboardViewState
+import com.maisel.domain.message.MessageModel
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.usecase.GetUsersUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
@@ -24,12 +25,12 @@ class DashboardViewModel @Inject constructor(
 
     val users: StateFlow<List<SignUpUser>> = userComposerController.users
 
-    val recentUsers: StateFlow<List<SignUpUser>> = userComposerController.recentUsers
+    val latestMessages: StateFlow<List<MessageModel>> = userComposerController.latestMessages
 
     init {
         viewState.value = DashboardViewState()
         userComposerController.listOfUsers()
-        userComposerController.getLastMessagesUseCaseV2()
+        userComposerController.getLatestMessages()
     }
 
     private fun currentViewState(): DashboardViewState = viewState.value!!
