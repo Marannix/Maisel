@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.Maisel" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/sanMarino</item>
-        <item name="colorPrimaryVariant">@color/sanMarino</item>
+        <item name="colorPrimary">@color/mirage</item>
+        <item name="colorPrimaryVariant">@color/mirage</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/romanCoffee</item>
-        <item name="colorSecondaryVariant">@color/romanCoffee</item>
+        <item name="colorSecondary">@color/mirage</item>
+        <item name="colorSecondaryVariant">@color/mirage</item>
             <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSecondary</item>

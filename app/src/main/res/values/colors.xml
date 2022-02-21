@@ -27,4 +27,44 @@
     <color name="sanMarino">#3f71ae</color>
     <color name="tuna">#3a3a3b</color>
     <color name="romanCoffee">#795548</color>
+
+    <!-- Default colors -->
+    <color name="maisel_compose_text_high_emphasis">#000000</color>
+    <color name="maisel_compose_text_low_emphasis">#72767E</color>
+    <color name="maisel_compose_disabled">#B4B7BB</color>
+    <color name="maisel_compose_borders">#DBDDE1</color>
+    <color name="maisel_compose_input_background">#E9EAED</color>
+    <color name="maisel_compose_app_background">#FFFFFF</color>
+    <color name="maisel_compose_bars_background">#FFFFFF</color>
+    <color name="maisel_compose_link_background">#E9F1FF</color>
+    <color name="maisel_compose_overlay_regular">#80000000</color>
+    <color name="maisel_compose_overlay_dark">#99000000</color>
+    <color name="maisel_compose_primary_accent">#201A30</color>
+    <color name="maisel_compose_secondary_accent">#acb297</color>
+    <color name="maisel_compose_error_accent">#FF3742</color>
+    <color name="maisel_compose_info_accent">#20E070</color>
+    <color name="maisel_compose_highlight">#FBF4DD</color>
+
+    <!-- Default Dark colors -->
+    <color name="maisel_compose_text_high_emphasis_dark">#FFFFFF</color>
+    <color name="maisel_compose_text_low_emphasis_dark">#72767E</color>
+    <color name="maisel_compose_disabled_dark">#4C525C</color>
+    <color name="maisel_compose_borders_dark">#272A30</color>
+    <color name="maisel_compose_input_background_dark">#1C1E22</color>
+    <color name="maisel_compose_app_background_dark">#000000</color>
+    <color name="maisel_compose_bars_background_dark">#121416</color>
+    <color name="maisel_compose_link_background_dark">#00193D</color>
+    <color name="maisel_compose_overlay_regular_dark">#33000000</color>
+    <color name="maisel_compose_overlay_dark_dark">#99FFFFFF</color>
+    <color name="maisel_compose_primary_accent_dark">#201A30</color>
+    <color name="maisel_compose_secondary_accent_dark">#acb297</color>
+    <color name="maisel_compose_error_accent_dark">#FF3742</color>
+    <color name="maisel_compose_info_accent_dark">#20E070</color>
+    <color name="maisel_compose_highlight_dark">#302D22</color>
+
+    <!-- Chat colors -->
+    <color name="random_chat_color">#98a6b1</color>
+    <color name="maisel_compose_receiver_chat_background">#f6f6f6</color>
+    <color name="maisel_compose_sender_chat_background">#52437c</color>
+
 </resources>

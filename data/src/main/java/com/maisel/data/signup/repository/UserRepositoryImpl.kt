@@ -9,6 +9,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.maisel.data.coroutine.DispatcherProvider
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.repository.UserRepository
 import durdinapps.rxfirebase2.RxFirebaseAuth
@@ -16,12 +17,19 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.util.*
 
 //TODO: Rename package to @user
+@ExperimentalCoroutinesApi
 class UserRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
-    private val database: DatabaseReference
-) : UserRepository {
+    private val database: DatabaseReference) : UserRepository {
 
     private var listOfUsers = BehaviorSubject.create<List<SignUpUser>>()
     private var userListeners: ValueEventListener? = null
@@ -42,29 +50,44 @@ class UserRepositoryImpl(
             .subscribeOn(Schedulers.io())
     }
 
-    override fun signInWithEmailAndPassword(email: String, password: String): Maybe<AuthResult> {
-        return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
-            .subscribeOn(Schedulers.io())
+    override suspend fun makeLoginRequest(email: String, password: String): AuthResult? {
+        return withContext(DispatcherProvider.IO) {
+            try {
+                firebaseAuth
+                    .signInWithEmailAndPassword(email, password)
+                    .await()
+            } catch (e: Exception) {
+                Log.d("joshua exception", e.toString())
+                null
+            }
+        }
     }
 
-    override fun signInWithCredential(
-        idToken: String,
+    override suspend fun signInWithCredential(
         credential: AuthCredential
-    ): Maybe<AuthResult> {
-        return RxFirebaseAuth.signInWithCredential(firebaseAuth, credential)
-            .subscribeOn(Schedulers.io())
+    ): AuthResult? {
+        return withContext(DispatcherProvider.IO) {
+            try {
+                firebaseAuth
+                    .signInWithCredential(credential)
+                    .await()
+            } catch (e: Exception) {
+                Log.d("joshua exception", e.toString())
+                null
+            }
+        }
     }
 
     override fun setCurrentUser(firebaseUser: FirebaseUser) {
         val user = SignUpUser(
-            firebaseAuth.uid,
+            firebaseUser.uid,
             firebaseUser.displayName,
             null,
             null,
             firebaseUser.photoUrl.toString(),
             null
         )
-        setUserInDatabase(user)
+        //  setUserInDatabase(user)
     }
 
     override fun getCurrentUser(): FirebaseUser? {
@@ -77,37 +100,47 @@ class UserRepositoryImpl(
 
     override fun observeListOfUsers(): Observable<List<SignUpUser>> = listOfUsers
 
-    override fun startListeningToUsers() {
-        if (userListeners != null) {
-            Log.w("UserRepositoryImpl", " Calling start listening while already started")
-            return
-        }
-        userListeners =
-            database.child("Users").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val list = mutableListOf<SignUpUser>()
-                    snapshot.children.forEach { children ->
-                        val users = children.getValue(SignUpUser::class.java)
-                        users?.userId = children.key
-                        users?.let(list::add)
-                    }
-                    listOfUsers.onNext(list)
-                }
+    // https://medium.com/swlh/how-to-use-firebase-realtime-database-with-kotlin-coroutine-flow-946fe4cf2cd9
+    override fun fetchListOfUsers() = callbackFlow<Result<List<SignUpUser>>> {
+        val postListener = object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // TODO
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<SignUpUser>()
+                snapshot.children.forEach { children ->
+                    val users = children.getValue(SignUpUser::class.java)
+                    users?.userId = children.key
+
+                    users?.let { user ->
+                        list.add(user.copy(username = user.username?.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.getDefault()
+                            ) else it.toString()
+                        }))
+                    }
                 }
-            })
+                this@callbackFlow.sendBlocking(Result.success(list))
+            }
+        }
+
+        database.child("Users").addValueEventListener(postListener)
+
+        awaitClose {
+            database.child("Users").removeEventListener(postListener)
+        }
     }
 
-    override fun stopListeningToUsers() {
-        userListeners?.let { database.child("Users").removeEventListener(it) }
+    override fun getSenderUid(): String? {
+        return firebaseAuth.uid
     }
 
     private fun setUserInDatabase(user: SignUpUser) {
         //TODO: Maybe throw an exception if current user is null?
         val id = firebaseAuth.currentUser!!.uid
-        database.child("Users").child(id).setValue(user)
+        val userWithId = user.copy(userId = id)
+        database.child("Users").child(id).setValue(userWithId)
             .addOnSuccessListener {
                 Log.d("Joshua123", "database created successfully")
             }

@@ -8,13 +8,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
-import com.maisel.dashboard.MainActivity
-import com.maisel.onboarding.composables.SignUpPage
+import com.maisel.dashboard.DashboardActivity
+import com.maisel.showcase.composables.SignUpPage
 import com.maisel.state.AuthResultState
 import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,16 +33,9 @@ class SignUpActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val showNameError =
-                viewModel.viewState.observeAsState().value?.signUpValidator?.showNameError ?: false
-            val showEmailError =
-                viewModel.viewState.observeAsState().value?.signUpValidator?.showEmailError ?: false
-            val showPasswordError =
-                viewModel.viewState.observeAsState().value?.signUpValidator?.showPasswordError ?: false
-
             MainTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    SignUpPage(viewModel, showNameError, showEmailError, showPasswordError)
+                    SignUpPage(viewModel)
                 }
             }
         }
@@ -68,7 +60,7 @@ class SignUpActivity : BaseActivity() {
             is AuthResultState.Success -> {
                 makeToastShort("Account Created")
                 viewModel.setUser(state.authResultState.user)
-                MainActivity.createIntent(this).also { startActivity(it) }
+                DashboardActivity.createIntent(this).also { startActivity(it) }
                 finishAffinity()
             }
             AuthResultState.Idle -> {

@@ -11,3 +11,10 @@ val QuickSand = FontFamily(
     Font(R.font.quicksand_medium, FontWeight.W500),
     Font(R.font.quicksand_bold, FontWeight.W600)
 )
+
+val Helventica = FontFamily(
+    Font(R.font.helventica_neue_light, FontWeight.W300),
+    Font(R.font.helventica_neue_bold, FontWeight.W400),
+    Font(R.font.helventica_neue_light, FontWeight.W500),
+    Font(R.font.helventica_neue_medium, FontWeight.W600)
+)

@@ -1,77 +1,36 @@
 package com.maisel.signin
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
+import com.maisel.common.state.ValidationError
+import com.maisel.compose.state.onboarding.compose.AuthenticationState
+import com.maisel.compose.state.onboarding.compose.SignInComposerController
 import com.maisel.domain.user.usecase.GetCurrentUser
 import com.maisel.domain.user.usecase.SetCurrentUserUseCase
-import com.maisel.domain.user.usecase.SignInUseCase
-import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
-import com.maisel.state.AuthResultState
-import com.maisel.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCase,
-                                          private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
-                                          private val currentUser: GetCurrentUser,
-                                          private val setCurrentUser: SetCurrentUserUseCase
+class SignInViewModel @Inject constructor(
+    private val currentUser: GetCurrentUser,
+    private val setCurrentUser: SetCurrentUserUseCase,
+    private val signInComposerController: SignInComposerController
 ) : BaseViewModel() {
 
-    val viewState = MutableLiveData<SignInViewState>()
+    val state: StateFlow<SignInViewState> = signInComposerController.state
 
-    init {
-        viewState.value = SignInViewState()
+    val input: StateFlow<AuthenticationState> = signInComposerController.input
+
+    val validationErrors: StateFlow<ValidationError.AuthenticationError> = signInComposerController.validationErrors
+
+    private fun signInWithEmailAndPassword(authenticationState: AuthenticationState) {
+        signInComposerController.makeLoginRequest(authenticationState)
     }
 
-    private fun currentViewState(): SignInViewState = viewState.value!!
-
-    fun signInWithEmailAndPassword(email: String, password: String) {
-        signInUseCase.invoke(email, password)
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { viewState.value = currentViewState().copy(authResultState = AuthResultState.Loading  )}
-            .subscribe ({
-                if (it.user != null) {
-                    viewState.value = currentViewState().copy(authResultState = AuthResultState.Success(it.user!!))
-                } else {
-                    //TODO: Throw specific error for null user
-                    viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
-                }
-            }, {
-                viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
-            })
-            .addDisposable()
-    }
-
-    fun signInWithCredential(idToken: String, credential: AuthCredential) {
-        signInWithCredentialUseCase.invoke(idToken, credential).observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { viewState.value = currentViewState().copy(authResultState = AuthResultState.Loading  )}
-            .subscribe ({
-                if (it.user != null) {
-                    viewState.value = currentViewState().copy(authResultState = AuthResultState.Success(it.user!!))
-                } else {
-                    //TODO: Throw specific error for null user
-                    viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
-                }
-            }, {
-                viewState.value = currentViewState().copy(authResultState = AuthResultState.Error)
-            })
-            .addDisposable()
-    }
-
-    fun isEmailAddressValid(email: String) : Boolean {
-        return if (email.isNotEmpty() && Validator().isEmailValid(email)) {
-            viewState.value = currentViewState().copy(signInValidator = currentViewState().signInValidator.copy(showEmailError = false))
-            true
-        } else {
-            viewState.value = currentViewState().copy(signInValidator = currentViewState().signInValidator.copy(showEmailError = true))
-            false
-        }
+    fun signInWithCredential(credential: AuthCredential) {
+        signInComposerController.signInWithCredential(credential)
     }
 
     fun isUserLoggedIn(): Boolean {
@@ -82,9 +41,22 @@ class SignInViewModel @Inject constructor(private val signInUseCase: SignInUseCa
         setCurrentUser.invoke(user)
     }
 
-    fun onLoginClicked(emailState: MutableState<TextFieldValue>, passwordState: MutableState<TextFieldValue>) {
-        if (isEmailAddressValid(emailState.value.text)) {
-            signInWithEmailAndPassword(emailState.value.text, password = passwordState.value.text)
-        }
+    fun onLoginClicked(authenticationState: AuthenticationState) {
+        signInWithEmailAndPassword(authenticationState)
+    }
+
+    /**
+     * Called when the input changes and the internal state needs to be updated.
+     *
+     * @param value Current state value.
+     */
+     fun setSignInInput(value: AuthenticationState): Unit = signInComposerController.setSignInInput(value)
+
+    /**
+     * Disposes the inner [SignInComposerController].
+     */
+    override fun onCleared() {
+        super.onCleared()
+        signInComposerController.onCleared()
     }
 }

@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.maisel.domain.user.entity.SignUpUser
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
@@ -19,7 +20,7 @@ interface UserRepository {
      * Sign in using email and password.
      * @return an AuthResult which is either a success or failure.
      */
-    fun signInWithEmailAndPassword(email: String, password: String) : Maybe<AuthResult>
+    suspend fun makeLoginRequest(email: String, password: String): AuthResult?
 
     /**
      * Gets current user logged in
@@ -27,15 +28,15 @@ interface UserRepository {
      */
     fun getCurrentUser() : FirebaseUser?
 
-    fun signInWithCredential(idToken: String, credential: AuthCredential): Maybe<AuthResult>
+    suspend fun signInWithCredential(credential: AuthCredential): AuthResult?
 
     fun setCurrentUser(firebaseUser: FirebaseUser)
 
     fun logoutUser()
 
-    fun startListeningToUsers()
-
-    fun stopListeningToUsers()
-
     fun observeListOfUsers(): Observable<List<SignUpUser>>
+
+    fun getSenderUid(): String?
+
+    fun fetchListOfUsers(): Flow<Result<List<SignUpUser>>>
 }

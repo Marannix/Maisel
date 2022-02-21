@@ -9,9 +9,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,30 +22,24 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
 import com.maisel.common.BaseActivity
-import com.maisel.dashboard.MainActivity
-import com.maisel.onboarding.composables.SignInPage
+import com.maisel.dashboard.DashboardActivity
+import com.maisel.showcase.composables.SignInPage
 import com.maisel.signup.SignUpActivity
 import com.maisel.state.AuthResultState
 import com.maisel.ui.MainTheme
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.onEach
 
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 class SignInActivity : BaseActivity() {
 
-    companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, SignInActivity::class.java)
-        }
-    }
-
     private lateinit var googleSignInClient: GoogleSignInClient
-    private val RC_SIGN_IN = 65
 
     private val viewModel: SignInViewModel by lazy {
-        ViewModelProvider(this).get(
-            SignInViewModel::class.java
-        )
+        ViewModelProvider(this)[SignInViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,16 +47,10 @@ class SignInActivity : BaseActivity() {
         signInCurrentUser()
 
         setContent {
-            val showEmailError =
-                viewModel.viewState.observeAsState().value?.signInValidator?.showEmailError ?: false
-            val showErrorDialog =
-                viewModel.viewState.observeAsState().value?.authResultState is AuthResultState.Error
             MainTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     SignInPage(
                         viewModel,
-                        showEmailError,
-                        showErrorDialog,
                         ::signInWithGoogle,
                         ::signInWithFacebook,
                         ::forgotPassword,
@@ -76,8 +66,10 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun observeViewState() {
-        viewModel.viewState.observe(this) { state ->
-            render(state)
+        lifecycleScope.launchWhenStarted {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collectLatest {
+                render(it)
+            }
         }
     }
 
@@ -92,7 +84,7 @@ class SignInActivity : BaseActivity() {
             is AuthResultState.Success -> {
                 viewModel.setUser(state.authResultState.user)
                 Log.d("joshua", "activity success")
-                MainActivity.createIntent(this).also { startActivity(it) }
+                DashboardActivity.createIntent(this).also { startActivity(it) }
                 finish()
             }
             AuthResultState.Error -> {
@@ -102,12 +94,12 @@ class SignInActivity : BaseActivity() {
     }
 
     /**
-     * TODO: Create splash screen
+     *  TODO: Create splash screen
      *  Move this method to splash screen
      */
     private fun signInCurrentUser() {
         if (viewModel.isUserLoggedIn()) {
-            MainActivity.createIntent(this).also { startActivity(it) }
+            DashboardActivity.createIntent(this).also { startActivity(it) }
             finish()
         }
     }
@@ -139,7 +131,7 @@ class SignInActivity : BaseActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        viewModel.signInWithCredential(idToken, GoogleAuthProvider.getCredential(idToken, null))
+        viewModel.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -157,6 +149,14 @@ class SignInActivity : BaseActivity() {
                 // Google Sign In failed, update UI appropriately
                 Log.w("TAG", "Google sign in failed", e)
             }
+        }
+    }
+
+    companion object {
+        private const val RC_SIGN_IN = 65
+
+        fun createIntent(context: Context): Intent {
+            return Intent(context, SignInActivity::class.java)
         }
     }
 }
