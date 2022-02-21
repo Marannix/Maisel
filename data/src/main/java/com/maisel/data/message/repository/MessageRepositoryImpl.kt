@@ -7,12 +7,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.maisel.data.firebase.observeLastMessage
 import com.maisel.data.message.model.MessageData
 import com.maisel.data.message.toMessageData
 import com.maisel.data.message.toMessageModel
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.MessageRepository
-import com.maisel.domain.user.entity.SignUpUser
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -88,42 +88,43 @@ class MessageRepositoryImpl(
                     }
             }
 
-        updateLastMessage(receiverId, model)
+        //updateLastMessage(receiverId, model)
+        setLatestMessage(receiverId, model)
     }
 
     //TODO: Convert to coroutine
-    private fun updateLastMessage(receiverId: String, model: MessageModel) {
-        database.child("Users")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach { child ->
-                        val user = child.getValue(SignUpUser::class.java)
-                        user?.userId?.let {
-                            if (receiverId == it) {
-                                    database.child("Users").child(receiverId) //TODO: Remove listener
-                                        .setValue(user.copy(lastMessage = model.message))
-                                        .addOnSuccessListener {
-
-                                        }
-                                        .addOnFailureListener {
-
-                                        }
-                                        .addOnCompleteListener {
-
-                                        }
-
-                            }
-                        }
-                    }
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-    }
+//    private fun updateLastMessage(receiverId: String, model: MessageModel) {
+//        database.child("Users")
+//            .addValueEventListener(object : ValueEventListener {
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    snapshot.children.forEach { child ->
+//                        val user = child.getValue(SignUpUser::class.java)
+//                        user?.userId?.let {
+//                            if (receiverId == it) {
+//                                database.child("Users").child(receiverId) //TODO: Remove listener
+//                                    .setValue(user.copy(lastMessage = model.message))
+//                                    .addOnSuccessListener {
+//
+//                                    }
+//                                    .addOnFailureListener {
+//
+//                                    }
+//                                    .addOnCompleteListener {
+//
+//                                    }
+//
+//                            }
+//                        }
+//                    }
+//
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//            })
+//    }
 
     override fun stopListeningToMessages(senderRoom: String) {
         messageListeners?.let {
@@ -138,82 +139,59 @@ class MessageRepositoryImpl(
 //        sendMessageSenderListeners = null
     }
 
-    override fun startListeningToLastMessages(userId: String) {
-        database.ref.child("chats")
-            .child(firebaseAuth.uid + userId)
-            .orderByChild("timestamp")
-            .limitToLast(1)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.hasChildren()) {
-                        lastMessageListeners.onNext(
-                            snapshot.children.firstOrNull()?.child("message")?.value.toString()
-                        )
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-    }
-
-//    suspend fun startListeningToLastMessages2(userId: String) : String {
-//        withContext(DispatcherProvider.IO) {
-//            try {
-//                database.ref.child("chats")
-//                    .child(firebaseAuth.uid + userId)
-//                    .orderByChild("timestamp")
-//                    .limitToLast(1)
-//                    .addListenerForSingleValueEvent( object: ValueEventListener {
-//                        override fun onDataChange(snapshot: DataSnapshot) {
-//                            if (snapshot.hasChildren()) {
-//                                lastMessageListeners.onNext(snapshot.children.firstOrNull()?.child("message")?.value.toString())
-//                            }
-//                            return ""
-//                        }
-//
-//                        override fun onCancelled(error: DatabaseError) {
-//                            TODO("Not yet implemented")
-//                        }
-//
-//                    })
-//            } catch (e: Exception) {
-//                Log.d("joshua exception", e.toString())
-//                null
-//            }
-//        }
-//    }
-
     // https://medium.com/swlh/how-to-use-firebase-realtime-database-with-kotlin-coroutine-flow-946fe4cf2cd9
     override fun fetchLastMessage(userId: String) = callbackFlow<Result<String>> {
+        database.ref.child("chats")
+            .child(firebaseAuth.uid + userId)
+            .observeLastMessage()
+    }
+
+    private fun setLatestMessage(receiverId: String, model: MessageModel) {
+        firebaseAuth.uid?.let { firebaseAuthUid ->
+            database.ref.child("latest-messages")
+                .child(firebaseAuthUid)
+                .child(receiverId)
+                .setValue(model.toMessageData())
+                .addOnSuccessListener {
+                    database.ref.child("latest-messages")
+                        .child(receiverId)
+                        .child(firebaseAuthUid)
+                        .setValue(model.toMessageData())
+                        .addOnSuccessListener {
+
+                        }
+                }
+        }
+    }
+
+    override fun getLatestMessagev2() = callbackFlow<Result<List<MessageModel>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))
             }
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                this@callbackFlow.sendBlocking(
-                    Result.success(
-                        dataSnapshot.children.firstOrNull()?.child("message")?.value.toString()
-                    )
-                )
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<MessageModel>()
+                snapshot.children.forEach { children ->
+                    val latestMessages = children.getValue(MessageData::class.java)?.toMessageModel() ?: MessageData().toMessageModel()
+
+                    list.add(latestMessages)
+                }
+                this@callbackFlow.sendBlocking(Result.success(list))
             }
         }
 
-        database.ref.child("chats")
-            .child(firebaseAuth.uid + userId)
-            .orderByChild("timestamp")
-            .limitToLast(1)
-            .addListenerForSingleValueEvent(postListener)
+        firebaseAuth.uid?.let { firebaseAuthUid ->
+            database.ref.child("latest-messages")
+                .child(firebaseAuthUid)
+                .addValueEventListener(postListener)
 
-        awaitClose {
-            database.ref.child("chats")
-                .child(firebaseAuth.uid + userId)
-                .orderByChild("timestamp")
-                .limitToLast(1)
-                .removeEventListener(postListener)
+
+            awaitClose {
+                database.ref.child("latest-messages")
+                    .child(firebaseAuthUid)
+                    .removeEventListener(postListener)
+            }
         }
     }
 

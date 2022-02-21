@@ -10,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -20,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
-import com.maisel.chat.composables.MessageItem
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.domain.user.entity.SignUpUser
@@ -37,7 +35,7 @@ fun ChatsList(
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(users) { user ->
-                ChatListItem(listener, user)
+                ChatListItem(viewModel, listener, user)
             }
         }
     }
@@ -46,9 +44,9 @@ fun ChatsList(
 @ExperimentalComposeUiApi
 @Composable
 fun ChatListItem(
+    viewModel: DashboardViewModel,
     listener: ChatsFragment.ChatsFragmentCallback?,
-    user: SignUpUser,
-) {
+    user: SignUpUser) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier

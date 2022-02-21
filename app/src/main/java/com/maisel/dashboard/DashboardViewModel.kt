@@ -31,6 +31,8 @@ class DashboardViewModel @Inject constructor(
     init {
         viewState.value = DashboardViewState()
         userComposerController.listOfUsers()
+        userComposerController.getLastMessagesUseCaseV2()
+    //    userComposerController.findUserLastMessageV2()
     }
 
     private fun currentViewState(): DashboardViewState = viewState.value!!
