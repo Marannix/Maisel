@@ -59,7 +59,7 @@ class UserComposerController @Inject constructor(
                         users.forEach { user ->
                             user.userId?.let { userId ->
                                 user.lastMessage =
-                                    listOfLatestMessages.firstOrNull { it.uid == userId }?.message
+                                    listOfLatestMessages.firstOrNull { it.senderId == userId }?.message
                                 Log.d("JoshuaTest", user.lastMessage.toString())
                             }
                         }
@@ -82,7 +82,7 @@ class UserComposerController @Inject constructor(
                         users.forEach { user ->
                             user.userId?.let { userId ->
                                 user.lastMessage =
-                                    listOfLatestMessages.firstOrNull { it.uid == userId }?.message
+                                    listOfLatestMessages.firstOrNull { it.senderId == userId }?.message
                                 Log.d("JoshuaTest", user.lastMessage.toString())
                             }
                         }
@@ -140,29 +140,29 @@ class UserComposerController @Inject constructor(
         fun findUserLastMessage(userId: String) {
             scope.launch {
                 latestMessages.collect {
-                    it.first { it.uid == userId }.message
+                    it.first { it.senderId == userId }.message
                 }
             }
         }
 
-    fun findUserLastMessageV2() {
-        scope.launch {
-            val list = mutableListOf<SignUpUser>()
-            latestMessages.collect { messages ->
-                users.collect { users ->
-                    users.forEach { user ->
-                        user.userId?.let { userId ->
-                            user.lastMessage = messages.firstOrNull { it.uid == userId }?.message
-                            list.add(user)
-                            Log.d("JoshuaTest", user.lastMessage.toString())
-                        }
-                    }
-                }
-            }
-
-            recentUsers.value = list
-        }
-    }
+//    fun findUserLastMessageV2() {
+//        scope.launch {
+//            val list = mutableListOf<SignUpUser>()
+//            latestMessages.collect { messages ->
+//                users.collect { users ->
+//                    users.forEach { user ->
+//                        user.userId?.let { userId ->
+//                            user.lastMessage = messages.firstOrNull { it.senderId == userId }?.message
+//                            list.add(user)
+//                            Log.d("JoshuaTest", user.lastMessage.toString())
+//                        }
+//                    }
+//                }
+//            }
+//
+//            recentUsers.value = list
+//        }
+//    }
 
         /**
          * Retrieve list of users from Firebase Realtime Database

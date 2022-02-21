@@ -58,8 +58,8 @@ class ChatDetailActivity : BaseActivity() {
             finish() //TODO: Is this possible?
         }
 
-        user.userId?.let { senderId = it }
-        viewModel.getSenderUid()?.let { receiverId = it }
+        viewModel.getSenderUid()?.let { senderId = it }
+        user.userId?.let { receiverId = it  }
 
         messageViewModel.setSenderUid(senderId)
         messageViewModel.setReceiverId(receiverId)
