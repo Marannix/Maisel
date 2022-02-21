@@ -8,9 +8,7 @@ import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,16 +32,47 @@ class UserComposerController @Inject constructor(
      */
     val users: MutableStateFlow<List<SignUpUser>> = MutableStateFlow(emptyList())
 
+    val recentUsers: MutableStateFlow<List<SignUpUser>> = MutableStateFlow(emptyList())
+
     /**
      * Represents the list of latest messages from Firebase Realtime Database
      */
     val latestMessages: MutableStateFlow<List<MessageModel>> = MutableStateFlow(emptyList())
 
     /**
+     * Represents the list of latest messages from Firebase Realtime Database
+     */
+    val latestMessagesv3: MutableStateFlow<List<MessageModel>> = MutableStateFlow(emptyList())
+
+
+    /**
      * Retrieve and set last message for a specific user based on their userId
      * @param userId of a user from Firebase Realtime Database
      */
     fun getLastMessagesUseCaseV2() {
+        scope.launch {
+            lastMessageUseCase.invoke().collect { result ->
+                result.onSuccess { listOfLatestMessages ->
+                    latestMessages.value = listOfLatestMessages
+
+                    users.collect { users ->
+                        users.forEach { user ->
+                            user.userId?.let { userId ->
+                                user.lastMessage =
+                                    listOfLatestMessages.firstOrNull { it.uid == userId }?.message
+                                Log.d("JoshuaTest", user.lastMessage.toString())
+                            }
+                        }
+                    }
+                    result.onFailure { throwable ->
+                        //TODO: Update UI and show error?
+                    }
+                }
+            }
+        }
+    }
+
+    fun getLastMessagesUseCaseV3() {
         scope.launch {
             lastMessageUseCase.invoke().collect { result ->
                 result.onSuccess { listOfLatestMessages ->
@@ -116,33 +145,37 @@ class UserComposerController @Inject constructor(
             }
         }
 
-//    fun findUserLastMessageV2() {
-//        scope.launch {
-//            latestMessages.collect { messages ->
-//                users.collect { users ->
-//                    users.forEach { user ->
-//                        user.userId?.let { userId ->
-//                            user.lastMessage = messages.firstOrNull { it.uid == userId }?.message
-//                            Log.d("JoshuaTest", user.lastMessage.toString())
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+    fun findUserLastMessageV2() {
+        scope.launch {
+            val list = mutableListOf<SignUpUser>()
+            latestMessages.collect { messages ->
+                users.collect { users ->
+                    users.forEach { user ->
+                        user.userId?.let { userId ->
+                            user.lastMessage = messages.firstOrNull { it.uid == userId }?.message
+                            list.add(user)
+                            Log.d("JoshuaTest", user.lastMessage.toString())
+                        }
+                    }
+                }
+            }
+
+            recentUsers.value = list
+        }
+    }
 
         /**
          * Retrieve list of users from Firebase Realtime Database
          */
-        fun stuff() {
-            scope.launch {
-                userRepository.fetchListOfUsers().map {
-                    it.onSuccess {
-
-                    }
-                }
-            }
-        }
+//        fun stuff() {
+//            scope.launch {
+//                users.collect {
+//                    it.forEach { user ->
+//                     user.lastMessage = messages.firstOrNull { it.uid == userId }?.message
+//                    }
+//                }
+//            }
+//        }
 
         /**
          * Cancels any pending work when the parent ViewModel is about to be destroyed.

@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class SendMessageUseCase @Inject constructor(val messageRepository: MessageRepository) {
 
-    operator fun invoke(input: String, senderRoom: String, receiverRoom: String, receiverId: String, model: MessageModel) {
-        messageRepository.sendMessage(input, senderRoom, receiverRoom, receiverId, model)
+    operator fun invoke(input: String, senderUid: String, receiverId: String, model: MessageModel) {
+        messageRepository.sendMessage(input, senderUid, receiverId, model)
     }
 }

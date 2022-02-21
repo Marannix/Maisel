@@ -19,6 +19,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
+import com.maisel.dashboard.chat.composables.ChatsList
 
 @ExperimentalComposeUiApi
 @Composable
@@ -88,7 +89,7 @@ fun DashboardScreen(
                 }
             },
             content = { padding ->
-                RecentMessageScreen(padding)
+                ChatsList(viewModel, null)
             }
         )
     }

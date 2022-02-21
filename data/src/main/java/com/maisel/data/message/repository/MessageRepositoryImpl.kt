@@ -33,14 +33,16 @@ class MessageRepositoryImpl(
 
     private var lastMessageListeners = BehaviorSubject.create<String>()
 
-    override fun startListeningToMessages(senderRoom: String) {
+    override fun startListeningToMessages(senderId: String, receiverId: String) {
         if (messageListeners != null) {
             Log.w("MessageRepositoryImpl", " Calling start listening while already started")
             return
         }
         messageListeners =
-            database.ref.child("chats")
-                .child(senderRoom).addValueEventListener(object : ValueEventListener {
+            database.ref.child("messages")
+                .child(senderId)
+                .child(receiverId)
+                .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val list = mutableListOf<MessageModel>()
                         snapshot.children.forEach { children ->
@@ -65,8 +67,7 @@ class MessageRepositoryImpl(
 
     override fun sendMessage(
         input: String,
-        senderRoom: String,
-        receiverRoom: String,
+        senderUid: String,
         receiverId: String,
         model: MessageModel
     ) {
@@ -74,13 +75,15 @@ class MessageRepositoryImpl(
 //            Log.w("Message Repo send:", " Calling start listening while already started")
 //            return
 //        }
-        sendMessageSenderListeners = database.ref.child("chats")
-            .child(senderRoom)
+        sendMessageSenderListeners = database.ref.child("messages")
+            .child(senderUid)
+            .child(receiverId)
             .push()
             .setValue(model.toMessageData())
             .addOnSuccessListener {
-                sendMessageReceiverListeners = database.ref.child("chats")
-                    .child(receiverRoom)
+                sendMessageReceiverListeners = database.ref.child("messages")
+                    .child(receiverId)
+                    .child(senderUid)
                     .push()
                     .setValue(model.toMessageData())
                     .addOnSuccessListener {
@@ -126,9 +129,12 @@ class MessageRepositoryImpl(
 //            })
 //    }
 
-    override fun stopListeningToMessages(senderRoom: String) {
+    override fun stopListeningToMessages(senderId: String, receiverId: String) {
         messageListeners?.let {
-            database.ref.child("chats").child(senderRoom).removeEventListener(it)
+            database.ref.child("messages")
+                .child(senderId)
+                .child(receiverId)
+                .removeEventListener(it)
         }
         messageListeners = null
         listOfMessages.onNext(emptyList())
@@ -141,7 +147,7 @@ class MessageRepositoryImpl(
 
     // https://medium.com/swlh/how-to-use-firebase-realtime-database-with-kotlin-coroutine-flow-946fe4cf2cd9
     override fun fetchLastMessage(userId: String) = callbackFlow<Result<String>> {
-        database.ref.child("chats")
+        database.ref.child("messages")
             .child(firebaseAuth.uid + userId)
             .observeLastMessage()
     }

@@ -22,9 +22,9 @@ import com.maisel.message.MessageViewModel
 @ExperimentalComposeUiApi
 class ChatDetailActivity : BaseActivity() {
 
-    private val user : SignUpUser by lazy { requireNotNull(intent.getParcelableExtra(USER)) }
-    private lateinit var senderRoom : String
-    private lateinit var receiverRoom: String
+    private val user: SignUpUser by lazy { requireNotNull(intent.getParcelableExtra(USER)) }
+    private lateinit var senderId: String
+    private lateinit var receiverId: String
 
     private val viewModel: ChatDetailViewModel by lazy {
         ViewModelProvider(this)[ChatDetailViewModel::class.java]
@@ -58,23 +58,21 @@ class ChatDetailActivity : BaseActivity() {
             finish() //TODO: Is this possible?
         }
 
-        senderRoom = user.userId + viewModel.getSenderUid()
-        receiverRoom =  viewModel.getSenderUid() + user.userId
+        user.userId?.let { senderId = it }
+        viewModel.getSenderUid()?.let { receiverId = it }
 
-        messageViewModel.setSenderUid(viewModel.getSenderUid())
-        messageViewModel.setSenderRoom(senderRoom)
-        messageViewModel.setReceiverRoom(receiverRoom)
-        messageViewModel.setReceiverId(user.userId)
+        messageViewModel.setSenderUid(senderId)
+        messageViewModel.setReceiverId(receiverId)
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.startListeningToMessages(senderRoom)
+        viewModel.startListeningToMessages(senderId, receiverId)
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.stopListeningToMessages(senderRoom)
+        viewModel.stopListeningToMessages(senderId, receiverId)
     }
 
     companion object {
