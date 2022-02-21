@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -59,11 +58,9 @@ class ChatsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val users =
-                    viewModel.viewState.observeAsState().value?.users ?: emptyList()
                 MainTheme {
                     Surface(color = MaterialTheme.colors.background) {
-                        ChatsList(users, callback)
+                        ChatsList(viewModel, callback)
                     }
                 }
             }

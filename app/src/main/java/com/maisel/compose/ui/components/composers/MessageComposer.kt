@@ -150,7 +150,7 @@ fun MessageComposer(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_send),
                                 contentDescription = stringResource(id = R.string.compose_message_label),
-                                tint = if (isInputValid) MaterialTheme.colors.primary else  MaterialTheme.colors.secondary
+                                tint = if (isInputValid) ChatTheme.colors.secondaryAccent else  ChatTheme.colors.textLowEmphasis
                             )
                         },
                         onClick = {

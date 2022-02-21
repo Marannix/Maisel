@@ -64,6 +64,7 @@ class ChatDetailActivity : BaseActivity() {
         messageViewModel.setSenderUid(viewModel.getSenderUid())
         messageViewModel.setSenderRoom(senderRoom)
         messageViewModel.setReceiverRoom(receiverRoom)
+        messageViewModel.setReceiverId(user.userId)
     }
 
     override fun onResume() {

@@ -34,12 +34,13 @@
     <color name="maisel_compose_disabled">#B4B7BB</color>
     <color name="maisel_compose_borders">#DBDDE1</color>
     <color name="maisel_compose_input_background">#E9EAED</color>
-    <color name="maisel_compose_app_background">#F7F7F8</color>
+    <color name="maisel_compose_app_background">#FFFFFF</color>
     <color name="maisel_compose_bars_background">#FFFFFF</color>
     <color name="maisel_compose_link_background">#E9F1FF</color>
     <color name="maisel_compose_overlay_regular">#80000000</color>
     <color name="maisel_compose_overlay_dark">#99000000</color>
-    <color name="maisel_compose_primary_accent">#006CFF</color>
+    <color name="maisel_compose_primary_accent">#201A30</color>
+    <color name="maisel_compose_secondary_accent">#acb297</color>
     <color name="maisel_compose_error_accent">#FF3742</color>
     <color name="maisel_compose_info_accent">#20E070</color>
     <color name="maisel_compose_highlight">#FBF4DD</color>
@@ -55,9 +56,15 @@
     <color name="maisel_compose_link_background_dark">#00193D</color>
     <color name="maisel_compose_overlay_regular_dark">#33000000</color>
     <color name="maisel_compose_overlay_dark_dark">#99FFFFFF</color>
-    <color name="maisel_compose_primary_accent_dark">#006CFF</color>
+    <color name="maisel_compose_primary_accent_dark">#201A30</color>
+    <color name="maisel_compose_secondary_accent_dark">#acb297</color>
     <color name="maisel_compose_error_accent_dark">#FF3742</color>
     <color name="maisel_compose_info_accent_dark">#20E070</color>
     <color name="maisel_compose_highlight_dark">#302D22</color>
+
+    <!-- Chat colors -->
+    <color name="random_chat_color">#98a6b1</color>
+    <color name="maisel_compose_receiver_chat_background">#f6f6f6</color>
+    <color name="maisel_compose_sender_chat_background">#52437c</color>
 
 </resources>
