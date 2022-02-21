@@ -1,4 +1,4 @@
-package com.maisel.dashboard.chat
+package com.maisel.dashboard
 
 import android.app.Activity
 import android.os.Bundle
@@ -12,30 +12,23 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.maisel.dashboard.DashboardViewModel
-import com.maisel.dashboard.chat.composables.ChatsList
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.compose.ui.components.dashboard.DashboardScreen
+import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.dashboard.chat.DashboardViewState
 import com.maisel.domain.user.usecase.GetUsersUseCase
-import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
 @AndroidEntryPoint
-//Rename ContactsFragment
-class ChatsFragment : Fragment() {
+class DashboardFragment : Fragment() {
 
-    private var callback: ChatsFragmentCallback? = null
+    private var callback: DashboardFragmentCallback? = null
 
-    interface ChatsFragmentCallback {
-        fun onOpenChatsDetails(user: SignUpUser)
+    interface DashboardFragmentCallback {
+        fun openContactsList()
     }
 
-    //TODO: ContactsViewModel
-    private val viewModel: DashboardViewModel by lazy {
-        ViewModelProvider(this).get(
-            DashboardViewModel::class.java
-        )
-    }
+    private val viewModel: DashboardViewModel by lazy { ViewModelProvider(this)[DashboardViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +39,10 @@ class ChatsFragment : Fragment() {
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         callback = try {
-            activity as ChatsFragmentCallback
+            activity as DashboardFragmentCallback
         } catch (e: ClassCastException) {
             throw ClassCastException(
-                "$activity must implement ChatsFragmentCallback "
+                "$activity must implement DashboardFragmentCallback "
             )
         }
     }
@@ -60,9 +53,9 @@ class ChatsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                MainTheme {
+                ChatTheme {
                     Surface(color = MaterialTheme.colors.background) {
-                        ChatsList(viewModel, callback)
+                        DashboardScreen(viewModel, callback)
                     }
                 }
             }
@@ -78,13 +71,13 @@ class ChatsFragment : Fragment() {
     private fun render(state: DashboardViewState) {
         when (state.use) {
             GetUsersUseCase.UserDataState.Error -> {
-                Toast.makeText(activity, "Chats Fragment Error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Dashboard Error", Toast.LENGTH_SHORT).show()
             }
             GetUsersUseCase.UserDataState.Loading -> {
-                Toast.makeText(activity, "Chats Fragment Loading", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Dashboard Loading", Toast.LENGTH_SHORT).show()
             }
             is GetUsersUseCase.UserDataState.Success -> {
-                Toast.makeText(activity, "Chats Fragment Success", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Dashboard Success", Toast.LENGTH_SHORT).show()
             }
         }
     }
