@@ -13,8 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
@@ -26,10 +24,9 @@ import com.maisel.domain.user.entity.SignUpUser
 
 @Composable
 @ExperimentalComposeUiApi
-@Preview(device = PIXEL_4)
 fun ChatsList(
     viewModel: DashboardViewModel,
-    listener: ChatsFragment.ChatsFragmentCallback?,
+    listener: ChatsFragment.ChatsFragmentCallback?
 ) {
     val users by viewModel.users.collectAsState()
     val latestMessages by viewModel.latestMessages.collectAsState()
@@ -37,7 +34,7 @@ fun ChatsList(
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(users) { user ->
-                ChatListItem(viewModel, listener, user, latestMessages)
+                ChatListItem(listener, user, latestMessages)
             }
         }
     }
@@ -46,12 +43,10 @@ fun ChatsList(
 @ExperimentalComposeUiApi
 @Composable
 fun ChatListItem(
-    viewModel: DashboardViewModel,
     listener: ChatsFragment.ChatsFragmentCallback?,
     user: SignUpUser,
     latestMessages: List<MessageModel>
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
@@ -82,7 +77,8 @@ fun ChatListItem(
             )
 
             latestMessages.firstOrNull { it.receiverId == user.userId }?.message?.let { message ->
-                Text(text = message,
+                Text(
+                    text = message,
                     style = MaterialTheme.typography.subtitle2,
                     modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
                     maxLines = 1
