@@ -12,11 +12,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
-import com.maisel.dashboard.chat.composables.ChatsList
+import com.maisel.dashboard.chat.composables.ContactList
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.usecase.GetUsersUseCase
-import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
@@ -60,9 +60,9 @@ class ChatsFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                MainTheme {
+                ChatTheme {
                     Surface(color = MaterialTheme.colors.background) {
-                        ChatsList(viewModel, callback)
+                        ContactList(viewModel, callback)
                     }
                 }
             }

@@ -5,18 +5,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
+import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
+import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.domain.message.MessageModel
@@ -24,13 +25,55 @@ import com.maisel.domain.user.entity.SignUpUser
 
 @Composable
 @ExperimentalComposeUiApi
-fun ChatsList(
+fun ContactList(
     viewModel: DashboardViewModel,
     listener: ChatsFragment.ChatsFragmentCallback?
 ) {
     val users by viewModel.users.collectAsState()
     val latestMessages by viewModel.latestMessages.collectAsState()
 
+    val result = remember { mutableStateOf("") }
+    val expanded = remember { mutableStateOf(false) }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    modifier = Modifier.statusBarsPadding(),
+                    title = {
+                        Text("Select contact",
+                            style = ChatTheme.typography.h4,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                result.value = "Back Arrow icon clicked"
+                          //      onBackButton()
+                            }
+                        ) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
+                        }
+                    },
+                    elevation = AppBarDefaults.TopAppBarElevation,
+                    backgroundColor = ChatTheme.colors.barsBackground
+                )
+            },
+            content = { padding ->
+                ContactList(users, listener, latestMessages)
+            }
+        )
+    }
+}
+
+@Composable
+@ExperimentalComposeUiApi
+private fun ContactList(
+    users: List<SignUpUser>,
+    listener: ChatsFragment.ChatsFragmentCallback?,
+    latestMessages: List<MessageModel>
+) {
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(users) { user ->
