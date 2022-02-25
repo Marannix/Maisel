@@ -44,7 +44,7 @@ fun RecipientMessageBox(state: MessageItem.ReceiverMessageItem) {
 
         Text(
             modifier = Modifier.align(End),
-            text = state.timestamp,
+            text = state.time,
             color = ChatTheme.colors.textLowEmphasis,
             style = ChatTheme.typography.subtitle2,
             fontWeight = FontWeight.Normal

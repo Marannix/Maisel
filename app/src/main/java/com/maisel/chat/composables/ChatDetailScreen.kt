@@ -1,5 +1,6 @@
 package com.maisel.chat.composables
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -33,8 +34,11 @@ import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.components.shape.SenderMessageBox
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.data.utils.DateFormatter
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.message.MessageViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 @ExperimentalComposeUiApi
@@ -192,6 +196,7 @@ fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
 @Composable
 fun messageColumn(messageItems: List<MessageItem>) {
     val listState = rememberLazyListState()
+    var date = ""
 
     LaunchedEffect(messageItems.size) {
         listState.scrollToItem(messageItems.size)
@@ -205,6 +210,11 @@ fun messageColumn(messageItems: List<MessageItem>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(messageItems) { item ->
+                if (date != item.date) {
+                    date = item.date
+                    DayHeader(date)
+                }
+
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 when (item) {
                     is MessageItem.SenderMessageItem -> SenderCard(
@@ -232,4 +242,32 @@ fun SenderCard(state: MessageItem.SenderMessageItem, modifier: Modifier) {
 @Composable
 fun ReceiverCard(state: MessageItem.ReceiverMessageItem, modifier: Modifier) {
     RecipientMessageBox(state)
+}
+@Composable
+fun DayHeader(day: String) {
+    val date = if (day == DateFormatter().getDate(Date().time)) {
+        "Today"
+    } else day
+
+    Row(
+        modifier = Modifier
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .height(16.dp)
+    ) {
+        DayHeaderLine()
+        Text(
+            text = date,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        DayHeaderLine()
+    }
+}
+
+@Composable
+private fun RowScope.DayHeaderLine() {
+    Divider(
+        modifier = Modifier
+            .weight(1f)
+            .align(Alignment.CenterVertically)
+    )
 }

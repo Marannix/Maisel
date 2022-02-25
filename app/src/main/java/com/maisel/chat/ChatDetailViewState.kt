@@ -19,7 +19,8 @@ data class ChatDetailViewState(
                         MessageItem.SenderMessageItem(
                             model.senderId,
                             model.message,
-                            model.timestamp
+                            model.time,
+                            model.date
                         )
                     )
                 } else {
@@ -27,7 +28,8 @@ data class ChatDetailViewState(
                         MessageItem.ReceiverMessageItem(
                             model.senderId,
                             model.message,
-                            model.timestamp
+                            model.time,
+                            model.date
                         )
                     )
                 }

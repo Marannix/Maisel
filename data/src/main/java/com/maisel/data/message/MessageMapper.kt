@@ -9,7 +9,8 @@ fun MessageData.toMessageModel() : MessageModel {
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,
-        timestamp = DateFormatter().getChatTime(this.timestamp)
+        time = DateFormatter().getChatTime(this.timestamp),
+        date = DateFormatter().getDate(this.timestamp),
     )
 }
 
@@ -18,6 +19,6 @@ fun MessageModel.toMessageData() : MessageData {
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,
-        timestamp = this.timestamp.toLong()
+        timestamp = this.time.toLong()
     )
 }
