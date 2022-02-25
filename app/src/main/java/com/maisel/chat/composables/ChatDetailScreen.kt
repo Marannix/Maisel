@@ -1,6 +1,7 @@
 package com.maisel.chat.composables
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -42,6 +43,7 @@ import java.util.*
 
 @Composable
 @ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 @Preview(device = Devices.PIXEL_4)
 fun ChatDetailScreen(
     viewModel: ChatDetailViewModel,
@@ -55,8 +57,9 @@ fun ChatDetailScreen(
     Screen(viewModel, messageViewModel, user, onBackButton)
 }
 
-@ExperimentalComposeUiApi
 @Composable
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
 fun Screen(
     viewModel: ChatDetailViewModel,
     messageViewModel: MessageViewModel,
@@ -179,6 +182,7 @@ fun MessageBox(messageViewModel: MessageViewModel) {
 }
 
 @Composable
+@ExperimentalFoundationApi
 fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
     Column(
         Modifier
@@ -187,48 +191,49 @@ fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
             .padding(padding)
             .padding(horizontal = 8.dp)
     ) {
-        messageColumn(messageItems)
+        MessageColumn(messageItems)
     }
 }
 
 //https://medium.com/nerd-for-tech/creating-a-heterogeneous-list-with-jetpack-compose-138d3698c4cc
-
+@ExperimentalFoundationApi
 @Composable
-fun messageColumn(messageItems: List<MessageItem>) {
+fun MessageColumn(messageItems: List<MessageItem>) {
     val listState = rememberLazyListState()
-    var date = ""
 
     LaunchedEffect(messageItems.size) {
         listState.scrollToItem(messageItems.size)
     }
 
     Box(Modifier.fillMaxSize()) {
+        val grouped = messageItems.groupBy{it.date}
+
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(messageItems) { item ->
-                if (date != item.date) {
-                    date = item.date
-                    DayHeader(date)
+            grouped.forEach { (section, message) ->
+                stickyHeader {
+                    DayHeader(section)
                 }
-
-                Spacer(modifier = Modifier.padding(vertical = 4.dp))
-                when (item) {
-                    is MessageItem.SenderMessageItem -> SenderCard(
-                        state = item,
-                        modifier = Modifier.fillMaxWidth(.85f)
-                    )
-                    is MessageItem.ReceiverMessageItem -> ReceiverCard(
-                        state = item,
-                        modifier = Modifier
-                            .fillMaxWidth(.85f)
-                            .padding(horizontal = 0.8.dp)
-                    )
+                items(message) { item ->
+                    Spacer(modifier = Modifier.padding(vertical = 4.dp))
+                    when (item) {
+                        is MessageItem.SenderMessageItem -> SenderCard(
+                            state = item,
+                            modifier = Modifier.fillMaxWidth(.85f)
+                        )
+                        is MessageItem.ReceiverMessageItem -> ReceiverCard(
+                            state = item,
+                            modifier = Modifier
+                                .fillMaxWidth(.85f)
+                                .padding(horizontal = 0.8.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 }
-                Spacer(modifier = Modifier.padding(vertical = 4.dp))
             }
         }
     }
