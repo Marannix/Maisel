@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.Message
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,8 +83,7 @@ fun DashboardScreen(
                 FloatingActionButton(
                     onClick = { listener?.openContactsList() }
                 ) {
-                    //TODO: Change to pencil
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Navigate to Contacts Screen")
+                    Icon(imageVector = Icons.Rounded.Message, contentDescription = "Navigate to Contacts Screen")
                 }
             },
             content = { padding ->
