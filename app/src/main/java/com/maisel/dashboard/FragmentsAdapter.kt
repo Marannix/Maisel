@@ -23,5 +23,4 @@ class FragmentsAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapte
             else -> throw Exception("This fragment does not exist")//TODO: Throw Exception
         }
     }
-
 }

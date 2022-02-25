@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
 
-    fun startListeningToMessages(senderRoom: String)
+    fun startListeningToMessages(senderId: String, receiverId: String)
 
-    fun stopListeningToMessages(senderRoom: String)
+    fun stopListeningToMessages(senderId: String, receiverId: String)
 
     fun stopListeningToSendMessages(senderRoom: String)
 
@@ -15,11 +15,11 @@ interface MessageRepository {
 
     fun getSenderUid(): String?
 
-    fun sendMessage(input: String, senderRoom: String, receiverRoom: String, receiverId: String, model: MessageModel)
-
-    fun startListeningToLastMessages(userId: String)
+    fun sendMessage(input: String, senderUid: String, receiverId: String, model: MessageModel)
 
     fun observeLastMessage(): Observable<String>
 
     fun fetchLastMessage(userId: String): Flow<Result<String>>
+
+    fun getLatestMessagev2(): Flow<Result<List<MessageModel>>>
 }

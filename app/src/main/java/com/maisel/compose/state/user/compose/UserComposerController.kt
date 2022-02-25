@@ -1,14 +1,13 @@
 package com.maisel.compose.state.user.compose
 
 import com.maisel.coroutine.DispatcherProvider
+import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,6 +16,10 @@ class UserComposerController @Inject constructor(
     private val userRepository: UserRepository
 ) {
 
+    init {
+        //TODO: Get list of users and other information here?
+    }
+
     /**
      * Creates a [CoroutineScope] that allows us to cancel the ongoing work when the parent
      * ViewModel is disposed.
@@ -24,32 +27,55 @@ class UserComposerController @Inject constructor(
     private val scope = CoroutineScope(DispatcherProvider.Main)
 
     /**
+     * Represents the user Logged In
+     */
+    val currentUser: MutableStateFlow<SignUpUser> = MutableStateFlow(SignUpUser())
+
+    /**
      * Represents the list of users from Firebase Realtime Database
      */
     val users: MutableStateFlow<List<SignUpUser>> = MutableStateFlow(emptyList())
 
     /**
+     * Represents the list of latest messages from Firebase Realtime Database
+     */
+    val latestMessages: MutableStateFlow<List<MessageModel>> = MutableStateFlow(emptyList())
+
+    /**
+     * Retrieve current user
+     */
+    fun getLoggedInUser() {
+        scope.launch {
+            //TODO: Create Usecase
+            userRepository.getCurrentUser().collect { result ->
+                result.onSuccess {
+                    currentUser.value = it
+                }
+
+                result.onFailure { throwable ->
+                    //TODO: Update UI and show error
+                }
+            }
+        }
+    }
+
+    /**
      * Retrieve and set last message for a specific user based on their userId
      * @param userId of a user from Firebase Realtime Database
      */
-//    private fun getLastMessagesUseCase(userId: String) {
-//        scope.launch {
-//            lastMessageUseCase.invoke(userId).collect { result ->
-//                result.onSuccess { lastMessage ->
-//                    users.collect { listOfUsers ->
-//                        listOfUsers.toMutableList().map {
-//                            if (it.userId == userId) {
-//                               it = it.copy(lastMessage = lastMessage)
-//                            }
-//                        }
-//                        listOfUsers.find { it.userId == userId }?.lastMessage = lastMessage
-//
-//                        users.value = listOfUsers
-//                    }
-//                }
-//            }
-//        }
-//    }
+    fun getLatestMessages() {
+        scope.launch {
+            lastMessageUseCase.invoke().collect { result ->
+                result.onSuccess { listOfLatestMessages ->
+                    latestMessages.value = listOfLatestMessages
+
+                    result.onFailure { throwable ->
+                        //TODO: Update UI and show error?
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Retrieve list of users from Firebase Realtime Database
@@ -63,19 +89,6 @@ class UserComposerController @Inject constructor(
                 }
                 result.onFailure { throwable ->
                     //TODO: Update UI and show error
-                }
-            }
-        }
-    }
-
-    /**
-     * Retrieve list of users from Firebase Realtime Database
-     */
-    fun stuff() {
-        scope.launch {
-            userRepository.fetchListOfUsers().map {
-                it.onSuccess {
-
                 }
             }
         }

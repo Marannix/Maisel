@@ -1,12 +1,10 @@
 package com.maisel.dashboard
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.dashboard.chat.DashboardViewState
+import com.maisel.domain.message.MessageModel
 import com.maisel.domain.user.entity.SignUpUser
 import com.maisel.domain.user.usecase.GetUsersUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
@@ -24,13 +22,18 @@ class DashboardViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val viewState = MutableLiveData<DashboardViewState>()
-    var viewUiState by mutableStateOf(DashboardViewState())
+
+    val currentUser: StateFlow<SignUpUser> = userComposerController.currentUser
 
     val users: StateFlow<List<SignUpUser>> = userComposerController.users
 
+    val latestMessages: StateFlow<List<MessageModel>> = userComposerController.latestMessages
+
     init {
         viewState.value = DashboardViewState()
+        userComposerController.getLoggedInUser()
         userComposerController.listOfUsers()
+        userComposerController.getLatestMessages()
     }
 
     private fun currentViewState(): DashboardViewState = viewState.value!!
@@ -59,10 +62,6 @@ class DashboardViewModel @Inject constructor(
 
     fun stopListeningToUser() {
         usersUseCase.stopListeningToUsers()
-    }
-
-    fun selectedUser(selectedUser: SignUpUser?) {
-        viewState.value = currentViewState().copy(selectedUser = selectedUser)
     }
 
     /**

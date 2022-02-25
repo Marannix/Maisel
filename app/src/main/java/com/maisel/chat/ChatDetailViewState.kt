@@ -4,16 +4,32 @@ import com.maisel.chat.composables.MessageItem
 import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.user.entity.SignUpUser
 
-data class ChatDetailViewState(val user: SignUpUser? = null, val messageItemState: GetMessagesUseCase.MessageDataState? = null, val senderUid: String? = null) {
+data class ChatDetailViewState(
+    val user: SignUpUser? = null,
+    val messageItemState: GetMessagesUseCase.MessageDataState? = null,
+    val senderUid: String? = null
+) {
 
     fun getMessagesItem(): List<MessageItem> {
         val listOfMessagesItem = mutableListOf<MessageItem>()
         if (messageItemState is GetMessagesUseCase.MessageDataState.Success && senderUid != null) {
-            messageItemState.messages.forEach {
-                if (it.uid == senderUid) {
-                    listOfMessagesItem.add(MessageItem.SenderMessageItem(it.uid, it.message, it.timestamp))
+            messageItemState.messages.forEach { model ->
+                if (model.senderId == senderUid) {
+                    listOfMessagesItem.add(
+                        MessageItem.SenderMessageItem(
+                            model.senderId,
+                            model.message,
+                            model.timestamp
+                        )
+                    )
                 } else {
-                    listOfMessagesItem.add(MessageItem.ReceiverMessageItem(it.uid, it.message, it.timestamp))
+                    listOfMessagesItem.add(
+                        MessageItem.ReceiverMessageItem(
+                            model.senderId,
+                            model.message,
+                            model.timestamp
+                        )
+                    )
                 }
             }
         }

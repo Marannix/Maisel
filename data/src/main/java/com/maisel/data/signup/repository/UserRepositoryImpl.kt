@@ -90,8 +90,36 @@ class UserRepositoryImpl(
         //  setUserInDatabase(user)
     }
 
-    override fun getCurrentUser(): FirebaseUser? {
+    override fun getFirebaseCurrentUser(): FirebaseUser? {
         return firebaseAuth.currentUser
+    }
+
+    override fun getCurrentUser() = callbackFlow<Result<SignUpUser>> {
+        val postListener = object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var user = SignUpUser()
+                snapshot.children.forEach { children ->
+                    val users = children.getValue(SignUpUser::class.java)
+                    if (firebaseAuth.currentUser != null && users != null) {
+                        if (firebaseAuth.currentUser!!.uid == users.userId) {
+                            user = users
+                        }
+                    }
+                }
+                this@callbackFlow.sendBlocking(Result.success(user))
+            }
+        }
+
+        //TODO: Rename "Users" to "users"
+        database.child("Users").addValueEventListener(postListener)
+
+        awaitClose {
+            database.child("Users").removeEventListener(postListener)
+        }
     }
 
     override fun logoutUser() {
@@ -125,6 +153,7 @@ class UserRepositoryImpl(
             }
         }
 
+        //TODO: Rename "Users" to "users"
         database.child("Users").addValueEventListener(postListener)
 
         awaitClose {

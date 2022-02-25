@@ -14,12 +14,12 @@ class GetMessagesUseCase @Inject constructor(private val messageRepository: Mess
         }
     }
 
-    fun startListeningToMessages(senderRoom: String) {
-        messageRepository.startListeningToMessages(senderRoom)
+    fun startListeningToMessages(senderId: String, receiverId: String) {
+        messageRepository.startListeningToMessages(senderId, receiverId)
     }
 
-    fun stopListeningToMessages(senderRoom: String) {
-        messageRepository.stopListeningToMessages(senderRoom)
+    fun stopListeningToMessages(senderId: String, receiverId: String) {
+        messageRepository.stopListeningToMessages(senderId, receiverId)
     }
 
     sealed class MessageDataState {

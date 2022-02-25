@@ -15,7 +15,7 @@ class GetCurrentUserTest {
 
     @Test
     fun `WHEN get book returns success THEN success state is returned`() {
-        every { userRepository.getCurrentUser() } returns firebaseUser
+        every { userRepository.getFirebaseCurrentUser() } returns firebaseUser
         every { getCurrentUser.invoke() } returns firebaseUser
 
         assertEquals(getCurrentUser.invoke(), firebaseUser)

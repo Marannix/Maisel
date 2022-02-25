@@ -26,7 +26,7 @@ interface UserRepository {
      * Gets current user logged in
      * @return either a user if successful or null
      */
-    fun getCurrentUser() : FirebaseUser?
+    fun getFirebaseCurrentUser() : FirebaseUser?
 
     suspend fun signInWithCredential(credential: AuthCredential): AuthResult?
 
@@ -39,4 +39,6 @@ interface UserRepository {
     fun getSenderUid(): String?
 
     fun fetchListOfUsers(): Flow<Result<List<SignUpUser>>>
+
+    fun getCurrentUser(): Flow<Result<SignUpUser>>
 }
