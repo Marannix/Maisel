@@ -28,12 +28,12 @@ class ChatDetailViewModel @Inject constructor(
         viewState.value = currentViewState().copy(user = user)
     }
 
-    fun startListeningToMessages(senderRoom: String) {
-        messagesUseCase.startListeningToMessages(senderRoom)
+    fun startListeningToMessages(senderRoom: String, receiverId: String) {
+        messagesUseCase.startListeningToMessages(senderRoom, receiverId)
     }
 
-    fun stopListeningToMessages(senderRoom: String) {
-        messagesUseCase.stopListeningToMessages(senderRoom)
+    fun stopListeningToMessages(senderRoom: String, receiverId: String) {
+        messagesUseCase.stopListeningToMessages(senderRoom, receiverId)
     }
 
     //Current user is the sender

@@ -1,7 +1,8 @@
 package com.maisel.domain.message
 
 data class MessageModel(
-    val uid: String,
+    val senderId: String,
+    val receiverId: String,
     val message: String,
     val timestamp: String
 )

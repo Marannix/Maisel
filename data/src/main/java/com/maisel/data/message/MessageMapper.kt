@@ -6,7 +6,8 @@ import com.maisel.domain.message.MessageModel
 
 fun MessageData.toMessageModel() : MessageModel {
     return MessageModel(
-        uid = this.uid,
+        senderId = this.senderId,
+        receiverId = this.receiverId,
         message = this.message,
         timestamp = DateFormatter().getChatTime(this.timestamp)
     )
@@ -14,7 +15,8 @@ fun MessageData.toMessageModel() : MessageModel {
 
 fun MessageModel.toMessageData() : MessageData {
     return MessageData(
-        uid = this.uid,
+        senderId = this.senderId,
+        receiverId = this.receiverId,
         message = this.message,
         timestamp = this.timestamp.toLong()
     )
