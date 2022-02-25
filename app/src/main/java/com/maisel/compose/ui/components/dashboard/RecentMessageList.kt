@@ -13,6 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
@@ -30,12 +34,13 @@ fun RecentMessageList(
     listener: ChatsFragment.ChatsFragmentCallback?
 ) {
     val users by viewModel.users.collectAsState()
+    val currentUser by viewModel.currentUser.collectAsState()
     val latestMessages by viewModel.latestMessages.collectAsState()
 
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
-            items(users) { user ->
-                RecentMessageItem(listener, user, latestMessages)
+            items(latestMessages) { latestMessages ->
+                RecentMessageItem(listener, currentUser, users, latestMessages)
             }
         }
     }
@@ -46,10 +51,17 @@ fun RecentMessageList(
 @Composable
 fun RecentMessageItem(
     listener: ChatsFragment.ChatsFragmentCallback?,
-    user: SignUpUser,
-    latestMessages: List<MessageModel>
+    currentUser: SignUpUser,
+    users: List<SignUpUser>,
+    messageModel: MessageModel
 ) {
-    if (latestMessages.firstOrNull { it.receiverId == user.userId } != null) {
+    val chatPartnerId = if (messageModel.senderId == currentUser.userId) {
+        messageModel.receiverId
+    } else {
+        messageModel.senderId
+    }
+
+    users.firstOrNull { it.userId == chatPartnerId }?.let { user ->
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
@@ -79,9 +91,21 @@ fun RecentMessageItem(
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                 )
 
-                latestMessages.firstOrNull { it.receiverId == user.userId }?.message?.let { message ->
+                Row() {
+                    if (messageModel.receiverId == currentUser.userId) {
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_double_tick),
+                            contentDescription = "Read message indicator",
+                            colorFilter = ColorFilter.tint(colorResource(R.color.maisel_compose_text_low_emphasis)),
+                            modifier = Modifier
+                                .height(20.dp)
+                                .width(20.dp)
+                                .padding(top = 2.dp, bottom = 2.dp)
+                        )
+                    }
+
                     Text(
-                        text = message,
+                        text = messageModel.message,
                         style = MaterialTheme.typography.subtitle2,
                         modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
                         maxLines = 1

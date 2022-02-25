@@ -27,6 +27,11 @@ class UserComposerController @Inject constructor(
     private val scope = CoroutineScope(DispatcherProvider.Main)
 
     /**
+     * Represents the user Logged In
+     */
+    val currentUser: MutableStateFlow<SignUpUser> = MutableStateFlow(SignUpUser())
+
+    /**
      * Represents the list of users from Firebase Realtime Database
      */
     val users: MutableStateFlow<List<SignUpUser>> = MutableStateFlow(emptyList())
@@ -35,6 +40,24 @@ class UserComposerController @Inject constructor(
      * Represents the list of latest messages from Firebase Realtime Database
      */
     val latestMessages: MutableStateFlow<List<MessageModel>> = MutableStateFlow(emptyList())
+
+    /**
+     * Retrieve current user
+     */
+    fun getLoggedInUser() {
+        scope.launch {
+            //TODO: Create Usecase
+            userRepository.getCurrentUser().collect { result ->
+                result.onSuccess {
+                    currentUser.value = it
+                }
+
+                result.onFailure { throwable ->
+                    //TODO: Update UI and show error
+                }
+            }
+        }
+    }
 
     /**
      * Retrieve and set last message for a specific user based on their userId

@@ -20,7 +20,6 @@ import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ChatsFragment
-import com.maisel.domain.message.MessageModel
 import com.maisel.domain.user.entity.SignUpUser
 
 @Composable
@@ -30,7 +29,6 @@ fun ContactList(
     listener: ChatsFragment.ChatsFragmentCallback?
 ) {
     val users by viewModel.users.collectAsState()
-    val latestMessages by viewModel.latestMessages.collectAsState()
 
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
@@ -61,7 +59,7 @@ fun ContactList(
                 )
             },
             content = { padding ->
-                ContactList(users, listener, latestMessages)
+                ContactList(users, listener)
             }
         )
     }
@@ -72,12 +70,11 @@ fun ContactList(
 private fun ContactList(
     users: List<SignUpUser>,
     listener: ChatsFragment.ChatsFragmentCallback?,
-    latestMessages: List<MessageModel>
 ) {
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(users) { user ->
-                ChatListItem(listener, user, latestMessages)
+                ChatListItem(listener, user)
             }
         }
     }
@@ -88,7 +85,6 @@ private fun ContactList(
 fun ChatListItem(
     listener: ChatsFragment.ChatsFragmentCallback?,
     user: SignUpUser,
-    latestMessages: List<MessageModel>
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
@@ -118,15 +114,6 @@ fun ChatListItem(
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )
-
-            latestMessages.firstOrNull { it.receiverId == user.userId }?.message?.let { message ->
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.subtitle2,
-                    modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
-                    maxLines = 1
-                )
-            }
         }
     }
 }

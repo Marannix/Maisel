@@ -23,12 +23,15 @@ class DashboardViewModel @Inject constructor(
 
     val viewState = MutableLiveData<DashboardViewState>()
 
+    val currentUser: StateFlow<SignUpUser> = userComposerController.currentUser
+
     val users: StateFlow<List<SignUpUser>> = userComposerController.users
 
     val latestMessages: StateFlow<List<MessageModel>> = userComposerController.latestMessages
 
     init {
         viewState.value = DashboardViewState()
+        userComposerController.getLoggedInUser()
         userComposerController.listOfUsers()
         userComposerController.getLatestMessages()
     }
