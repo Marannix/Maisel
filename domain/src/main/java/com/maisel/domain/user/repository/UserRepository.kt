@@ -3,7 +3,7 @@ package com.maisel.domain.user.repository
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
@@ -34,11 +34,11 @@ interface UserRepository {
 
     fun logoutUser()
 
-    fun observeListOfUsers(): Observable<List<SignUpUser>>
+    fun observeListOfUsers(): Observable<List<User>>
 
     fun getSenderUid(): String?
 
-    fun fetchListOfUsers(): Flow<Result<List<SignUpUser>>>
+    fun fetchListOfUsers(): Flow<Result<List<User>>>
 
-    fun getCurrentUser(): Flow<Result<SignUpUser>>
+    fun getCurrentUser(): Flow<Result<User>>
 }

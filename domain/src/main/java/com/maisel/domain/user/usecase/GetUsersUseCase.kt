@@ -1,6 +1,6 @@
 package com.maisel.domain.user.usecase
 
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class GetUsersUseCase @Inject constructor(private val userRepository: UserReposi
 
     sealed class UserDataState {
         object Loading: UserDataState()
-        data class Success(val user: List<SignUpUser>): UserDataState()
+        data class Success(val user: List<User>): UserDataState()
         object Error : UserDataState()
     }
 }

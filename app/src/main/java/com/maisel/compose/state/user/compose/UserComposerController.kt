@@ -3,7 +3,7 @@ package com.maisel.compose.state.user.compose
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -29,12 +29,12 @@ class UserComposerController @Inject constructor(
     /**
      * Represents the user Logged In
      */
-    val currentUser: MutableStateFlow<SignUpUser> = MutableStateFlow(SignUpUser())
+    val currentUser: MutableStateFlow<User> = MutableStateFlow(User())
 
     /**
      * Represents the list of users from Firebase Realtime Database
      */
-    val users: MutableStateFlow<List<SignUpUser>> = MutableStateFlow(emptyList())
+    val users: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
 
     /**
      * Represents the list of latest messages from Firebase Realtime Database

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
 import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.message.usecase.GetSenderUidUseCase
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class ChatDetailViewModel @Inject constructor(
 
     private fun currentViewState(): ChatDetailViewState = viewState.value!!
 
-    fun setUser(user: SignUpUser) {
+    fun setUser(user: User) {
         viewState.value = currentViewState().copy(user = user)
     }
 

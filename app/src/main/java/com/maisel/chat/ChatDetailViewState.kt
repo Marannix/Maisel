@@ -2,10 +2,10 @@ package com.maisel.chat
 
 import com.maisel.chat.composables.MessageItem
 import com.maisel.domain.message.usecase.GetMessagesUseCase
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 
 data class ChatDetailViewState(
-    val user: SignUpUser? = null,
+    val user: User? = null,
     val messageItemState: GetMessagesUseCase.MessageDataState? = null,
     val senderUid: String? = null
 ) {

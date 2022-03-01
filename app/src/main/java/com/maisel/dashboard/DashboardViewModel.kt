@@ -5,7 +5,7 @@ import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.dashboard.chat.DashboardViewState
 import com.maisel.domain.message.MessageModel
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.usecase.GetUsersUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +23,9 @@ class DashboardViewModel @Inject constructor(
 
     val viewState = MutableLiveData<DashboardViewState>()
 
-    val currentUser: StateFlow<SignUpUser> = userComposerController.currentUser
+    val currentUser: StateFlow<User> = userComposerController.currentUser
 
-    val users: StateFlow<List<SignUpUser>> = userComposerController.users
+    val users: StateFlow<List<User>> = userComposerController.users
 
     val latestMessages: StateFlow<List<MessageModel>> = userComposerController.latestMessages
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.view.WindowCompat
@@ -14,15 +15,16 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.chat.composables.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import com.maisel.message.MessageViewModel
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
 class ChatDetailActivity : BaseActivity() {
 
-    private val user: SignUpUser by lazy { requireNotNull(intent.getParcelableExtra(USER)) }
+    private val user: User by lazy { requireNotNull(intent.getParcelableExtra(USER)) }
     private lateinit var senderId: String
     private lateinit var receiverId: String
 
@@ -77,7 +79,7 @@ class ChatDetailActivity : BaseActivity() {
 
     companion object {
         private const val USER = "USER"
-        fun createIntent(context: Context, user: SignUpUser): Intent {
+        fun createIntent(context: Context, user: User): Intent {
             return Intent(context, ChatDetailActivity::class.java).apply {
                 putExtra(USER, user)
             }

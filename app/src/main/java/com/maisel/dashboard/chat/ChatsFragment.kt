@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.composables.ContactList
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.usecase.GetUsersUseCase
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,7 +27,7 @@ class ChatsFragment : Fragment() {
     private var callback: ChatsFragmentCallback? = null
 
     interface ChatsFragmentCallback {
-        fun onOpenChatsDetails(user: SignUpUser)
+        fun onOpenChatsDetails(user: User)
     }
 
     //TODO: ContactsViewModel

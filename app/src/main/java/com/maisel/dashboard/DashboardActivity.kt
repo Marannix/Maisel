@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,9 +16,10 @@ import com.maisel.chat.ChatDetailActivity
 import com.maisel.common.BaseFragmentActivity
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.databinding.ActivityMainBinding
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import com.maisel.signin.SignInActivity
 
+@ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
@@ -76,7 +78,7 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
     }
 
 
-    override fun onOpenChatsDetails(user: SignUpUser) {
+    override fun onOpenChatsDetails(user: User) {
         ChatDetailActivity.createIntent(this, user).also {
             startActivity(it)
         }

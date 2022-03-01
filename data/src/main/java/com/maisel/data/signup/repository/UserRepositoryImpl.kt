@@ -10,7 +10,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.maisel.data.coroutine.DispatcherProvider
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import io.reactivex.Maybe
@@ -31,7 +31,7 @@ class UserRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
     private val database: DatabaseReference) : UserRepository {
 
-    private var listOfUsers = BehaviorSubject.create<List<SignUpUser>>()
+    private var listOfUsers = BehaviorSubject.create<List<User>>()
     private var userListeners: ValueEventListener? = null
 
     override fun createAccount(
@@ -41,7 +41,7 @@ class UserRepositoryImpl(
     ): Maybe<AuthResult> {
         return RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
             .map { authResults ->
-                val user = SignUpUser(null, name, email, password, null, null)
+                val user = User(null, name, email, password, null, null)
 
                 //TODO: Maybe throw an exception if current user is null?
                 setUserInDatabase(user)
@@ -79,7 +79,7 @@ class UserRepositoryImpl(
     }
 
     override fun setCurrentUser(firebaseUser: FirebaseUser) {
-        val user = SignUpUser(
+        val user = User(
             firebaseUser.uid,
             firebaseUser.displayName,
             null,
@@ -94,16 +94,16 @@ class UserRepositoryImpl(
         return firebaseAuth.currentUser
     }
 
-    override fun getCurrentUser() = callbackFlow<Result<SignUpUser>> {
+    override fun getCurrentUser() = callbackFlow<Result<User>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                var user = SignUpUser()
+                var user = User()
                 snapshot.children.forEach { children ->
-                    val users = children.getValue(SignUpUser::class.java)
+                    val users = children.getValue(User::class.java)
                     if (firebaseAuth.currentUser != null && users != null) {
                         if (firebaseAuth.currentUser!!.uid == users.userId) {
                             user = users
@@ -126,19 +126,19 @@ class UserRepositoryImpl(
         return firebaseAuth.signOut()
     }
 
-    override fun observeListOfUsers(): Observable<List<SignUpUser>> = listOfUsers
+    override fun observeListOfUsers(): Observable<List<User>> = listOfUsers
 
     // https://medium.com/swlh/how-to-use-firebase-realtime-database-with-kotlin-coroutine-flow-946fe4cf2cd9
-    override fun fetchListOfUsers() = callbackFlow<Result<List<SignUpUser>>> {
+    override fun fetchListOfUsers() = callbackFlow<Result<List<User>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<SignUpUser>()
+                val list = mutableListOf<User>()
                 snapshot.children.forEach { children ->
-                    val users = children.getValue(SignUpUser::class.java)
+                    val users = children.getValue(User::class.java)
                     users?.userId = children.key
 
                     users?.let { user ->
@@ -165,7 +165,7 @@ class UserRepositoryImpl(
         return firebaseAuth.uid
     }
 
-    private fun setUserInDatabase(user: SignUpUser) {
+    private fun setUserInDatabase(user: User) {
         //TODO: Maybe throw an exception if current user is null?
         val id = firebaseAuth.currentUser!!.uid
         val userWithId = user.copy(userId = id)

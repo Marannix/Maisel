@@ -20,7 +20,7 @@ import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ChatsFragment
-import com.maisel.domain.user.entity.SignUpUser
+import com.maisel.domain.user.entity.User
 
 @Composable
 @ExperimentalComposeUiApi
@@ -68,7 +68,7 @@ fun ContactList(
 @Composable
 @ExperimentalComposeUiApi
 private fun ContactList(
-    users: List<SignUpUser>,
+    users: List<User>,
     listener: ChatsFragment.ChatsFragmentCallback?,
 ) {
     Box(Modifier.fillMaxSize()) {
@@ -84,7 +84,7 @@ private fun ContactList(
 @Composable
 fun ChatListItem(
     listener: ChatsFragment.ChatsFragmentCallback?,
-    user: SignUpUser,
+    user: User,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
