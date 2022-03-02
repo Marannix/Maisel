@@ -43,7 +43,7 @@ class UserRepositoryImpl(
     ): Maybe<AuthResult> {
         return RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
             .map { authResults ->
-                val user = User(null, name, email, password, null, null)
+                val user = User(firebaseAuth.currentUser!!.uid, name, email, password, null, null)
 
                 //TODO: Maybe throw an exception if current user is null?
                 setUserInDatabase(user)
@@ -169,56 +169,21 @@ class UserRepositoryImpl(
         }
     }
 
-    suspend fun stuff() = callbackFlow<Result<List<User>>> {
-        val postListener = object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<User>()
-                snapshot.children.forEach { children ->
-                    val users = children.getValue(User::class.java)
-                    users?.userId = children.key
-
-                    users?.let { user ->
-                        list.add(user.copy(username = user.username?.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.getDefault()
-                            ) else it.toString()
-                        }))
-                    }
-                }
-                this@callbackFlow.sendBlocking(Result.success(list))
-            }
-        }
-
-        //TODO: Rename "Users" to "users"
-        database.child("Users").addValueEventListener(postListener)
-
-        awaitClose {
-            database.child("Users").removeEventListener(postListener)
-        }
-    }
-
     override fun getSenderUid(): String? {
         return firebaseAuth.uid
     }
 
     private fun setUserInDatabase(user: User) {
         //TODO: Maybe throw an exception if current user is null?
-        val id = firebaseAuth.currentUser!!.uid
-        val userWithId = user.copy(userId = id)
-        database.child("Users").child(id).setValue(userWithId)
+        database.child("Users").child(user.userId!!).setValue(user)
             .addOnSuccessListener {
-                Log.d("Joshua123", "database created successfully")
+
             }
             .addOnFailureListener {
-                Log.d("Joshua123", "database failed successfully")
 
             }
             .addOnCompleteListener {
-                Log.d("Joshua123", "database completed successfully")
+
             }
     }
 }
