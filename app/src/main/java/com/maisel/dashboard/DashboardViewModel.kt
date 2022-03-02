@@ -9,8 +9,6 @@ import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.usecase.GetUsersUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
@@ -33,6 +31,7 @@ class DashboardViewModel @Inject constructor(
         viewState.value = DashboardViewState()
         userComposerController.getLoggedInUser()
         userComposerController.listOfUsers()
+        userComposerController.getUsers()
         userComposerController.getLatestMessages()
     }
 
@@ -43,17 +42,17 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun getUsers() {
-        usersUseCase.invoke()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .doOnSubscribe {
-                viewState.value =
-                    currentViewState().copy(use = GetUsersUseCase.UserDataState.Loading)
-            }
-            .subscribe {
-                viewState.value = currentViewState().copy(use = it)
-            }
-            .addDisposable()
+//        usersUseCase.invoke()
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribeOn(Schedulers.io())
+//            .doOnSubscribe {
+//                viewState.value =
+//                    currentViewState().copy(use = GetUsersUseCase.UserDataState.Loading)
+//            }
+//            .subscribe {
+//                viewState.value = currentViewState().copy(use = it)
+//            }
+//            .addDisposable()
     }
 
     fun startListeningToUser() {

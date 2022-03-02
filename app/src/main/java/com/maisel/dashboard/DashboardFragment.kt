@@ -33,7 +33,7 @@ class DashboardFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeViewState()
-        viewModel.getUsers()
+       // viewModel.getUsers()
     }
 
     override fun onAttach(activity: Activity) {

@@ -5,7 +5,6 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.maisel.domain.user.entity.User
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
@@ -34,11 +33,13 @@ interface UserRepository {
 
     fun logoutUser()
 
-    fun observeListOfUsers(): Observable<List<User>>
-
     fun getSenderUid(): String?
 
     fun fetchListOfUsers(): Flow<Result<List<User>>>
 
     fun getCurrentUser(): Flow<Result<User>>
+
+    suspend fun getUsers(): List<User>
+
+    suspend fun insertUsers(users: List<User>)
 }

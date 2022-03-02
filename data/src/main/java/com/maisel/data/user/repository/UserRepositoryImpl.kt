@@ -1,4 +1,4 @@
-package com.maisel.data.signup.repository
+package com.maisel.data.user.repository
 
 import android.util.Log
 import com.google.firebase.auth.AuthCredential
@@ -10,13 +10,14 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.maisel.data.coroutine.DispatcherProvider
+import com.maisel.data.user.dao.UserDao
+import com.maisel.data.user.mapper.toDomain
+import com.maisel.data.user.mapper.toEntity
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -29,9 +30,10 @@ import java.util.*
 @ExperimentalCoroutinesApi
 class UserRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
-    private val database: DatabaseReference) : UserRepository {
+    private val database: DatabaseReference,
+    private val userDao: UserDao
+) : UserRepository {
 
-    private var listOfUsers = BehaviorSubject.create<List<User>>()
     private var userListeners: ValueEventListener? = null
 
     override fun createAccount(
@@ -126,10 +128,48 @@ class UserRepositoryImpl(
         return firebaseAuth.signOut()
     }
 
-    override fun observeListOfUsers(): Observable<List<User>> = listOfUsers
+    override suspend fun getUsers(): List<User> {
+        return userDao.getUsers().map { it.toDomain() }
+    }
+
+    override suspend fun insertUsers(users: List<User>) {
+        userDao.insertUsers(users.filter { it.userId != null }.map { it.toEntity() })
+    }
 
     // https://medium.com/swlh/how-to-use-firebase-realtime-database-with-kotlin-coroutine-flow-946fe4cf2cd9
     override fun fetchListOfUsers() = callbackFlow<Result<List<User>>> {
+        val postListener = object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<User>()
+                snapshot.children.forEach { children ->
+                    val users = children.getValue(User::class.java)
+                    users?.userId = children.key
+
+                    users?.let { user ->
+                        list.add(user.copy(username = user.username?.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.getDefault()
+                            ) else it.toString()
+                        }))
+                    }
+                }
+                this@callbackFlow.sendBlocking(Result.success(list))
+            }
+        }
+
+        //TODO: Rename "Users" to "users"
+        database.child("Users").addValueEventListener(postListener)
+
+        awaitClose {
+            database.child("Users").removeEventListener(postListener)
+        }
+    }
+
+    suspend fun stuff() = callbackFlow<Result<List<User>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))

@@ -85,7 +85,7 @@ class UserComposerController @Inject constructor(
             //TODO: Create Usecase
             userRepository.fetchListOfUsers().collect { result ->
                 result.onSuccess { listOfUsers ->
-                    users.value = listOfUsers
+                    userRepository.insertUsers(listOfUsers)
                 }
                 result.onFailure { throwable ->
                     //TODO: Update UI and show error
@@ -93,6 +93,13 @@ class UserComposerController @Inject constructor(
             }
         }
     }
+
+    fun getUsers() {
+        scope.launch {
+            users.value = userRepository.getUsers()
+        }
+    }
+
 
     /**
      * Cancels any pending work when the parent ViewModel is about to be destroyed.

@@ -2,16 +2,15 @@ package com.maisel.domain.user.usecase
 
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
-import io.reactivex.Observable
 import javax.inject.Inject
 
 class GetUsersUseCase @Inject constructor(private val userRepository: UserRepository){
-    operator fun invoke(): Observable<UserDataState> {
-        return userRepository.observeListOfUsers().map<UserDataState> {
-            UserDataState.Success(it)
-        }.onErrorReturn {
-            UserDataState.Error
-        }
+    operator fun invoke() {
+//        return userRepository.observeListOfUsers().map<UserDataState> {
+//            UserDataState.Success(it)
+//        }.onErrorReturn {
+//            UserDataState.Error
+//        }
     }
 
     fun startListeningToUsers() {
