@@ -1,6 +1,6 @@
 package com.maisel.domain.user.usecase
 
-import com.google.firebase.auth.FirebaseUser
+import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -11,14 +11,13 @@ class GetCurrentUserTest {
 
     private val getCurrentUser: GetCurrentUser = mockk()
     private val userRepository: UserRepository = mockk()
-    private val firebaseUser: FirebaseUser = mockk()
+    private val user: User = mockk()
 
     @Test
     fun `WHEN get book returns success THEN success state is returned`() {
-        every { userRepository.getFirebaseCurrentUser() } returns firebaseUser
-        every { getCurrentUser.invoke() } returns firebaseUser
+        every { userRepository.getLoggedInUser() } returns user
+        every { getCurrentUser.invoke() } returns user
 
-        assertEquals(getCurrentUser.invoke(), firebaseUser)
+        assertEquals(getCurrentUser.invoke(), user)
     }
-
 }

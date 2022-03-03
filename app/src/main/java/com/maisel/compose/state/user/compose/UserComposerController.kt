@@ -47,7 +47,7 @@ class UserComposerController @Inject constructor(
     fun getLoggedInUser() {
         scope.launch {
             //TODO: Create Usecase
-            userRepository.getCurrentUser().collect { result ->
+            userRepository.listenToLoggedInUser().collect { result ->
                 result.onSuccess {
                     currentUser.value = it
                 }

@@ -84,7 +84,6 @@ class SignInActivity : BaseActivity() {
                 Log.d("joshua", "activity loading")
             }
             is AuthResultState.Success -> {
-                viewModel.setUser(state.authResultState.user)
                 Log.d("joshua", "activity success")
                 DashboardActivity.createIntent(this).also { startActivity(it) }
                 finish()

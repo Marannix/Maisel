@@ -61,7 +61,6 @@ class SignUpActivity : BaseActivity() {
             }
             is AuthResultState.Success -> {
                 makeToastShort("Account Created")
-                viewModel.setUser(state.authResultState.user)
                 DashboardActivity.createIntent(this).also { startActivity(it) }
                 finishAffinity()
             }

@@ -81,23 +81,11 @@ class UserRepositoryImpl(
         }
     }
 
-    override fun setCurrentUser(firebaseUser: FirebaseUser) {
-        val user = User(
-            firebaseUser.uid,
-            firebaseUser.displayName,
-            null,
-            null,
-            firebaseUser.photoUrl.toString(),
-            null
-        )
-        //  setUserInDatabase(user)
+    override fun getLoggedInUser(): User? {
+        return localPersistenceManager.getUser()
     }
 
-    override fun getFirebaseCurrentUser(): FirebaseUser? {
-        return firebaseAuth.currentUser
-    }
-
-    override fun getCurrentUser() = callbackFlow<Result<User>> {
+    override fun listenToLoggedInUser() = callbackFlow<Result<User>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))

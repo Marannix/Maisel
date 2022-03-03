@@ -1,10 +1,8 @@
 package com.maisel.signup
 
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.onboarding.compose.SignUpForm
-import com.maisel.domain.user.usecase.SetCurrentUserUseCase
 import com.maisel.domain.user.usecase.SignUpUseCase
 import com.maisel.state.AuthResultState
 import com.maisel.utils.Validator
@@ -13,8 +11,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCase,
-                                          private val setCurrentUser: SetCurrentUserUseCase
+class SignUpViewModel @Inject constructor(
+    private val signUpUseCase: SignUpUseCase
 ) :
     BaseViewModel() {
 
@@ -93,9 +91,5 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         if (isNameValid(signUpForm.name) && isEmailAddressValid(signUpForm.email) && isPasswordValid(signUpForm.password)) {
             registerUser(signUpForm.name, signUpForm.email, signUpForm.password)
         }
-    }
-
-    fun setUser(user: FirebaseUser) {
-        setCurrentUser.invoke(user)
     }
 }
