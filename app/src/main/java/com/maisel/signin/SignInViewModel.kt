@@ -5,14 +5,14 @@ import com.maisel.common.BaseViewModel
 import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInComposerController
-import com.maisel.domain.user.usecase.GetCurrentUser
+import com.maisel.domain.user.usecase.GetLoggedInUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val currentUser: GetCurrentUser,
+    private val loggedInUser: GetLoggedInUser,
     private val signInComposerController: SignInComposerController
 ) : BaseViewModel() {
 
@@ -31,7 +31,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun isUserLoggedIn(): Boolean {
-        return currentUser.invoke() != null
+        return loggedInUser.invoke() != null
     }
 
     fun onLoginClicked(authenticationState: AuthenticationState) {
