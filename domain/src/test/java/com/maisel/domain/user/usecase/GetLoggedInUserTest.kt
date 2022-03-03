@@ -7,17 +7,17 @@ import io.mockk.mockk
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class GetCurrentUserTest {
+class GetLoggedInUserTest {
 
-    private val getCurrentUser: GetCurrentUser = mockk()
+    private val getLoggedInUser: GetLoggedInUser = mockk()
     private val userRepository: UserRepository = mockk()
     private val user: User = mockk()
 
     @Test
     fun `WHEN get book returns success THEN success state is returned`() {
         every { userRepository.getLoggedInUser() } returns user
-        every { getCurrentUser.invoke() } returns user
+        every { getLoggedInUser.invoke() } returns user
 
-        assertEquals(getCurrentUser.invoke(), user)
+        assertEquals(getLoggedInUser.invoke(), user)
     }
 }

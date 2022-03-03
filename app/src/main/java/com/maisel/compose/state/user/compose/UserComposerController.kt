@@ -5,6 +5,7 @@ import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
+import com.maisel.domain.user.usecase.GetLoggedInUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class UserComposerController @Inject constructor(
     private val lastMessageUseCase: GetLastMessageUseCase,
+    private val getLoggedInUser: GetLoggedInUser,
     private val userRepository: UserRepository
 ) {
 
@@ -46,15 +48,8 @@ class UserComposerController @Inject constructor(
      */
     fun getLoggedInUser() {
         scope.launch {
-            //TODO: Create Usecase
-            userRepository.listenToLoggedInUser().collect { result ->
-                result.onSuccess {
-                    currentUser.value = it
-                }
-
-                result.onFailure { throwable ->
-                    //TODO: Update UI and show error
-                }
+            getLoggedInUser.invoke()?.let { user ->
+                currentUser.value = user
             }
         }
     }
