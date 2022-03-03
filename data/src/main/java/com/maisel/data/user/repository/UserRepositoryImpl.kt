@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.maisel.data.coroutine.DispatcherProvider
+import com.maisel.data.database.LocalPersistenceManager
 import com.maisel.data.user.dao.UserDao
 import com.maisel.data.user.mapper.toDomain
 import com.maisel.data.user.mapper.toEntity
@@ -26,11 +27,11 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
 
-//TODO: Rename package to @user
 @ExperimentalCoroutinesApi
 class UserRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
     private val database: DatabaseReference,
+    private val localPersistenceManager: LocalPersistenceManager,
     private val userDao: UserDao
 ) : UserRepository {
 
@@ -103,24 +104,20 @@ class UserRepositoryImpl(
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                var user = User()
-                snapshot.children.forEach { children ->
-                    val users = children.getValue(User::class.java)
-                    if (firebaseAuth.currentUser != null && users != null) {
-                        if (firebaseAuth.currentUser!!.uid == users.userId) {
-                            user = users
-                        }
-                    }
-                }
-                this@callbackFlow.sendBlocking(Result.success(user))
+                val user = snapshot.getValue(User::class.java)
+                localPersistenceManager.setUser(user)
+
+                this@callbackFlow.sendBlocking(Result.success(user ?: User()))
             }
         }
 
         //TODO: Rename "Users" to "users"
-        database.child("Users").addValueEventListener(postListener)
+        firebaseAuth.currentUser?.uid?.let { uid ->
+            database.child("Users").child(uid).addValueEventListener(postListener)
 
-        awaitClose {
-            database.child("Users").removeEventListener(postListener)
+            awaitClose {
+                database.child("Users").child(uid).removeEventListener(postListener)
+            }
         }
     }
 

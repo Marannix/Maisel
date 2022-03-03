@@ -2,6 +2,7 @@ package com.maisel.hilt
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
+import com.maisel.data.database.LocalPersistenceManager
 import com.maisel.data.message.repository.MessageRepositoryImpl
 import com.maisel.data.user.dao.UserDao
 import com.maisel.data.user.repository.UserRepositoryImpl
@@ -20,8 +21,8 @@ import javax.inject.Singleton
 class RepositoryModule {
     @Provides
     @Singleton
-    fun provideUserRepository(firebaseAuth: FirebaseAuth, databaseReference: DatabaseReference, userDao: UserDao): UserRepository {
-        return UserRepositoryImpl(firebaseAuth, databaseReference, userDao)
+    fun provideUserRepository(firebaseAuth: FirebaseAuth, databaseReference: DatabaseReference, localPersistenceManager: LocalPersistenceManager, userDao: UserDao): UserRepository {
+        return UserRepositoryImpl(firebaseAuth, databaseReference, localPersistenceManager, userDao)
     }
 
     @Provides
