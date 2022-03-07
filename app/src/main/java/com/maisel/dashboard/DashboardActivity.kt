@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -17,7 +16,6 @@ import com.maisel.common.BaseFragmentActivity
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.domain.user.entity.User
-import com.maisel.signin.SignInActivity
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -43,40 +41,10 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
         replaceFragment(DashboardFragment())
     }
 
-    /**
-     * For some odd reason onCreateOptionsMenu and onOptionsItemSelected are not being called
-     * I manually attach the listeners to toolbar as a temp solution
-     */
-    private val toolbarListener =
-        Toolbar.OnMenuItemClickListener { item ->
-            when (item?.itemId) {
-                R.id.settings -> {
-                    notImplementedYet()
-                }
-                R.id.logout -> {
-                    viewModel.logOutUser()
-                    SignInActivity.createIntent(this@DashboardActivity).also { startActivity(it) }
-                    finish()
-                }
-            }
-            false
-        }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.startListeningToUser()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.stopListeningToUser()
-    }
-
 
     override fun onOpenChatsDetails(user: User) {
         ChatDetailActivity.createIntent(this, user).also {

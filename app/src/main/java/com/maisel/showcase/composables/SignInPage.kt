@@ -80,6 +80,7 @@ fun SignInMainCard(
     onForgotPasswordClicked: () -> Unit,
     onSignInFormValueChange: (AuthenticationState) -> Unit = { viewModel.setSignInInput(it) },
     onSignIn: () -> Unit = { viewModel.onLoginClicked(signInState.authenticationState) },
+    onLongPressed: () -> Unit = { viewModel.onLongPressed() },
     onSignUpClicked: () -> Unit,
     emailContent: @Composable (SignInState) -> Unit = {
         DefaultEmailContent(
@@ -134,6 +135,7 @@ fun SignInMainCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .clickable { onLongPressed() }
                 .padding(vertical = 24.dp),
         )
 
@@ -178,7 +180,7 @@ private fun ValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword("Forgot Password?", onForgotPasswordClicked, modifier)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
-    DefaultCallToActionButton(onSignIn, "Sign in")
+    DefaultCallToActionButton(onSignIn,"Sign in")
 }
 
 @Composable

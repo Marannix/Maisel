@@ -16,8 +16,8 @@ class GetLoggedInUserTest {
     @Test
     fun `WHEN get book returns success THEN success state is returned`() {
         every { userRepository.getLoggedInUser() } returns user
-        every { getLoggedInUser.invoke() } returns user
+        every { getLoggedInUser.getLoggedInUser() } returns user
 
-        assertEquals(getLoggedInUser.invoke(), user)
+        assertEquals(getLoggedInUser.getLoggedInUser(), user)
     }
 }

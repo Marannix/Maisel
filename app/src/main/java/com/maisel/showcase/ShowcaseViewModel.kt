@@ -9,6 +9,6 @@ import javax.inject.Inject
 class ShowcaseViewModel @Inject constructor(private val loggedInUser: GetLoggedInUser): BaseViewModel() {
 
     fun isUserLoggedIn(): Boolean {
-        return loggedInUser.invoke() != null
+        return loggedInUser.getLoggedInUser() != null
     }
 }

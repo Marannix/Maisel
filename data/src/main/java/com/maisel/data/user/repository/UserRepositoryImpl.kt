@@ -91,7 +91,7 @@ class UserRepositoryImpl(
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java)
                 localPersistenceManager.setUser(user)
-
+                Log.d("joshua repo: ", user.toString())
                 this@callbackFlow.sendBlocking(Result.success(user ?: User()))
             }
         }

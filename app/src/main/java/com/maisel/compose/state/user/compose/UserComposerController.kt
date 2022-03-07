@@ -1,5 +1,6 @@
 package com.maisel.compose.state.user.compose
 
+import android.util.Log
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
@@ -7,6 +8,7 @@ import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import com.maisel.domain.user.usecase.GetLoggedInUser
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,15 +20,11 @@ class UserComposerController @Inject constructor(
     private val userRepository: UserRepository
 ) {
 
-    init {
-        //TODO: Get list of users and other information here?
-    }
-
     /**
      * Creates a [CoroutineScope] that allows us to cancel the ongoing work when the parent
      * ViewModel is disposed.
      */
-    private val scope = CoroutineScope(DispatcherProvider.Main)
+    private val scope = CoroutineScope(DispatcherProvider.Main + SupervisorJob())
 
     /**
      * Represents the user Logged In
@@ -44,11 +42,28 @@ class UserComposerController @Inject constructor(
     val latestMessages: MutableStateFlow<List<MessageModel>> = MutableStateFlow(emptyList())
 
     /**
-     * Retrieve current user
+     * Set logged in user
+     */
+    fun setLoggedInUser() {
+        scope.launch {
+            getLoggedInUser.invoke().collect { result ->
+                result.onSuccess { result ->
+                    Log.d("joshua success: ", result.toString())
+                }
+
+                result.onFailure { throwable ->
+                    Log.d("joshua error: ", throwable.toString())
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieve logged in user
      */
     fun getLoggedInUser() {
         scope.launch {
-            getLoggedInUser.invoke()?.let { user ->
+            getLoggedInUser.getLoggedInUser()?.let { user ->
                 currentUser.value = user
             }
         }
@@ -63,10 +78,9 @@ class UserComposerController @Inject constructor(
             lastMessageUseCase.invoke().collect { result ->
                 result.onSuccess { listOfLatestMessages ->
                     latestMessages.value = listOfLatestMessages
-
-                    result.onFailure { throwable ->
-                        //TODO: Update UI and show error?
-                    }
+                }
+                result.onFailure { throwable ->
+                    //TODO: Update UI and show error?
                 }
             }
         }
@@ -94,7 +108,6 @@ class UserComposerController @Inject constructor(
             users.value = userRepository.getUsers()
         }
     }
-
 
     /**
      * Cancels any pending work when the parent ViewModel is about to be destroyed.

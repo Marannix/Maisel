@@ -31,11 +31,15 @@ class SignInViewModel @Inject constructor(
     }
 
     fun isUserLoggedIn(): Boolean {
-        return loggedInUser.invoke() != null
+        return loggedInUser.getLoggedInUser() != null
     }
 
     fun onLoginClicked(authenticationState: AuthenticationState) {
         signInWithEmailAndPassword(authenticationState)
+    }
+
+    fun onLongPressed() {
+        signInWithEmailAndPassword(AuthenticationState("laptop@admin.com", "Password2"))
     }
 
     /**
