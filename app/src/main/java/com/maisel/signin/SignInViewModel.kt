@@ -38,6 +38,7 @@ class SignInViewModel @Inject constructor(
         signInWithEmailAndPassword(authenticationState)
     }
 
+    //TODO: Doesn't work
     fun onLongPressed() {
         signInWithEmailAndPassword(AuthenticationState("laptop@admin.com", "Password2"))
     }

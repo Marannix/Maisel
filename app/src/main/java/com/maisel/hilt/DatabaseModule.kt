@@ -3,6 +3,7 @@ package com.maisel.hilt
 import android.app.Application
 import androidx.room.Room
 import com.maisel.data.database.ApplicationDatabase
+import com.maisel.data.message.dao.RecentMessageDao
 import com.maisel.data.user.dao.UserDao
 import dagger.Module
 import dagger.Provides
@@ -29,5 +30,10 @@ class DatabaseModule {
     @Provides
     fun provideUserDao(appDatabase: ApplicationDatabase): UserDao {
         return appDatabase.userDao()
+    }
+
+    @Provides
+    fun provideRecentMessageDao(appDatabase: ApplicationDatabase): RecentMessageDao {
+        return appDatabase.recentMessageDao()
     }
 }

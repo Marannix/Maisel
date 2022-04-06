@@ -28,7 +28,7 @@ interface UserRepository {
      */
     fun getLoggedInUser(): User?
 
-    fun logoutUser()
+    fun logoutUser(): Flow<Result<Unit>>
 
     fun getSenderUid(): String?
 
@@ -36,7 +36,7 @@ interface UserRepository {
 
     fun listenToLoggedInUser(): Flow<Result<User>>
 
-    suspend fun getUsers(): List<User>
+    suspend fun getUsers(): Flow<List<User>>
 
     suspend fun insertUsers(users: List<User>)
 

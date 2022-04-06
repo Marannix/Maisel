@@ -7,24 +7,31 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
 import com.maisel.dashboard.DashboardViewModel
+import com.maisel.dashboard.RecentMessageState
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.user.entity.User
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 @Composable
 @ExperimentalComposeUiApi
@@ -33,19 +40,29 @@ fun RecentMessageList(
     viewModel: DashboardViewModel,
     listener: ChatsFragment.ChatsFragmentCallback?
 ) {
+    val viewState by viewModel.viewState.collectAsState()
     val users by viewModel.users.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
-    val latestMessages by viewModel.latestMessages.collectAsState()
+    val latestMessages by viewModel.latestMessages.collectAsState(initial = emptyList())
 
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn(Modifier.fillMaxSize()) {
-            items(latestMessages) { latestMessages ->
-                RecentMessageItem(listener, currentUser, users, latestMessages)
+    when (viewState.recentMessageState) {
+        RecentMessageState.Loading -> {
+
+        }
+        is RecentMessageState.Success -> {
+            Box(Modifier.fillMaxSize()) {
+                LazyColumn(Modifier.fillMaxSize()) {
+                    items(items = (viewState.recentMessageState as RecentMessageState.Success).listOfMessages) { latestMessages ->
+                        RecentMessageItem(listener, currentUser, users, latestMessages)
+                    }
+                }
             }
+        }
+        is RecentMessageState.Error -> {
+
         }
     }
 }
-
 
 @ExperimentalComposeUiApi
 @Composable
@@ -115,3 +132,26 @@ fun RecentMessageItem(
         }
     }
 }
+
+@Composable
+fun <T> rememberFlow(
+    flow: Flow<T>,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+): Flow<T> {
+    return remember(key1 = flow, key2 = lifecycleOwner) { flow.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED) }
+}
+
+@Composable
+fun <T : R, R> Flow<T>.collectAsStateLifecycleAware(
+    initial: R,
+    context: CoroutineContext = EmptyCoroutineContext
+): State<R> {
+    val lifecycleAwareFlow = rememberFlow(flow = this)
+    return lifecycleAwareFlow.collectAsState(initial = initial, context = context)
+}
+
+@Suppress("StateFlowValueCalledInComposition")
+@Composable
+fun <T> StateFlow<T>.collectAsStateLifecycleAware(
+    context: CoroutineContext = EmptyCoroutineContext
+): State<T> = collectAsStateLifecycleAware(value, context)

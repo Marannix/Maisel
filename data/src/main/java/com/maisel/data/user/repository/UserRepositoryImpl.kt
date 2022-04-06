@@ -21,7 +21,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -79,8 +80,49 @@ class UserRepositoryImpl(
     }
 
     override fun getLoggedInUser(): User? {
+        if (firebaseAuth.currentUser == null) {
+            localPersistenceManager.setUser(null)
+        }
+
         return localPersistenceManager.getUser()
     }
+
+//    override fun listenToLoggedInUser() = callbackFlow {
+//        val postListener = object : ValueEventListener {
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.d("joshua repo: ", error.toString())
+//                trySend(Result.failure(error.toException()))
+//            }
+//
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                var user = User()
+//                snapshot.children.forEach { children ->
+//                    val users = children.getValue(User::class.java)
+//                    if (firebaseAuth.currentUser != null && users != null) {
+//                        if (firebaseAuth.currentUser!!.uid == users.userId) {
+//                            user = users
+//                        }
+//                    }
+//                }
+//                if (user.userId != null) {
+//                    localPersistenceManager.setUser(user)
+//                    trySend(Result.success(user))
+//                } else {
+//                    trySend(Result.failure(Exception("User is null")))
+//                }
+//
+//            }
+//        }
+//
+//        //TODO: Rename "Users" to "users"
+//        firebaseAuth.currentUser?.let {
+//            database.child("Users").addValueEventListener(postListener)
+//
+//            awaitClose {
+//                database.child("Users").removeEventListener(postListener)
+//            }
+//        }
+//    }
 
     override fun listenToLoggedInUser() = callbackFlow<Result<User>> {
         val postListener = object : ValueEventListener {
@@ -106,12 +148,36 @@ class UserRepositoryImpl(
         }
     }
 
-    override fun logoutUser() {
-        return firebaseAuth.signOut()
+//    override fun logoutUser() {
+//        firebaseAuth.addAuthStateListener {
+//
+//        }
+//    }
+
+    override fun logoutUser() = callbackFlow<Result<Unit>> {
+        val listener = FirebaseAuth.AuthStateListener {
+            localPersistenceManager.setUser(null)
+            if (it.currentUser != null) {
+                it.signOut()
+                this@callbackFlow.trySendBlocking(Result.success(Unit))
+            } else {
+                this@callbackFlow.trySendBlocking(Result.failure(Exception("Already logged out")))
+            }
+        }
+
+        firebaseAuth.addAuthStateListener(listener)
+
+        awaitClose {
+            firebaseAuth.removeAuthStateListener(listener)
+        }
     }
 
-    override suspend fun getUsers(): List<User> {
-        return userDao.getUsers().map { it.toDomain() }
+    override suspend fun getUsers(): Flow<List<User>> {
+        return userDao.getUsers().distinctUntilChanged().flatMapConcat { listOfUsers ->
+            flowOf(listOfUsers.map { user ->
+                user.toDomain()
+            })
+        }
     }
 
     override suspend fun insertUsers(users: List<User>) {
@@ -122,7 +188,7 @@ class UserRepositoryImpl(
     override fun fetchListOfUsers() = callbackFlow<Result<List<User>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+                trySend(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -139,7 +205,7 @@ class UserRepositoryImpl(
                         }))
                     }
                 }
-                this@callbackFlow.sendBlocking(Result.success(list))
+                trySend(Result.success(list))
             }
         }
 

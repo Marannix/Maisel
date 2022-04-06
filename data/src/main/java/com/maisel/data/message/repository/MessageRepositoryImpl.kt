@@ -7,10 +7,13 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.maisel.data.coroutine.DispatcherProvider
 import com.maisel.data.firebase.observeLastMessage
+import com.maisel.data.message.dao.RecentMessageDao
+import com.maisel.data.message.mapper.toMessageData
+import com.maisel.data.message.mapper.toMessageEntity
+import com.maisel.data.message.mapper.toMessageModel
 import com.maisel.data.message.model.MessageData
-import com.maisel.data.message.toMessageData
-import com.maisel.data.message.toMessageModel
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.MessageRepository
 import io.reactivex.Observable
@@ -18,12 +21,14 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 
 @ExperimentalCoroutinesApi
 class MessageRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
-    private val database: DatabaseReference
+    private val database: DatabaseReference,
+    private val recentMessageDao: RecentMessageDao
 ) : MessageRepository {
 
     private var listOfMessages = BehaviorSubject.create<List<MessageModel>>()
@@ -136,7 +141,7 @@ class MessageRepositoryImpl(
         }
     }
 
-    override fun getLatestMessagev2() = callbackFlow<Result<List<MessageModel>>> {
+    override fun listenToRecentMessages() = callbackFlow<Result<List<MessageModel>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))
@@ -170,6 +175,22 @@ class MessageRepositoryImpl(
     }
 
     override fun observeLastMessage(): Observable<String> = lastMessageListeners
+
+    override suspend fun insertRecentMessages(messages: List<MessageModel>) {
+        recentMessageDao.insertRecentMessages(messages.map { it.toMessageEntity() })
+    }
+
+    override suspend fun getRecentMessages(): Flow<List<MessageModel>> {
+        return withContext(DispatcherProvider.IO) {
+            recentMessageDao.getRecentMessage()
+                .distinctUntilChanged()
+                .flatMapConcat { listOfMessagesEntity ->
+                    flowOf(listOfMessagesEntity.map { entity ->
+                        entity.toMessageModel()
+                    })
+                }
+        }
+    }
 
     companion object {
         const val MESSAGES = "messages"

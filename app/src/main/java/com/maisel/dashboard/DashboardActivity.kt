@@ -8,7 +8,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.R
 import com.maisel.chat.ChatDetailActivity
@@ -16,6 +19,9 @@ import com.maisel.common.BaseFragmentActivity
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.domain.user.entity.User
+import com.maisel.signin.SignInActivity
+import com.maisel.state.UserAuthState
+import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -35,6 +41,30 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUp()
+        observeViewState()
+
+    }
+
+    private fun observeViewState() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.viewState.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collectLatest {
+                    render(it)
+                }
+        }
+    }
+
+    private fun render(state: DashboardViewState) {
+        when (state.userAuthState) {
+            UserAuthState.LOGGED_OUT -> {
+                SignInActivity.createIntent(this@DashboardActivity)
+                    .also { intent -> startActivity(intent) }
+                finish()
+            }
+            else -> {
+
+            }
+        }
     }
 
     private fun setUp() {
@@ -54,6 +84,10 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
 
     override fun openContactsList() {
         replaceFragment(ChatsFragment())
+    }
+
+    override fun onLogOut() {
+        viewModel.logOutUser()
     }
 
     //TODO: Replace with Jetpack Navigation

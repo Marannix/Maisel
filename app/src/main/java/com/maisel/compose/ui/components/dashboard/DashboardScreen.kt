@@ -25,7 +25,7 @@ import com.maisel.dashboard.DashboardViewModel
 fun DashboardScreen(
     viewModel: DashboardViewModel,
     listener: DashboardFragment.DashboardFragmentCallback?,
-    onBackButton: () -> Unit = { }
+    onLogout: () -> Unit = { viewModel.logOutUser() }
 ) {
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
@@ -69,6 +69,7 @@ fun DashboardScreen(
                                 DropdownMenuItem(onClick = {
                                     expanded.value = false
                                     result.value = "Logout clicked"
+                                    listener?.onLogOut()
                                 }) {
                                     Text("Logout")
                                 }

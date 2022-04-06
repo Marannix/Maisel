@@ -2,16 +2,13 @@ package com.maisel.dashboard
 
 import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
-import com.maisel.domain.message.MessageModel
 import com.maisel.domain.user.entity.User
-import com.maisel.domain.user.usecase.LogOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val logOutUseCase: LogOutUseCase,
     private val userComposerController: UserComposerController
 ) : BaseViewModel() {
 
@@ -19,18 +16,19 @@ class DashboardViewModel @Inject constructor(
 
     val users: StateFlow<List<User>> = userComposerController.users
 
-    val latestMessages: StateFlow<List<MessageModel>> = userComposerController.latestMessages
+    val viewState: StateFlow<DashboardViewState> = userComposerController.state
 
     init {
         userComposerController.setLoggedInUser()
         userComposerController.getLoggedInUser()
         userComposerController.listOfUsers()
         userComposerController.getUsers()
-        userComposerController.getLatestMessages()
+        userComposerController.listenToRecentMessages()
+        userComposerController.getRecentMessages()
     }
 
     fun logOutUser() {
-        logOutUseCase.invoke()
+        userComposerController.logoutUser()
     }
 
     /**

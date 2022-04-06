@@ -23,9 +23,10 @@ class DashboardFragment : Fragment() {
 
     interface DashboardFragmentCallback {
         fun openContactsList()
+        fun onLogOut()
     }
 
-    private val viewModel: DashboardViewModel by lazy { ViewModelProvider(this)[DashboardViewModel::class.java] }
+    private val viewModel: DashboardViewModel by lazy { ViewModelProvider(requireActivity())[DashboardViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

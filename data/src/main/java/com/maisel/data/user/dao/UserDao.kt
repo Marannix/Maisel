@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.maisel.data.user.entity.UserEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -12,5 +13,5 @@ interface UserDao {
     fun insertUsers(users: List<UserEntity>)
 
     @Query("select * from user")
-    suspend fun getUsers(): List<UserEntity>
+    fun getUsers(): Flow<List<UserEntity>>
 }

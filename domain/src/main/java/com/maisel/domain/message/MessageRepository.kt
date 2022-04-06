@@ -21,5 +21,9 @@ interface MessageRepository {
 
     fun fetchLastMessage(userId: String): Flow<Result<String>>
 
-    fun getLatestMessagev2(): Flow<Result<List<MessageModel>>>
+    fun listenToRecentMessages(): Flow<Result<List<MessageModel>>>
+
+    suspend fun insertRecentMessages(messages: List<MessageModel>)
+
+    suspend fun getRecentMessages(): Flow<List<MessageModel>>
 }
