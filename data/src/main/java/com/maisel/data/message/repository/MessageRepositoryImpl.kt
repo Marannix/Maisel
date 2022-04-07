@@ -21,7 +21,10 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 @ExperimentalCoroutinesApi
@@ -184,10 +187,10 @@ class MessageRepositoryImpl(
         return withContext(DispatcherProvider.IO) {
             recentMessageDao.getRecentMessage()
                 .distinctUntilChanged()
-                .flatMapConcat { listOfMessagesEntity ->
-                    flowOf(listOfMessagesEntity.map { entity ->
+                .map { listOfMessagesEntity ->
+                    listOfMessagesEntity.map { entity ->
                         entity.toMessageModel()
-                    })
+                    }
                 }
         }
     }

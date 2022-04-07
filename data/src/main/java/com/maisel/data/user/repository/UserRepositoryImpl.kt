@@ -22,7 +22,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -87,43 +90,6 @@ class UserRepositoryImpl(
         return localPersistenceManager.getUser()
     }
 
-//    override fun listenToLoggedInUser() = callbackFlow {
-//        val postListener = object : ValueEventListener {
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.d("joshua repo: ", error.toString())
-//                trySend(Result.failure(error.toException()))
-//            }
-//
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                var user = User()
-//                snapshot.children.forEach { children ->
-//                    val users = children.getValue(User::class.java)
-//                    if (firebaseAuth.currentUser != null && users != null) {
-//                        if (firebaseAuth.currentUser!!.uid == users.userId) {
-//                            user = users
-//                        }
-//                    }
-//                }
-//                if (user.userId != null) {
-//                    localPersistenceManager.setUser(user)
-//                    trySend(Result.success(user))
-//                } else {
-//                    trySend(Result.failure(Exception("User is null")))
-//                }
-//
-//            }
-//        }
-//
-//        //TODO: Rename "Users" to "users"
-//        firebaseAuth.currentUser?.let {
-//            database.child("Users").addValueEventListener(postListener)
-//
-//            awaitClose {
-//                database.child("Users").removeEventListener(postListener)
-//            }
-//        }
-//    }
-
     override fun listenToLoggedInUser() = callbackFlow<Result<User>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -148,12 +114,6 @@ class UserRepositoryImpl(
         }
     }
 
-//    override fun logoutUser() {
-//        firebaseAuth.addAuthStateListener {
-//
-//        }
-//    }
-
     override fun logoutUser() = callbackFlow<Result<Unit>> {
         val listener = FirebaseAuth.AuthStateListener {
             localPersistenceManager.setUser(null)
@@ -173,11 +133,12 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getUsers(): Flow<List<User>> {
-        return userDao.getUsers().distinctUntilChanged().flatMapConcat { listOfUsers ->
-            flowOf(listOfUsers.map { user ->
-                user.toDomain()
-            })
-        }
+        return userDao.getUsers().distinctUntilChanged()
+            .map { listOfUsers ->
+                listOfUsers.map { user ->
+                    user.toDomain()
+                }
+            }
     }
 
     override suspend fun insertUsers(users: List<User>) {
