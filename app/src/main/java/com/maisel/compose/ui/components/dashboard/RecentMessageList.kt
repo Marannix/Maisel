@@ -24,7 +24,7 @@ import com.maisel.R
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.RecentMessageState
 import com.maisel.dashboard.chat.ChatsFragment
-import com.maisel.domain.message.MessageModel
+import com.maisel.domain.message.ChatModel
 import com.maisel.domain.user.entity.User
 
 @Composable
@@ -63,7 +63,7 @@ fun RecentMessageItem(
     listener: ChatsFragment.ChatsFragmentCallback?,
     currentUser: User,
     users: List<User>,
-    messageModel: MessageModel
+    messageModel: ChatModel
 ) {
     val chatPartnerId = if (messageModel.senderId == currentUser.userId) {
         messageModel.receiverId

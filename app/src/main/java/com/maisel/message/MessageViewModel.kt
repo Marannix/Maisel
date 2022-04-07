@@ -3,7 +3,7 @@ package com.maisel.message
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
-import com.maisel.domain.message.MessageModel
+import com.maisel.domain.message.ChatModel
 import com.maisel.domain.message.usecase.SendMessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
@@ -28,7 +28,7 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
         state.value?.let {
             if (it.senderUid != null && it.receiverId != null) {
                 //TODO: Comeback here later, shouldn't need to set userId
-                val model = MessageModel("", it.senderUid, it.receiverId, input, Date().time.toString())
+                val model = ChatModel(it.senderUid, it.receiverId, input, Date().time.toString())
 
                 sendMessageUseCase.invoke(input, it.senderUid, it.receiverId, model)
                 state.value = currentViewState().copy(input = "")

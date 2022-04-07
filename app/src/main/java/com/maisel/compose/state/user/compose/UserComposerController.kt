@@ -5,7 +5,7 @@ import androidx.compose.runtime.toMutableStateList
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.dashboard.DashboardViewState
 import com.maisel.dashboard.RecentMessageState
-import com.maisel.domain.message.MessageModel
+import com.maisel.domain.message.ChatModel
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.user.entity.User
@@ -63,7 +63,7 @@ class UserComposerController @Inject constructor(
     /**
      * Represents the list of latest messages from Firebase Realtime Database
      */
-    private var latestMessages: MutableStateFlow<List<MessageModel>> = MutableStateFlow(emptyList())
+    private var latestMessages: MutableStateFlow<List<ChatModel>> = MutableStateFlow(emptyList())
 
     /**
      * Set logged in user

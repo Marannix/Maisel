@@ -10,11 +10,9 @@ import com.maisel.data.coroutine.DispatcherProvider
 import com.maisel.data.firebase.observeLastMessage
 import com.maisel.data.message.dao.MessageDao
 import com.maisel.data.message.dao.RecentMessageDao
-import com.maisel.data.message.mapper.toMessageData
-import com.maisel.data.message.mapper.toMessageEntity
-import com.maisel.data.message.mapper.toMessageModel
-import com.maisel.data.message.mapper.toRecentMessageEntity
+import com.maisel.data.message.mapper.*
 import com.maisel.data.message.model.MessageData
+import com.maisel.domain.message.ChatModel
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.MessageRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,15 +32,13 @@ class MessageRepositoryImpl(
     private val recentMessageDao: RecentMessageDao
 ) : MessageRepository {
 
-    //  private var messageListeners: ValueEventListener? = null
     private var sendMessageReceiverListeners: Task<Void>? = null
     private var sendMessageSenderListeners: Task<Void>? = null
 
-    //TODO: Listen to chat message?
-    override fun listenToMessages(
+    override fun listenToChatMessages(
         senderId: String,
         receiverId: String
-    ): Flow<Result<List<MessageModel>>> {
+    ): Flow<Result<List<ChatModel>>> {
         return callbackFlow {
             val postListener = object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -50,10 +46,10 @@ class MessageRepositoryImpl(
                 }
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val list = mutableListOf<MessageModel>()
+                    val list = mutableListOf<ChatModel>()
                     snapshot.children.forEach { children ->
                         val messageData = children.getValue(MessageData::class.java)
-                        messageData?.toMessageModel(children.key)?.let(list::add)
+                        messageData?.toChatModel()?.let(list::add)
                     }
 
                     this@callbackFlow.sendBlocking(Result.success(list))
@@ -82,7 +78,7 @@ class MessageRepositoryImpl(
         input: String,
         senderUid: String,
         receiverId: String,
-        model: MessageModel
+        model: ChatModel
     ) {
 //        if (sendMessageSenderListeners != null && sendMessageReceiverListeners != null) {
 //            Log.w("Message Repo send:", " Calling start listening while already started")
@@ -120,7 +116,7 @@ class MessageRepositoryImpl(
             .observeLastMessage()
     }
 
-    private fun setLatestMessage(receiverId: String, model: MessageModel) {
+    private fun setLatestMessage(receiverId: String, model: ChatModel) {
         firebaseAuth.uid?.let { firebaseAuthUid ->
             database.ref.child(LATEST_MESSAGES)
                 .child(firebaseAuthUid)
@@ -175,29 +171,29 @@ class MessageRepositoryImpl(
         recentMessageDao.insertRecentMessages(messages.map { it.toRecentMessageEntity() })
     }
 
-    override suspend fun getRecentMessages(): Flow<List<MessageModel>> {
+    override suspend fun getRecentMessages(): Flow<List<ChatModel>> {
         return withContext(DispatcherProvider.IO) {
             recentMessageDao.getRecentMessages()
                 .distinctUntilChanged()
                 .map { listOfRecentMessagesEntity ->
                     listOfRecentMessagesEntity.map { entity ->
-                        entity.toMessageModel()
+                        entity.toChatModel()
                     }
                 }
         }
     }
 
-    override suspend fun insertMessages(messages: List<MessageModel>) {
+    override suspend fun insertMessages(messages: List<ChatModel>) {
         messageDao.insertMessages(messages.map { it.toMessageEntity() })
     }
 
-    override suspend fun getListOfMessages(): Flow<List<MessageModel>> {
+    override suspend fun getListOfChatMessages(): Flow<List<ChatModel>> {
         return withContext(DispatcherProvider.IO) {
             messageDao.getMessages()
                 .distinctUntilChanged()
                 .map { listOfMessagesEntity ->
                     listOfMessagesEntity.map { entity ->
-                        entity.toMessageModel()
+                        entity.toChatModel()
                     }
                 }
         }

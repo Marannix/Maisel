@@ -8,19 +8,19 @@ interface MessageRepository {
 
     fun getSenderUid(): String?
 
-    fun sendMessage(input: String, senderUid: String, receiverId: String, model: MessageModel)
+    fun sendMessage(input: String, senderUid: String, receiverId: String, model: ChatModel)
 
     fun fetchLastMessage(userId: String): Flow<Result<String>>
 
     fun listenToRecentMessages(): Flow<Result<List<MessageModel>>>
 
-    fun listenToMessages(senderId: String, receiverId: String): Flow<Result<List<MessageModel>>>
+    fun listenToChatMessages(senderId: String, receiverId: String): Flow<Result<List<ChatModel>>>
 
     suspend fun insertRecentMessages(messages: List<MessageModel>)
 
-    suspend fun getRecentMessages(): Flow<List<MessageModel>>
+    suspend fun getRecentMessages(): Flow<List<ChatModel>>
 
-    suspend fun insertMessages(messages: List<MessageModel>)
+    suspend fun insertMessages(messages: List<ChatModel>)
 
-    suspend fun getListOfMessages(): Flow<List<MessageModel>>
+    suspend fun getListOfChatMessages(): Flow<List<ChatModel>>
 }
