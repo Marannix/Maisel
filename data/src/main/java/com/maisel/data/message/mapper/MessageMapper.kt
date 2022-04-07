@@ -6,8 +6,9 @@ import com.maisel.data.message.model.MessageData
 import com.maisel.data.utils.DateFormatter
 import com.maisel.domain.message.MessageModel
 
-fun MessageData.toMessageModel() : MessageModel {
+fun MessageData.toMessageModel(userId: String?): MessageModel {
     return MessageModel(
+        userId = userId,
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,
@@ -27,6 +28,7 @@ fun MessageModel.toMessageData() : MessageData {
 
 fun MessageModel.toRecentMessageEntity() : RecentMessageEntity {
     return RecentMessageEntity(
+        userId = requireNotNull(this.userId),
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,

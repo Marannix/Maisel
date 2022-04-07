@@ -53,7 +53,7 @@ class MessageRepositoryImpl(
                     val list = mutableListOf<MessageModel>()
                     snapshot.children.forEach { children ->
                         val messageData = children.getValue(MessageData::class.java)
-                        messageData?.toMessageModel()?.let(list::add)
+                        messageData?.toMessageModel(children.key)?.let(list::add)
                     }
 
                     this@callbackFlow.sendBlocking(Result.success(list))
@@ -148,8 +148,8 @@ class MessageRepositoryImpl(
                 val list = mutableListOf<MessageModel>()
                 snapshot.children.forEach { children ->
                     val latestMessages =
-                        children.getValue(MessageData::class.java)?.toMessageModel()
-                            ?: MessageData().toMessageModel()
+                        children.getValue(MessageData::class.java)?.toMessageModel(children.key)
+                            ?: MessageData().toMessageModel(children.key)
 
                     list.add(latestMessages)
                 }

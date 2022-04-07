@@ -27,7 +27,8 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
     fun sendMessage(input: String) {
         state.value?.let {
             if (it.senderUid != null && it.receiverId != null) {
-                val model = MessageModel(it.senderUid, it.receiverId, input, Date().time.toString())
+                //TODO: Comeback here later, shouldn't need to set userId
+                val model = MessageModel("", it.senderUid, it.receiverId, input, Date().time.toString())
 
                 sendMessageUseCase.invoke(input, it.senderUid, it.receiverId, model)
                 state.value = currentViewState().copy(input = "")
