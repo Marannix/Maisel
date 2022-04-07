@@ -21,18 +21,17 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
+import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.RecentMessageState
-import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.domain.message.ChatModel
 import com.maisel.domain.user.entity.User
 
 @Composable
 @ExperimentalComposeUiApi
 fun RecentMessageList(
-    padding: PaddingValues,
     viewModel: DashboardViewModel,
-    listener: ChatsFragment.ChatsFragmentCallback?
+    listener: DashboardFragment.DashboardFragmentCallback?
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val users by viewModel.users.collectAsState()
@@ -60,18 +59,12 @@ fun RecentMessageList(
 @ExperimentalComposeUiApi
 @Composable
 fun RecentMessageItem(
-    listener: ChatsFragment.ChatsFragmentCallback?,
+    listener: DashboardFragment.DashboardFragmentCallback?,
     currentUser: User,
     users: List<User>,
     messageModel: ChatModel
 ) {
-    val chatPartnerId = if (messageModel.senderId == currentUser.userId) {
-        messageModel.receiverId
-    } else {
-        messageModel.senderId
-    }
-
-    users.firstOrNull { it.userId == chatPartnerId }?.let { user ->
+    users.firstOrNull { it.userId == messageModel.userId }?.let { user ->
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
@@ -101,7 +94,7 @@ fun RecentMessageItem(
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                 )
 
-                Row() {
+                Row {
                     if (messageModel.receiverId == currentUser.userId) {
                         Image(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_double_tick),

@@ -4,11 +4,11 @@ import com.maisel.data.message.entity.MessageEntity
 import com.maisel.data.message.entity.RecentMessageEntity
 import com.maisel.data.message.model.MessageData
 import com.maisel.data.utils.DateFormatter
+import com.maisel.domain.message.ChatDataModel
 import com.maisel.domain.message.ChatModel
-import com.maisel.domain.message.MessageModel
 
-fun MessageData.toMessageModel(userId: String?): MessageModel {
-    return MessageModel(
+fun MessageData.toMessageModel(userId: String?): ChatModel {
+    return ChatModel(
         userId = userId,
         senderId = this.senderId,
         receiverId = this.receiverId,
@@ -18,7 +18,7 @@ fun MessageData.toMessageModel(userId: String?): MessageModel {
     )
 }
 
-fun MessageData.toChatModel(): ChatModel {
+fun MessageData.toChatModel(userId: String?): ChatModel {
     return ChatModel(
         senderId = this.senderId,
         receiverId = this.receiverId,
@@ -28,7 +28,7 @@ fun MessageData.toChatModel(): ChatModel {
     )
 }
 
-fun ChatModel.toMessageData() : MessageData {
+fun ChatDataModel.toMessageData() : MessageData {
     return MessageData(
         senderId = this.senderId,
         receiverId = this.receiverId,
@@ -37,7 +37,7 @@ fun ChatModel.toMessageData() : MessageData {
     )
 }
 
-fun MessageModel.toRecentMessageEntity() : RecentMessageEntity {
+fun ChatModel.toRecentMessageEntity() : RecentMessageEntity {
     return RecentMessageEntity(
         userId = requireNotNull(this.userId),
         senderId = this.senderId,
@@ -50,6 +50,7 @@ fun MessageModel.toRecentMessageEntity() : RecentMessageEntity {
 
 fun RecentMessageEntity.toChatModel() : ChatModel {
     return ChatModel(
+        userId = this.userId,
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,

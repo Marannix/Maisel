@@ -12,8 +12,8 @@ import com.maisel.data.message.dao.MessageDao
 import com.maisel.data.message.dao.RecentMessageDao
 import com.maisel.data.message.mapper.*
 import com.maisel.data.message.model.MessageData
+import com.maisel.domain.message.ChatDataModel
 import com.maisel.domain.message.ChatModel
-import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.MessageRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -49,7 +49,7 @@ class MessageRepositoryImpl(
                     val list = mutableListOf<ChatModel>()
                     snapshot.children.forEach { children ->
                         val messageData = children.getValue(MessageData::class.java)
-                        messageData?.toChatModel()?.let(list::add)
+                        messageData?.toChatModel(children.key)?.let(list::add)
                     }
 
                     this@callbackFlow.sendBlocking(Result.success(list))
@@ -78,7 +78,7 @@ class MessageRepositoryImpl(
         input: String,
         senderUid: String,
         receiverId: String,
-        model: ChatModel
+        model: ChatDataModel
     ) {
 //        if (sendMessageSenderListeners != null && sendMessageReceiverListeners != null) {
 //            Log.w("Message Repo send:", " Calling start listening while already started")
@@ -116,7 +116,7 @@ class MessageRepositoryImpl(
             .observeLastMessage()
     }
 
-    private fun setLatestMessage(receiverId: String, model: ChatModel) {
+    private fun setLatestMessage(receiverId: String, model: ChatDataModel) {
         firebaseAuth.uid?.let { firebaseAuthUid ->
             database.ref.child(LATEST_MESSAGES)
                 .child(firebaseAuthUid)
@@ -134,14 +134,14 @@ class MessageRepositoryImpl(
         }
     }
 
-    override fun listenToRecentMessages() = callbackFlow<Result<List<MessageModel>>> {
+    override fun listenToRecentMessages() = callbackFlow<Result<List<ChatModel>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<MessageModel>()
+                val list = mutableListOf<ChatModel>()
                 snapshot.children.forEach { children ->
                     val latestMessages =
                         children.getValue(MessageData::class.java)?.toMessageModel(children.key)
@@ -167,7 +167,7 @@ class MessageRepositoryImpl(
         }
     }
 
-    override suspend fun insertRecentMessages(messages: List<MessageModel>) {
+    override suspend fun insertRecentMessages(messages: List<ChatModel>) {
         recentMessageDao.insertRecentMessages(messages.map { it.toRecentMessageEntity() })
     }
 

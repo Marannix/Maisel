@@ -24,8 +24,7 @@ import com.maisel.dashboard.DashboardViewModel
 @Composable
 fun DashboardScreen(
     viewModel: DashboardViewModel,
-    listener: DashboardFragment.DashboardFragmentCallback?,
-    onLogout: () -> Unit = { viewModel.logOutUser() }
+    listener: DashboardFragment.DashboardFragmentCallback?
 ) {
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
@@ -88,7 +87,7 @@ fun DashboardScreen(
                 }
             },
             content = { padding ->
-                RecentMessageList(padding, viewModel, null)
+                RecentMessageList(viewModel, listener)
             }
         )
     }

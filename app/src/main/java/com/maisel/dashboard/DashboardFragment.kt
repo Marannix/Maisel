@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.maisel.compose.ui.components.dashboard.DashboardScreen
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.domain.user.entity.User
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
@@ -22,6 +23,7 @@ class DashboardFragment : Fragment() {
     private var callback: DashboardFragmentCallback? = null
 
     interface DashboardFragmentCallback {
+        fun onOpenChatsDetails(user: User)
         fun openContactsList()
         fun onLogOut()
     }
