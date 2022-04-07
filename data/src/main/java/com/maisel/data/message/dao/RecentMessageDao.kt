@@ -13,5 +13,5 @@ interface RecentMessageDao {
     fun insertRecentMessages(recentMessages: List<RecentMessageEntity>)
 
     @Query("select * from recent_message")
-    fun getRecentMessage(): Flow<List<RecentMessageEntity>>
+    fun getRecentMessages(): Flow<List<RecentMessageEntity>>
 }

@@ -185,7 +185,7 @@ class MessageRepositoryImpl(
 
     override suspend fun getRecentMessages(): Flow<List<MessageModel>> {
         return withContext(DispatcherProvider.IO) {
-            recentMessageDao.getRecentMessage()
+            recentMessageDao.getRecentMessages()
                 .distinctUntilChanged()
                 .map { listOfMessagesEntity ->
                     listOfMessagesEntity.map { entity ->
