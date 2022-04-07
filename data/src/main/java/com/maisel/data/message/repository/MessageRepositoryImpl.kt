@@ -1,6 +1,5 @@
 package com.maisel.data.message.repository
 
-import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -17,7 +16,6 @@ import com.maisel.data.message.model.MessageData
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.MessageRepository
 import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -34,40 +32,42 @@ class MessageRepositoryImpl(
     private val recentMessageDao: RecentMessageDao
 ) : MessageRepository {
 
-    private var listOfMessages = BehaviorSubject.create<List<MessageModel>>()
-    private var messageListeners: ValueEventListener? = null
+    //  private var messageListeners: ValueEventListener? = null
     private var sendMessageReceiverListeners: Task<Void>? = null
     private var sendMessageSenderListeners: Task<Void>? = null
 
-    private var lastMessageListeners = BehaviorSubject.create<String>()
+    //TODO: Listen to chat message?
+    override fun listenToMessages(senderId: String, receiverId: String): Flow<Result<List<MessageModel>>> {
+        return callbackFlow {
+            val postListener = object : ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+                }
 
-    override fun startListeningToMessages(senderId: String, receiverId: String) {
-        if (messageListeners != null) {
-            Log.w("MessageRepositoryImpl", " Calling start listening while already started")
-            return
-        }
-        messageListeners =
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val list = mutableListOf<MessageModel>()
+                    snapshot.children.forEach { children ->
+                        val messageData = children.getValue(MessageData::class.java)
+                        messageData?.toMessageModel()?.let(list::add)
+                    }
+
+                    this@callbackFlow.sendBlocking(Result.success(list))
+                }
+            }
+
             database.ref.child(MESSAGES)
                 .child(senderId)
                 .child(receiverId)
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val list = mutableListOf<MessageModel>()
-                        snapshot.children.forEach { children ->
-                            val messageData = children.getValue(MessageData::class.java)
-                            messageData?.toMessageModel()?.let(list::add)
-                        }
-                        listOfMessages.onNext(list)
-                    }
+                .addValueEventListener(postListener)
 
-                    override fun onCancelled(error: DatabaseError) {
-                        // TODO
-                    }
-                })
+            awaitClose {
+                database.ref.child(MESSAGES)
+                    .child(senderId)
+                    .child(receiverId)
+                    .removeEventListener(postListener)
+            }
+        }
     }
-
-    //TODO: Store in room database
-    override fun observeListOfMessages(): Observable<List<MessageModel>> = listOfMessages
 
     override fun getSenderUid(): String? {
         return firebaseAuth.uid
@@ -101,17 +101,6 @@ class MessageRepositoryImpl(
             }
 
         setLatestMessage(receiverId, model)
-    }
-
-    override fun stopListeningToMessages(senderId: String, receiverId: String) {
-        messageListeners?.let {
-            database.ref.child(MESSAGES)
-                .child(senderId)
-                .child(receiverId)
-                .removeEventListener(it)
-        }
-        messageListeners = null
-        listOfMessages.onNext(emptyList())
     }
 
     override fun stopListeningToSendMessages(senderRoom: String) {
@@ -177,8 +166,6 @@ class MessageRepositoryImpl(
         }
     }
 
-    override fun observeLastMessage(): Observable<String> = lastMessageListeners
-
     override suspend fun insertRecentMessages(messages: List<MessageModel>) {
         recentMessageDao.insertRecentMessages(messages.map { it.toMessageEntity() })
     }
@@ -193,6 +180,14 @@ class MessageRepositoryImpl(
                     }
                 }
         }
+    }
+
+    override suspend fun insertMessages(messages: List<MessageModel>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getListOfMessages(): Observable<List<MessageModel>> {
+        TODO("Not yet implemented")
     }
 
     companion object {
