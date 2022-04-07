@@ -9,7 +9,6 @@ import com.maisel.domain.message.usecase.GetSenderUidUseCase
 import com.maisel.domain.user.entity.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,12 +38,10 @@ class ChatDetailViewModel @Inject constructor(
     }
 
     fun getMessageItems(senderId: String, receiverId: String) {
-        viewModelScope.launch(DispatcherProvider.IO) {
+        viewModelScope.launch(DispatcherProvider.Main) {
+            viewState.value =
+                currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Loading)
             messagesUseCase.invoke(senderId, receiverId)
-                .onStart {
-                    viewState.value =
-                        currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Loading)
-                }
                 .collect { result ->
                     result.onSuccess {
                         if (it.isNullOrEmpty()) {

@@ -1,5 +1,6 @@
 package com.maisel.data.message.mapper
 
+import com.maisel.data.message.entity.MessageEntity
 import com.maisel.data.message.entity.RecentMessageEntity
 import com.maisel.data.message.model.MessageData
 import com.maisel.data.utils.DateFormatter
@@ -24,7 +25,7 @@ fun MessageModel.toMessageData() : MessageData {
     )
 }
 
-fun MessageModel.toMessageEntity() : RecentMessageEntity {
+fun MessageModel.toRecentMessageEntity() : RecentMessageEntity {
     return RecentMessageEntity(
         senderId = this.senderId,
         receiverId = this.receiverId,
@@ -35,6 +36,26 @@ fun MessageModel.toMessageEntity() : RecentMessageEntity {
 }
 
 fun RecentMessageEntity.toMessageModel() : MessageModel {
+    return MessageModel(
+        senderId = this.senderId,
+        receiverId = this.receiverId,
+        message = this.message,
+        time = this.time,
+        date = this.date
+    )
+}
+
+fun MessageModel.toMessageEntity() : MessageEntity {
+    return MessageEntity(
+        senderId = this.senderId,
+        receiverId = this.receiverId,
+        message = this.message,
+        time = this.time,
+        date = this.date
+    )
+}
+
+fun MessageEntity.toMessageModel() : MessageModel {
     return MessageModel(
         senderId = this.senderId,
         receiverId = this.receiverId,

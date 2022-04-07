@@ -1,6 +1,5 @@
 package com.maisel.domain.message
 
-import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
@@ -23,6 +22,5 @@ interface MessageRepository {
 
     suspend fun insertMessages(messages: List<MessageModel>)
 
-    suspend fun getListOfMessages(): Observable<List<MessageModel>>
-
+    suspend fun getListOfMessages(): Flow<List<MessageModel>>
 }

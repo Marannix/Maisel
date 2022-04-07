@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.maisel.data.message.entity.MessageEntity
-import com.maisel.data.message.entity.RecentMessageEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

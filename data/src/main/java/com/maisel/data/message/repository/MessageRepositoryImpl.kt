@@ -8,14 +8,15 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.maisel.data.coroutine.DispatcherProvider
 import com.maisel.data.firebase.observeLastMessage
+import com.maisel.data.message.dao.MessageDao
 import com.maisel.data.message.dao.RecentMessageDao
 import com.maisel.data.message.mapper.toMessageData
 import com.maisel.data.message.mapper.toMessageEntity
 import com.maisel.data.message.mapper.toMessageModel
+import com.maisel.data.message.mapper.toRecentMessageEntity
 import com.maisel.data.message.model.MessageData
 import com.maisel.domain.message.MessageModel
 import com.maisel.domain.message.MessageRepository
-import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -29,6 +30,7 @@ import kotlinx.coroutines.withContext
 class MessageRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
     private val database: DatabaseReference,
+    private val messageDao: MessageDao,
     private val recentMessageDao: RecentMessageDao
 ) : MessageRepository {
 
@@ -37,7 +39,10 @@ class MessageRepositoryImpl(
     private var sendMessageSenderListeners: Task<Void>? = null
 
     //TODO: Listen to chat message?
-    override fun listenToMessages(senderId: String, receiverId: String): Flow<Result<List<MessageModel>>> {
+    override fun listenToMessages(
+        senderId: String,
+        receiverId: String
+    ): Flow<Result<List<MessageModel>>> {
         return callbackFlow {
             val postListener = object : ValueEventListener {
                 override fun onCancelled(error: DatabaseError) {
@@ -167,15 +172,15 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun insertRecentMessages(messages: List<MessageModel>) {
-        recentMessageDao.insertRecentMessages(messages.map { it.toMessageEntity() })
+        recentMessageDao.insertRecentMessages(messages.map { it.toRecentMessageEntity() })
     }
 
     override suspend fun getRecentMessages(): Flow<List<MessageModel>> {
         return withContext(DispatcherProvider.IO) {
             recentMessageDao.getRecentMessages()
                 .distinctUntilChanged()
-                .map { listOfMessagesEntity ->
-                    listOfMessagesEntity.map { entity ->
+                .map { listOfRecentMessagesEntity ->
+                    listOfRecentMessagesEntity.map { entity ->
                         entity.toMessageModel()
                     }
                 }
@@ -183,11 +188,19 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun insertMessages(messages: List<MessageModel>) {
-        TODO("Not yet implemented")
+        messageDao.insertMessages(messages.map { it.toMessageEntity() })
     }
 
-    override suspend fun getListOfMessages(): Observable<List<MessageModel>> {
-        TODO("Not yet implemented")
+    override suspend fun getListOfMessages(): Flow<List<MessageModel>> {
+        return withContext(DispatcherProvider.IO) {
+            messageDao.getMessages()
+                .distinctUntilChanged()
+                .map { listOfMessagesEntity ->
+                    listOfMessagesEntity.map { entity ->
+                        entity.toMessageModel()
+                    }
+                }
+        }
     }
 
     companion object {

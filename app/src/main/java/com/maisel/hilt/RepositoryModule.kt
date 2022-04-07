@@ -3,6 +3,7 @@ package com.maisel.hilt
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.maisel.data.database.LocalPersistenceManager
+import com.maisel.data.message.dao.MessageDao
 import com.maisel.data.message.dao.RecentMessageDao
 import com.maisel.data.message.repository.MessageRepositoryImpl
 import com.maisel.data.user.dao.UserDao
@@ -36,8 +37,9 @@ class RepositoryModule {
     fun provideMessageRepository(
         firebaseAuth: FirebaseAuth,
         databaseReference: DatabaseReference,
+        messageDao: MessageDao,
         recentMessageDao: RecentMessageDao
     ): MessageRepository {
-        return MessageRepositoryImpl(firebaseAuth, databaseReference, recentMessageDao)
+        return MessageRepositoryImpl(firebaseAuth, databaseReference, messageDao, recentMessageDao)
     }
 }
