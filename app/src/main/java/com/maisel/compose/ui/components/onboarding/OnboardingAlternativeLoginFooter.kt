@@ -3,7 +3,6 @@ package com.maisel.compose.ui.components.onboarding
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
+import com.maisel.compose.ui.theme.ChatTheme
 
 @Composable
 fun OnboardingAlternativeLoginFooter(
@@ -30,7 +30,7 @@ fun OnboardingAlternativeLoginFooter(
         Text(
             text = label,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.subtitle1,
+            style = ChatTheme.typography.subtitle1,
             fontWeight = FontWeight.SemiBold
         )
 

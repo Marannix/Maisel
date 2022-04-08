@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
+import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.RecentMessageState
@@ -90,7 +90,7 @@ fun RecentMessageItem(
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     user.username.toString(),
-                    style = MaterialTheme.typography.body1,
+                    style = ChatTheme.typography.body1,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                 )
 
@@ -109,7 +109,7 @@ fun RecentMessageItem(
 
                     Text(
                         text = messageModel.message,
-                        style = MaterialTheme.typography.subtitle2,
+                        style = ChatTheme.typography.subtitle2,
                         modifier = Modifier.padding(start = 4.dp, end = 4.dp),
                         maxLines = 1
                     )

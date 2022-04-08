@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.Lifecycle
@@ -23,14 +22,12 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
 import com.maisel.common.BaseActivity
+import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardActivity
 import com.maisel.showcase.composables.SignInPage
 import com.maisel.signup.SignUpActivity
 import com.maisel.state.AuthResultState
-import com.maisel.ui.MainTheme
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.flow.onEach
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -49,8 +46,8 @@ class SignInActivity : BaseActivity() {
         signInCurrentUser()
 
         setContent {
-            MainTheme {
-                Surface(color = MaterialTheme.colors.background) {
+            ChatTheme {
+                Surface(color = ChatTheme.colors.appBackground) {
                     SignInPage(
                         viewModel,
                         ::signInWithGoogle,

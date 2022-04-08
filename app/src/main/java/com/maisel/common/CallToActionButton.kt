@@ -19,6 +19,7 @@ import com.maisel.R
 import com.maisel.databinding.ViewCallToActionButtonBinding
 import com.maisel.utils.dpToPx
 
+//TODO: SAFE TO DELETE
 class CallToActionButton(context: Context, attrs: AttributeSet? = null) :
     RelativeLayout(context, attrs) {
 

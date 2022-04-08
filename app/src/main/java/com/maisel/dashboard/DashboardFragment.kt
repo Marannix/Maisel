@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
@@ -52,7 +51,7 @@ class DashboardFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ChatTheme {
-                    Surface(color = MaterialTheme.colors.background) {
+                    Surface(color = ChatTheme.colors.appBackground) {
                         DashboardScreen(viewModel, callback)
                     }
                 }

@@ -6,13 +6,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.ui.shapes
 
 @ExperimentalComposeUiApi
 @Composable
@@ -22,7 +23,7 @@ fun DefaultCallToActionButton(
 ) {
     Button(
         onClick = { onClickListener() },
-        shape = MaterialTheme.shapes.medium.copy(CornerSize(8.dp)),
+        shape = shapes.medium.copy(CornerSize(8.dp)),
         contentPadding = PaddingValues(16.dp),
         elevation = ButtonDefaults.elevation(defaultElevation = 8.dp),
         modifier = Modifier
@@ -30,6 +31,6 @@ fun DefaultCallToActionButton(
             .padding(horizontal = 16.dp)
             .padding(top = 8.dp)
     ) {
-        Text(text = label, textAlign = TextAlign.Center)
+        Text(text = label, textAlign = TextAlign.Center, style = ChatTheme.typography.body1)
     }
 }

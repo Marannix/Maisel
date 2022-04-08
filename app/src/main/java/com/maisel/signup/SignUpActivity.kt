@@ -7,16 +7,15 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
+import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardActivity
 import com.maisel.showcase.composables.SignUpPage
 import com.maisel.state.AuthResultState
-import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalFoundationApi
@@ -35,8 +34,8 @@ class SignUpActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainTheme {
-                Surface(color = MaterialTheme.colors.background) {
+            ChatTheme {
+                Surface(color = ChatTheme.colors.appBackground) {
                     SignUpPage(viewModel)
                 }
             }

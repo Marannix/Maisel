@@ -29,6 +29,7 @@ import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
 import com.maisel.compose.ui.components.onboarding.ForgotPassword
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
+import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.signin.SignInViewModel
 import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
@@ -206,7 +207,7 @@ fun SignInErrorBanner(
                 Text(
                     text = "Your email address or password is incorrect",
                     color = colorResource(id = R.color.white),
-                    style = MaterialTheme.typography.subtitle2,
+                    style = ChatTheme.typography.subtitle2,
                     fontWeight = FontWeight.SemiBold
                 )
             }

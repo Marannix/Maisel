@@ -13,13 +13,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.rounded.Videocam
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
@@ -39,7 +40,6 @@ import java.util.*
 @Composable
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
-@Preview(device = Devices.PIXEL_4)
 fun ChatDetailScreen(
     viewModel: ChatDetailViewModel,
     messageViewModel: MessageViewModel,
@@ -252,12 +252,13 @@ fun DayHeader(day: String) {
     Row(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
-            .height(16.dp)
+            .wrapContentSize()
     ) {
         DayHeaderLine()
         Text(
             text = date,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
+            style = ChatTheme.typography.body2
         )
         DayHeaderLine()
     }

@@ -111,7 +111,7 @@ fun ChatListItem(
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 user.username.toString(),
-                style = MaterialTheme.typography.body1,
+                style = ChatTheme.typography.body1,
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )
         }
