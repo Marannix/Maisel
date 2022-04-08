@@ -200,4 +200,8 @@ class UserRepositoryImpl(
 
             }
     }
+
+    override fun deleteAllUsers() {
+        userDao.deleteAllUsers()
+    }
 }

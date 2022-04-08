@@ -38,4 +38,5 @@ interface UserRepository {
 
     suspend fun insertUsers(users: List<User>)
 
+    fun deleteAllUsers()
 }

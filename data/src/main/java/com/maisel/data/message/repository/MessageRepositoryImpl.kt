@@ -195,6 +195,14 @@ class MessageRepositoryImpl(
         }
     }
 
+    override fun deleteAllMessages() {
+        messageDao.deleteAllMessages()
+    }
+
+    override fun deleteAllRecentMessages() {
+        recentMessageDao.deleteAllRecentMessages()
+    }
+
     companion object {
         const val MESSAGES = "messages"
         const val LATEST_MESSAGES = "latest-messages"

@@ -14,4 +14,7 @@ interface RecentMessageDao {
 
     @Query("select * from recent_message")
     fun getRecentMessages(): Flow<List<RecentMessageEntity>>
+
+    @Query("DELETE FROM recent_message")
+    fun deleteAllRecentMessages()
 }

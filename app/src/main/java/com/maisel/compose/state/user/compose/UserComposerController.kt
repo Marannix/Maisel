@@ -7,6 +7,7 @@ import com.maisel.dashboard.DashboardViewState
 import com.maisel.dashboard.RecentMessageState
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
+import com.maisel.domain.room.ClearRoomDatabaseUseCase
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import com.maisel.domain.user.usecase.GetLoggedInUser
@@ -26,7 +27,8 @@ class UserComposerController @Inject constructor(
     private val getLoggedInUser: GetLoggedInUser,
     private val userRepository: UserRepository,
     private val messageRepository: MessageRepository,
-    private val logOutUseCase: LogOutUseCase
+    private val logOutUseCase: LogOutUseCase,
+    private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase
     ) {
 
     /**
@@ -132,6 +134,7 @@ class UserComposerController @Inject constructor(
     fun logoutUser() {
         scope.launch {
             userRepository.logoutUser().collect { result ->
+                clearRoomDatabaseUseCase.invoke()
                 result.onSuccess {
                     _stateFlow.update { it.copy(userAuthState = UserAuthState.LOGGED_OUT) }
                 }
