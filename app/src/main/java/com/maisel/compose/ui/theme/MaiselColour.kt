@@ -28,8 +28,10 @@ data class MaiselColour(
     val borders: Color,
     val inputBackground: Color,
     val appBackground: Color,
+    val onAppBackground: Color,
     val overlay: Color,
     val primaryAccent: Color,
+    val onPrimaryAccent: Color,
     val secondaryAccent: Color,
     val errorAccent: Color,
     val barsBackground: Color
@@ -50,8 +52,10 @@ data class MaiselColour(
             barsBackground = colorResource(R.color.maisel_compose_bars_background),
             inputBackground = colorResource(R.color.maisel_compose_input_background),
             appBackground = colorResource(R.color.maisel_compose_app_background),
+            onAppBackground = colorResource(R.color.maisel_compose_on_app_background),
             overlay = colorResource(R.color.maisel_compose_overlay_regular),
             primaryAccent = colorResource(R.color.maisel_compose_primary_accent),
+            onPrimaryAccent = colorResource(R.color.maisel_compose_on_primary_accent),
             secondaryAccent = colorResource(R.color.maisel_compose_secondary_accent),
             errorAccent = colorResource(R.color.maisel_compose_error_accent)
         )
@@ -70,8 +74,10 @@ data class MaiselColour(
             barsBackground = colorResource(R.color.maisel_compose_bars_background_dark),
             inputBackground = colorResource(R.color.maisel_compose_input_background_dark),
             appBackground = colorResource(R.color.maisel_compose_app_background_dark),
+            onAppBackground = colorResource(R.color.maisel_compose_on_app_background_dark),
             overlay = colorResource(R.color.maisel_compose_overlay_regular_dark),
             primaryAccent = colorResource(R.color.maisel_compose_primary_accent_dark),
+            onPrimaryAccent = colorResource(R.color.maisel_compose_on_primary_accent_dark),
             secondaryAccent = colorResource(R.color.maisel_compose_secondary_accent_dark),
             errorAccent = colorResource(R.color.maisel_compose_error_accent_dark),
         )

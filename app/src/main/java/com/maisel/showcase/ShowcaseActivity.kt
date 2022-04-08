@@ -5,7 +5,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -13,10 +12,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
+import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardActivity
 import com.maisel.showcase.composables.Showcase
 import com.maisel.signin.SignInActivity
-import com.maisel.ui.MainTheme
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -35,12 +34,12 @@ class ShowcaseActivity : BaseActivity() {
         signInCurrentUser()
 
         setContent {
-            MainTheme {
-                window.statusBarColor = MaterialTheme.colors.background.toArgb()
-                window.navigationBarColor = MaterialTheme.colors.background.toArgb()
+            ChatTheme {
+                window.statusBarColor = ChatTheme.colors.appBackground.toArgb()
+                window.navigationBarColor = ChatTheme.colors.appBackground.toArgb()
 
                 Surface(
-                    color = MaterialTheme.colors.background,
+                    color = ChatTheme.colors.appBackground,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Showcase(::launchLoginActivity)
