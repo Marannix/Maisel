@@ -11,7 +11,7 @@ import com.maisel.data.user.dao.UserDao
 import com.maisel.data.user.entity.UserEntity
 
 @Database(
-    entities = [UserEntity::class, RecentMessageEntity::class, MessageEntity::class], version = 3
+    entities = [UserEntity::class, RecentMessageEntity::class, MessageEntity::class], version = 1
 )
 @TypeConverters(Converters::class)
 abstract class ApplicationDatabase : RoomDatabase() {

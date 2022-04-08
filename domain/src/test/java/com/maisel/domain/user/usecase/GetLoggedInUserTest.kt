@@ -14,7 +14,7 @@ class GetLoggedInUserTest {
     private val user: User = mockk()
 
     @Test
-    fun `WHEN get book returns success THEN success state is returned`() {
+    fun `WHEN get logged in user returns success THEN success state is returned`() {
         every { userRepository.getLoggedInUser() } returns user
         every { getLoggedInUser.getLoggedInUser() } returns user
 
