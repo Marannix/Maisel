@@ -110,7 +110,7 @@ fun RecentMessageItem(
                     Text(
                         text = messageModel.message,
                         style = MaterialTheme.typography.subtitle2,
-                        modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+                        modifier = Modifier.padding(start = 4.dp, end = 4.dp),
                         maxLines = 1
                     )
                 }
