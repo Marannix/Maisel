@@ -31,6 +31,7 @@ import com.maisel.ui.orangish
 //TODO: Support multi size
 //https://proandroiddev.com/supporting-different-screen-sizes-on-android-with-jetpack-compose-f215c13081bd
 // https://www.youtube.com/watch?v=iUIXsHiuRfY
+//TODO: Can be deleted
 @Preview(showBackground = true)
 @Composable
 fun LoginPage(@PreviewParameter(ShowcaseProvider::class) onLoginClicked: () -> Unit) {

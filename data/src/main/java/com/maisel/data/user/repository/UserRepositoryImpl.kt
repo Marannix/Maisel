@@ -1,38 +1,42 @@
-package com.maisel.data.signup.repository
+package com.maisel.data.user.repository
 
 import android.util.Log
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.maisel.data.coroutine.DispatcherProvider
+import com.maisel.data.database.LocalPersistenceManager
+import com.maisel.data.user.dao.UserDao
+import com.maisel.data.user.mapper.toDomain
+import com.maisel.data.user.mapper.toEntity
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
 
-//TODO: Rename package to @user
 @ExperimentalCoroutinesApi
 class UserRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
-    private val database: DatabaseReference) : UserRepository {
-
-    private var listOfUsers = BehaviorSubject.create<List<User>>()
-    private var userListeners: ValueEventListener? = null
+    private val database: DatabaseReference,
+    private val localPersistenceManager: LocalPersistenceManager,
+    private val userDao: UserDao
+) : UserRepository {
 
     override fun createAccount(
         name: String,
@@ -41,7 +45,7 @@ class UserRepositoryImpl(
     ): Maybe<AuthResult> {
         return RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
             .map { authResults ->
-                val user = User(null, name, email, password, null, null)
+                val user = User(firebaseAuth.currentUser!!.uid, name, email, password, null, null)
 
                 //TODO: Maybe throw an exception if current user is null?
                 setUserInDatabase(user)
@@ -78,61 +82,74 @@ class UserRepositoryImpl(
         }
     }
 
-    override fun setCurrentUser(firebaseUser: FirebaseUser) {
-        val user = User(
-            firebaseUser.uid,
-            firebaseUser.displayName,
-            null,
-            null,
-            firebaseUser.photoUrl.toString(),
-            null
-        )
-        //  setUserInDatabase(user)
+    override fun getLoggedInUser(): User? {
+        if (firebaseAuth.currentUser == null) {
+            localPersistenceManager.setUser(null)
+        }
+
+        return localPersistenceManager.getUser()
     }
 
-    override fun getFirebaseCurrentUser(): FirebaseUser? {
-        return firebaseAuth.currentUser
-    }
-
-    override fun getCurrentUser() = callbackFlow<Result<User>> {
+    override fun listenToLoggedInUser() = callbackFlow<Result<User>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.sendBlocking(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                var user = User()
-                snapshot.children.forEach { children ->
-                    val users = children.getValue(User::class.java)
-                    if (firebaseAuth.currentUser != null && users != null) {
-                        if (firebaseAuth.currentUser!!.uid == users.userId) {
-                            user = users
-                        }
-                    }
-                }
-                this@callbackFlow.sendBlocking(Result.success(user))
+                val user = snapshot.getValue(User::class.java)
+                localPersistenceManager.setUser(user)
+                Log.d("joshua repo: ", user.toString())
+                this@callbackFlow.sendBlocking(Result.success(user ?: User()))
             }
         }
 
         //TODO: Rename "Users" to "users"
-        database.child("Users").addValueEventListener(postListener)
+        firebaseAuth.currentUser?.uid?.let { uid ->
+            database.child("Users").child(uid).addValueEventListener(postListener)
 
-        awaitClose {
-            database.child("Users").removeEventListener(postListener)
+            awaitClose {
+                database.child("Users").child(uid).removeEventListener(postListener)
+            }
         }
     }
 
-    override fun logoutUser() {
-        return firebaseAuth.signOut()
+    override fun logoutUser() = callbackFlow<Result<Unit>> {
+        val listener = FirebaseAuth.AuthStateListener {
+            localPersistenceManager.setUser(null)
+            if (it.currentUser != null) {
+                it.signOut()
+                this@callbackFlow.trySendBlocking(Result.success(Unit))
+            } else {
+                this@callbackFlow.trySendBlocking(Result.failure(Exception("Already logged out")))
+            }
+        }
+
+        firebaseAuth.addAuthStateListener(listener)
+
+        awaitClose {
+            firebaseAuth.removeAuthStateListener(listener)
+        }
     }
 
-    override fun observeListOfUsers(): Observable<List<User>> = listOfUsers
+    override suspend fun getUsers(): Flow<List<User>> {
+        return userDao.getUsers().distinctUntilChanged()
+            .map { listOfUsers ->
+                listOfUsers.map { user ->
+                    user.toDomain()
+                }
+            }
+    }
+
+    override suspend fun insertUsers(users: List<User>) {
+        userDao.insertUsers(users.filter { it.userId != null }.map { it.toEntity() })
+    }
 
     // https://medium.com/swlh/how-to-use-firebase-realtime-database-with-kotlin-coroutine-flow-946fe4cf2cd9
     override fun fetchListOfUsers() = callbackFlow<Result<List<User>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+                trySend(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -149,7 +166,7 @@ class UserRepositoryImpl(
                         }))
                     }
                 }
-                this@callbackFlow.sendBlocking(Result.success(list))
+                trySend(Result.success(list))
             }
         }
 
@@ -167,18 +184,15 @@ class UserRepositoryImpl(
 
     private fun setUserInDatabase(user: User) {
         //TODO: Maybe throw an exception if current user is null?
-        val id = firebaseAuth.currentUser!!.uid
-        val userWithId = user.copy(userId = id)
-        database.child("Users").child(id).setValue(userWithId)
+        database.child("Users").child(user.userId!!).setValue(user)
             .addOnSuccessListener {
-                Log.d("Joshua123", "database created successfully")
+
             }
             .addOnFailureListener {
-                Log.d("Joshua123", "database failed successfully")
 
             }
             .addOnCompleteListener {
-                Log.d("Joshua123", "database completed successfully")
+
             }
     }
 }

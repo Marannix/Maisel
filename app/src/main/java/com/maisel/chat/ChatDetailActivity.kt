@@ -65,16 +65,8 @@ class ChatDetailActivity : BaseActivity() {
 
         messageViewModel.setSenderUid(senderId)
         messageViewModel.setReceiverId(receiverId)
-    }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.startListeningToMessages(senderId, receiverId)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.stopListeningToMessages(senderId, receiverId)
+        viewModel.getMessageItems(senderId, receiverId)
     }
 
     companion object {

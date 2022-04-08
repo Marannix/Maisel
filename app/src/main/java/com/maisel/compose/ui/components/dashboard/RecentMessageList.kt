@@ -21,47 +21,50 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
+import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
-import com.maisel.dashboard.chat.ChatsFragment
-import com.maisel.domain.message.MessageModel
+import com.maisel.dashboard.RecentMessageState
+import com.maisel.domain.message.ChatModel
 import com.maisel.domain.user.entity.User
 
 @Composable
 @ExperimentalComposeUiApi
 fun RecentMessageList(
-    padding: PaddingValues,
     viewModel: DashboardViewModel,
-    listener: ChatsFragment.ChatsFragmentCallback?
+    listener: DashboardFragment.DashboardFragmentCallback?
 ) {
+    val viewState by viewModel.viewState.collectAsState()
     val users by viewModel.users.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
-    val latestMessages by viewModel.latestMessages.collectAsState()
 
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn(Modifier.fillMaxSize()) {
-            items(latestMessages) { latestMessages ->
-                RecentMessageItem(listener, currentUser, users, latestMessages)
+    when (viewState.recentMessageState) {
+        RecentMessageState.Loading -> {
+
+        }
+        is RecentMessageState.Success -> {
+            Box(Modifier.fillMaxSize()) {
+                LazyColumn(Modifier.fillMaxSize()) {
+                    items(items = (viewState.recentMessageState as RecentMessageState.Success).listOfMessages) { latestMessages ->
+                        RecentMessageItem(listener, currentUser, users, latestMessages)
+                    }
+                }
             }
+        }
+        is RecentMessageState.Error -> {
+
         }
     }
 }
 
-
 @ExperimentalComposeUiApi
 @Composable
 fun RecentMessageItem(
-    listener: ChatsFragment.ChatsFragmentCallback?,
+    listener: DashboardFragment.DashboardFragmentCallback?,
     currentUser: User,
     users: List<User>,
-    messageModel: MessageModel
+    messageModel: ChatModel
 ) {
-    val chatPartnerId = if (messageModel.senderId == currentUser.userId) {
-        messageModel.receiverId
-    } else {
-        messageModel.senderId
-    }
-
-    users.firstOrNull { it.userId == chatPartnerId }?.let { user ->
+    users.firstOrNull { it.userId == messageModel.userId }?.let { user ->
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
@@ -91,8 +94,8 @@ fun RecentMessageItem(
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                 )
 
-                Row() {
-                    if (messageModel.receiverId == currentUser.userId) {
+                Row {
+                    if (messageModel.senderId == currentUser.userId) {
                         Image(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_double_tick),
                             contentDescription = "Read message indicator",
@@ -107,7 +110,7 @@ fun RecentMessageItem(
                     Text(
                         text = messageModel.message,
                         style = MaterialTheme.typography.subtitle2,
-                        modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+                        modifier = Modifier.padding(start = 4.dp, end = 4.dp),
                         maxLines = 1
                     )
                 }

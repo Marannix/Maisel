@@ -3,6 +3,7 @@ package com.maisel.data.signup.repository
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
+import com.maisel.data.user.repository.UserRepositoryImpl
 import com.maisel.domain.user.repository.UserRepository
 import io.mockk.mockk
 import org.junit.Before

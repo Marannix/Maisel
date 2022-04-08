@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -18,6 +19,7 @@ import com.maisel.state.AuthResultState
 import com.maisel.ui.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -59,7 +61,6 @@ class SignUpActivity : BaseActivity() {
             }
             is AuthResultState.Success -> {
                 makeToastShort("Account Created")
-                viewModel.setUser(state.authResultState.user)
                 DashboardActivity.createIntent(this).also { startActivity(it) }
                 finishAffinity()
             }

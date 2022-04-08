@@ -3,7 +3,7 @@ package com.maisel.message
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
-import com.maisel.domain.message.MessageModel
+import com.maisel.domain.message.ChatDataModel
 import com.maisel.domain.message.usecase.SendMessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
@@ -27,7 +27,7 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
     fun sendMessage(input: String) {
         state.value?.let {
             if (it.senderUid != null && it.receiverId != null) {
-                val model = MessageModel(it.senderUid, it.receiverId, input, Date().time.toString())
+                val model = ChatDataModel(it.senderUid, it.receiverId, input, Date().time.toString())
 
                 sendMessageUseCase.invoke(input, it.senderUid, it.receiverId, model)
                 state.value = currentViewState().copy(input = "")
@@ -43,18 +43,6 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
             state.value = currentViewState().copy(senderUid = senderUid)
         }
     }
-
-//    fun setSenderRoom(senderRoom: String?) {
-//        if (senderRoom != null) {
-//            state.value = currentViewState().copy(senderRoom = senderRoom)
-//        }
-//    }
-//
-//    fun setReceiverRoom(receiverRoom: String?) {
-//        if (receiverRoom != null) {
-//            state.value = currentViewState().copy(receiverRoom = receiverRoom)
-//        }
-//    }
 
     fun setReceiverId(receiverId: String?) {
         if (receiverId != null) {

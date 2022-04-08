@@ -1,21 +1,18 @@
 package com.maisel.signin
 
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseUser
 import com.maisel.common.BaseViewModel
 import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
 import com.maisel.compose.state.onboarding.compose.SignInComposerController
-import com.maisel.domain.user.usecase.GetCurrentUser
-import com.maisel.domain.user.usecase.SetCurrentUserUseCase
+import com.maisel.domain.user.usecase.GetLoggedInUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val currentUser: GetCurrentUser,
-    private val setCurrentUser: SetCurrentUserUseCase,
+    private val loggedInUser: GetLoggedInUser,
     private val signInComposerController: SignInComposerController
 ) : BaseViewModel() {
 
@@ -34,15 +31,16 @@ class SignInViewModel @Inject constructor(
     }
 
     fun isUserLoggedIn(): Boolean {
-        return currentUser.invoke() != null
-    }
-
-    fun setUser(user: FirebaseUser) {
-        setCurrentUser.invoke(user)
+        return loggedInUser.getLoggedInUser() != null
     }
 
     fun onLoginClicked(authenticationState: AuthenticationState) {
         signInWithEmailAndPassword(authenticationState)
+    }
+
+    //TODO: Doesn't work
+    fun onLongPressed() {
+        signInWithEmailAndPassword(AuthenticationState("laptop@admin.com", "Password2"))
     }
 
     /**

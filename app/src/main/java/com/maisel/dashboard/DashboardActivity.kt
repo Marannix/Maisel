@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.R
 import com.maisel.chat.ChatDetailActivity
@@ -18,6 +20,8 @@ import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.domain.user.entity.User
 import com.maisel.signin.SignInActivity
+import com.maisel.state.UserAuthState
+import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -37,46 +41,40 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUp()
+        observeViewState()
+
+    }
+
+    private fun observeViewState() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.viewState.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collectLatest {
+                    render(it)
+                }
+        }
+    }
+
+    private fun render(state: DashboardViewState) {
+        when (state.userAuthState) {
+            UserAuthState.LOGGED_OUT -> {
+                SignInActivity.createIntent(this@DashboardActivity)
+                    .also { intent -> startActivity(intent) }
+                finish()
+            }
+            else -> {
+
+            }
+        }
     }
 
     private fun setUp() {
         replaceFragment(DashboardFragment())
     }
 
-    /**
-     * For some odd reason onCreateOptionsMenu and onOptionsItemSelected are not being called
-     * I manually attach the listeners to toolbar as a temp solution
-     */
-    private val toolbarListener =
-        Toolbar.OnMenuItemClickListener { item ->
-            when (item?.itemId) {
-                R.id.settings -> {
-                    notImplementedYet()
-                }
-                R.id.logout -> {
-                    viewModel.logOutUser()
-                    SignInActivity.createIntent(this@DashboardActivity).also { startActivity(it) }
-                    finish()
-                }
-            }
-            false
-        }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.startListeningToUser()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.stopListeningToUser()
-    }
-
 
     override fun onOpenChatsDetails(user: User) {
         ChatDetailActivity.createIntent(this, user).also {
@@ -86,6 +84,10 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
 
     override fun openContactsList() {
         replaceFragment(ChatsFragment())
+    }
+
+    override fun onLogOut() {
+        viewModel.logOutUser()
     }
 
     //TODO: Replace with Jetpack Navigation

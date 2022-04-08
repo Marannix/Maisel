@@ -1,12 +1,15 @@
 package com.maisel.chat
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.maisel.common.BaseViewModel
+import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.message.usecase.GetSenderUidUseCase
 import com.maisel.domain.user.entity.User
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,21 +22,12 @@ class ChatDetailViewModel @Inject constructor(
 
     init {
         viewState.value = ChatDetailViewState()
-        getMessageItems()
     }
 
     private fun currentViewState(): ChatDetailViewState = viewState.value!!
 
     fun setUser(user: User) {
         viewState.value = currentViewState().copy(user = user)
-    }
-
-    fun startListeningToMessages(senderRoom: String, receiverId: String) {
-        messagesUseCase.startListeningToMessages(senderRoom, receiverId)
-    }
-
-    fun stopListeningToMessages(senderRoom: String, receiverId: String) {
-        messagesUseCase.stopListeningToMessages(senderRoom, receiverId)
     }
 
     //Current user is the sender
@@ -43,19 +37,27 @@ class ChatDetailViewModel @Inject constructor(
         return senderUid
     }
 
-    private fun getMessageItems() {
-        messagesUseCase.invoke()
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                viewState.value =
-                    currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Loading)
-            }
-            .subscribe({
-                viewState.value = currentViewState().copy(messageItemState = it)
-            }, {
-                viewState.value =
-                    currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Error)
-            })
-            .addDisposable()
+    fun getMessageItems(senderId: String, receiverId: String) {
+        viewModelScope.launch(DispatcherProvider.Main) {
+            viewState.value =
+                currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Loading)
+            messagesUseCase.invoke(senderId, receiverId)
+                .collect { result ->
+                    result.onSuccess {
+                        if (it.isNullOrEmpty()) {
+                            viewState.value =
+                                currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Empty)
+                        } else {
+                            viewState.value = currentViewState().copy(
+                                messageItemState = GetMessagesUseCase.MessageDataState.Success(it)
+                            )
+                        }
+                    }
+                    result.onFailure {
+                        viewState.value =
+                            currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Error)
+                    }
+                }
+        }
     }
 }

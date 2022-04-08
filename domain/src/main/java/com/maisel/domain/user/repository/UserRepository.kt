@@ -2,10 +2,8 @@ package com.maisel.domain.user.repository
 
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseUser
 import com.maisel.domain.user.entity.User
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
@@ -22,23 +20,24 @@ interface UserRepository {
      */
     suspend fun makeLoginRequest(email: String, password: String): AuthResult?
 
+    suspend fun signInWithCredential(credential: AuthCredential): AuthResult?
+
     /**
      * Gets current user logged in
      * @return either a user if successful or null
      */
-    fun getFirebaseCurrentUser() : FirebaseUser?
+    fun getLoggedInUser(): User?
 
-    suspend fun signInWithCredential(credential: AuthCredential): AuthResult?
-
-    fun setCurrentUser(firebaseUser: FirebaseUser)
-
-    fun logoutUser()
-
-    fun observeListOfUsers(): Observable<List<User>>
+    fun logoutUser(): Flow<Result<Unit>>
 
     fun getSenderUid(): String?
 
     fun fetchListOfUsers(): Flow<Result<List<User>>>
 
-    fun getCurrentUser(): Flow<Result<User>>
+    fun listenToLoggedInUser(): Flow<Result<User>>
+
+    suspend fun getUsers(): Flow<List<User>>
+
+    suspend fun insertUsers(users: List<User>)
+
 }
