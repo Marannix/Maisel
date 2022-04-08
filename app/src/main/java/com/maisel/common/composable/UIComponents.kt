@@ -120,7 +120,7 @@ fun DefaultEmailContent(
         value = emailFieldValueState, onValueChange = {
             emailFieldValueState = it
             if (value.email != it.text) {
-                onValueChange(AuthenticationState(value.name, it.text, value.password))
+                onValueChange(AuthenticationState(value.name, it.text.trim(), value.password))
             }
         },
         label = {
