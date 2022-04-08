@@ -44,18 +44,6 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
         }
     }
 
-//    fun setSenderRoom(senderRoom: String?) {
-//        if (senderRoom != null) {
-//            state.value = currentViewState().copy(senderRoom = senderRoom)
-//        }
-//    }
-//
-//    fun setReceiverRoom(receiverRoom: String?) {
-//        if (receiverRoom != null) {
-//            state.value = currentViewState().copy(receiverRoom = receiverRoom)
-//        }
-//    }
-
     fun setReceiverId(receiverId: String?) {
         if (receiverId != null) {
             state.value = currentViewState().copy(receiverId = receiverId)
