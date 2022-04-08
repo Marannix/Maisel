@@ -95,7 +95,7 @@ fun RecentMessageItem(
                 )
 
                 Row {
-                    if (messageModel.receiverId == currentUser.userId) {
+                    if (messageModel.senderId == currentUser.userId) {
                         Image(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_double_tick),
                             contentDescription = "Read message indicator",
