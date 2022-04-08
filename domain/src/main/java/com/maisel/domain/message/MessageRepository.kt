@@ -6,8 +6,6 @@ interface MessageRepository {
 
     fun stopListeningToSendMessages(senderRoom: String)
 
-    fun getSenderUid(): String?
-
     fun sendMessage(input: String, senderUid: String, receiverId: String, model: ChatDataModel)
 
     fun fetchLastMessage(userId: String): Flow<Result<String>>

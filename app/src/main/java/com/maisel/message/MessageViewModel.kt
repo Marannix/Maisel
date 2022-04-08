@@ -10,7 +10,8 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendMessageUseCase) : BaseViewModel() {
+class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendMessageUseCase) :
+    BaseViewModel() {
 
     val state = MutableLiveData<MessageState>()
 
@@ -27,7 +28,8 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
     fun sendMessage(input: String) {
         state.value?.let {
             if (it.senderUid != null && it.receiverId != null) {
-                val model = ChatDataModel(it.senderUid, it.receiverId, input, Date().time.toString())
+                val model =
+                    ChatDataModel(it.senderUid, it.receiverId, input, Date().time.toString())
 
                 sendMessageUseCase.invoke(input, it.senderUid, it.receiverId, model)
                 state.value = currentViewState().copy(input = "")
@@ -39,15 +41,11 @@ class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendM
     }
 
     fun setSenderUid(senderUid: String?) {
-        if (senderUid != null) {
-            state.value = currentViewState().copy(senderUid = senderUid)
-        }
+        state.value = currentViewState().copy(senderUid = senderUid)
     }
 
     fun setReceiverId(receiverId: String?) {
-        if (receiverId != null) {
-            state.value = currentViewState().copy(receiverId = receiverId)
-        }
+        state.value = currentViewState().copy(receiverId = receiverId)
     }
 
     fun onAttachmentRemoved() {

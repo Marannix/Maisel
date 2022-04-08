@@ -75,6 +75,7 @@ class SignInComposerController @Inject constructor(
             val result = signInUseCase.invoke(value.email, value.password)
             if (result != null && result.user != null) {
                 _stateFlow.update { it.copy(authResultState = AuthResultState.Success(result.user!!)) }
+
             } else {
                 _stateFlow.update { it.copy(authResultState = AuthResultState.Error) }
             }

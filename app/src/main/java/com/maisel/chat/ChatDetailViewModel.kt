@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.maisel.common.BaseViewModel
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.usecase.GetMessagesUseCase
-import com.maisel.domain.message.usecase.GetSenderUidUseCase
 import com.maisel.domain.user.entity.User
+import com.maisel.domain.user.usecase.GetLoggedInUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -15,26 +15,19 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatDetailViewModel @Inject constructor(
     private val messagesUseCase: GetMessagesUseCase,
-    private val senderUidUseCase: GetSenderUidUseCase
+    private val loggedInUser: GetLoggedInUser
 ) : BaseViewModel() {
 
     val viewState = MutableLiveData<ChatDetailViewState>()
 
     init {
-        viewState.value = ChatDetailViewState()
+        viewState.value = ChatDetailViewState(senderUid = loggedInUser.getLoggedInUser()!!.userId)
     }
 
     private fun currentViewState(): ChatDetailViewState = viewState.value!!
 
     fun setUser(user: User) {
         viewState.value = currentViewState().copy(user = user)
-    }
-
-    //Current user is the sender
-    fun getSenderUid(): String? {
-        val senderUid = senderUidUseCase.invoke()
-        viewState.value = currentViewState().copy(senderUid = senderUid)
-        return senderUid
     }
 
     fun getMessageItems(senderId: String, receiverId: String) {

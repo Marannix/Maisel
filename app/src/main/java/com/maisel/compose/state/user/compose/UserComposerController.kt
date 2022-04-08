@@ -5,7 +5,6 @@ import androidx.compose.runtime.toMutableStateList
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.dashboard.DashboardViewState
 import com.maisel.dashboard.RecentMessageState
-import com.maisel.domain.message.ChatModel
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.user.entity.User
@@ -28,7 +27,7 @@ class UserComposerController @Inject constructor(
     private val userRepository: UserRepository,
     private val messageRepository: MessageRepository,
     private val logOutUseCase: LogOutUseCase
-) {
+    ) {
 
     /**
      * Creates a [CoroutineScope] that allows us to cancel the ongoing work when the parent
@@ -56,20 +55,12 @@ class UserComposerController @Inject constructor(
     val users: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
 
     /**
-     * Represents logged out state
-     */
-    val loggedState: MutableStateFlow<UserAuthState> = MutableStateFlow(UserAuthState.EMPTY)
-
-    /**
-     * Represents the list of latest messages from Firebase Realtime Database
-     */
-    private var latestMessages: MutableStateFlow<List<ChatModel>> = MutableStateFlow(emptyList())
-
-    /**
      * Set logged in user
      */
     fun setLoggedInUser() {
-        scope.launch { getLoggedInUser.invoke() }
+        scope.launch {
+            getLoggedInUser.invoke().collect()
+        }
     }
 
     /**

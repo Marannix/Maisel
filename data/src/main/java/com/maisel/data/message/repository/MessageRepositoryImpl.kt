@@ -70,10 +70,6 @@ class MessageRepositoryImpl(
         }
     }
 
-    override fun getSenderUid(): String? {
-        return firebaseAuth.uid
-    }
-
     override fun sendMessage(
         input: String,
         senderUid: String,

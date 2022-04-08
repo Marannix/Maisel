@@ -30,8 +30,6 @@ interface UserRepository {
 
     fun logoutUser(): Flow<Result<Unit>>
 
-    fun getSenderUid(): String?
-
     fun fetchListOfUsers(): Flow<Result<List<User>>>
 
     fun listenToLoggedInUser(): Flow<Result<User>>

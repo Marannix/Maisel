@@ -24,9 +24,7 @@ import com.maisel.message.MessageViewModel
 @ExperimentalComposeUiApi
 class ChatDetailActivity : BaseActivity() {
 
-    private val user: User by lazy { requireNotNull(intent.getParcelableExtra(USER)) }
-    private lateinit var senderId: String
-    private lateinit var receiverId: String
+    private val receiverUser: User by lazy { requireNotNull(intent.getParcelableExtra(RECEIVER_USER_KEY)) }
 
     private val viewModel: ChatDetailViewModel by lazy {
         ViewModelProvider(this)[ChatDetailViewModel::class.java]
@@ -45,7 +43,7 @@ class ChatDetailActivity : BaseActivity() {
             ChatTheme {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Surface {
-                        viewModel.setUser(user)
+                        viewModel.setUser(receiverUser)
                         ChatDetailScreen(viewModel, messageViewModel, ::onBackPressed)
                     }
                 }
@@ -56,12 +54,12 @@ class ChatDetailActivity : BaseActivity() {
     }
 
     private fun setup() {
-        if (user.userId == null || viewModel.getSenderUid() == null) {
+        if (receiverUser.userId == null) {
             finish() //TODO: Is this possible?
         }
 
-        viewModel.getSenderUid()?.let { senderId = it }
-        user.userId?.let { receiverId = it  }
+        val receiverId = receiverUser.userId!!
+        val senderId = viewModel.viewState.value?.senderUid!!
 
         messageViewModel.setSenderUid(senderId)
         messageViewModel.setReceiverId(receiverId)
@@ -70,10 +68,10 @@ class ChatDetailActivity : BaseActivity() {
     }
 
     companion object {
-        private const val USER = "USER"
-        fun createIntent(context: Context, user: User): Intent {
+        private const val RECEIVER_USER_KEY = "RECEIVER_USER"
+        fun createIntent(context: Context, receiverUser: User): Intent {
             return Intent(context, ChatDetailActivity::class.java).apply {
-                putExtra(USER, user)
+                putExtra(RECEIVER_USER_KEY, receiverUser)
             }
         }
     }

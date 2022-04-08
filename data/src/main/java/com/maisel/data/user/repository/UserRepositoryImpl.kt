@@ -55,11 +55,15 @@ class UserRepositoryImpl(
     }
 
     override suspend fun makeLoginRequest(email: String, password: String): AuthResult? {
+        Log.d("joshua", "log in request")
+
         return withContext(DispatcherProvider.IO) {
             try {
                 firebaseAuth
                     .signInWithEmailAndPassword(email, password)
-                    .await()
+                    .await().also {
+                        Log.d("joshua", "trying to log in")
+                    }
             } catch (e: Exception) {
                 Log.d("joshua exception", e.toString())
                 null
@@ -70,11 +74,15 @@ class UserRepositoryImpl(
     override suspend fun signInWithCredential(
         credential: AuthCredential
     ): AuthResult? {
-        return withContext(DispatcherProvider.IO) {
+        Log.d("joshua", "sign in with cred")
+
+        return withContext(DispatcherProvider.Main) {
             try {
                 firebaseAuth
                     .signInWithCredential(credential)
-                    .await()
+                    .await().also {
+                        Log.d("joshua", "trying to log in")
+                    }
             } catch (e: Exception) {
                 Log.d("joshua exception", e.toString())
                 null
@@ -84,10 +92,10 @@ class UserRepositoryImpl(
 
     override fun getLoggedInUser(): User? {
         if (firebaseAuth.currentUser == null) {
-            localPersistenceManager.setUser(null)
+            localPersistenceManager.setLoggedInUser(null)
         }
 
-        return localPersistenceManager.getUser()
+        return localPersistenceManager.getLoggedInUser()
     }
 
     override fun listenToLoggedInUser() = callbackFlow<Result<User>> {
@@ -98,13 +106,14 @@ class UserRepositoryImpl(
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java)
-                localPersistenceManager.setUser(user)
+                localPersistenceManager.setLoggedInUser(user)
                 Log.d("joshua repo: ", user.toString())
                 this@callbackFlow.sendBlocking(Result.success(user ?: User()))
             }
         }
 
         //TODO: Rename "Users" to "users"
+        Log.d("joshua", "current user: ${firebaseAuth.currentUser}")
         firebaseAuth.currentUser?.uid?.let { uid ->
             database.child("Users").child(uid).addValueEventListener(postListener)
 
@@ -116,7 +125,7 @@ class UserRepositoryImpl(
 
     override fun logoutUser() = callbackFlow<Result<Unit>> {
         val listener = FirebaseAuth.AuthStateListener {
-            localPersistenceManager.setUser(null)
+            localPersistenceManager.setLoggedInUser(null)
             if (it.currentUser != null) {
                 it.signOut()
                 this@callbackFlow.trySendBlocking(Result.success(Unit))
@@ -176,10 +185,6 @@ class UserRepositoryImpl(
         awaitClose {
             database.child("Users").removeEventListener(postListener)
         }
-    }
-
-    override fun getSenderUid(): String? {
-        return firebaseAuth.uid
     }
 
     private fun setUserInDatabase(user: User) {

@@ -76,8 +76,8 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOpenChatsDetails(user: User) {
-        ChatDetailActivity.createIntent(this, user).also {
+    override fun onOpenChatsDetails(receiverUser: User) {
+        ChatDetailActivity.createIntent(this, receiverUser).also {
             startActivity(it)
         }
     }

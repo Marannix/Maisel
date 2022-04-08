@@ -64,16 +64,16 @@ fun RecentMessageItem(
     users: List<User>,
     messageModel: ChatModel
 ) {
-    users.firstOrNull { it.userId == messageModel.userId }?.let { user ->
+    users.firstOrNull { it.userId == messageModel.userId }?.let { receiverUser ->
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
-                .clickable { listener?.onOpenChatsDetails(user) }
+                .clickable { listener?.onOpenChatsDetails(receiverUser) }
                 .padding(4.dp)
         ) {
             Image(
                 painter = rememberImagePainter(
-                    data = user.profilePicture ?: R.drawable.ic_son_goku,
+                    data = receiverUser.profilePicture ?: R.drawable.ic_son_goku,
                     builder = {
                         crossfade(true)
                         placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
@@ -89,7 +89,7 @@ fun RecentMessageItem(
             )
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
-                    user.username.toString(),
+                    receiverUser.username.toString(),
                     style = ChatTheme.typography.body1,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                 )

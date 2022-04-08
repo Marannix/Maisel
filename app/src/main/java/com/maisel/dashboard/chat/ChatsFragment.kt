@@ -24,7 +24,7 @@ class ChatsFragment : Fragment() {
     private var callback: ChatsFragmentCallback? = null
 
     interface ChatsFragmentCallback {
-        fun onOpenChatsDetails(user: User)
+        fun onOpenChatsDetails(receiverUser: User)
     }
 
     //TODO: ContactsViewModel

@@ -55,14 +55,6 @@ class ShowcaseActivity : BaseActivity() {
         }
     }
 
-    private fun backButtonPressed() {
-        notImplementedYet()
-    }
-
-    private fun skipPressed() {
-        notImplementedYet()
-    }
-
     private fun launchLoginActivity() {
         SignInActivity.createIntent(this).also { startActivity(it) }
         finish()

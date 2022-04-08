@@ -15,11 +15,11 @@ class LocalPersistenceManagerImpl @Inject constructor(
 ) :
     LocalPersistenceManager {
 
-    override fun setUser(user: User?) {
+    override fun setLoggedInUser(user: User?) {
         preference.edit { putString(KEY_USER, gson.toJson(user).toString()) }
     }
 
-    override fun getUser() : User? {
+    override fun getLoggedInUser() : User? {
         val value = preference.getString(KEY_USER, "")
         return if (value != null) {
             GsonBuilder().create().fromJson(value, User::class.java)
