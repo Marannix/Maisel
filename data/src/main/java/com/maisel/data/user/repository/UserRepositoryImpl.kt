@@ -111,14 +111,13 @@ class UserRepositoryImpl(
                 this@callbackFlow.sendBlocking(Result.success(user ?: User()))
             }
         }
-
-        //TODO: Rename "Users" to "users"
+        
         Log.d("joshua", "current user: ${firebaseAuth.currentUser}")
         firebaseAuth.currentUser?.uid?.let { uid ->
-            database.child("Users").child(uid).addValueEventListener(postListener)
+            database.child("users").child(uid).addValueEventListener(postListener)
 
             awaitClose {
-                database.child("Users").child(uid).removeEventListener(postListener)
+                database.child("users").child(uid).removeEventListener(postListener)
             }
         }
     }
@@ -179,17 +178,17 @@ class UserRepositoryImpl(
             }
         }
 
-        //TODO: Rename "Users" to "users"
-        database.child("Users").addValueEventListener(postListener)
+        //TODO: Rename "users" to "users"
+        database.child("users").addValueEventListener(postListener)
 
         awaitClose {
-            database.child("Users").removeEventListener(postListener)
+            database.child("users").removeEventListener(postListener)
         }
     }
 
     private fun setUserInDatabase(user: User) {
         //TODO: Maybe throw an exception if current user is null?
-        database.child("Users").child(user.userId!!).setValue(user)
+        database.child("users").child(user.userId!!).setValue(user)
             .addOnSuccessListener {
 
             }

@@ -12,8 +12,8 @@ interface MessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMessages(recentMessages: List<MessageEntity>)
 
-    @Query("select * from message")
-    fun getMessages(): Flow<List<MessageEntity>>
+    @Query("select * from message where sender_id = :senderId and receiver_id = :receiverId or sender_id = :receiverId and receiver_id = :senderId")
+    fun getMessages(senderId: String, receiverId: String): Flow<List<MessageEntity>>
 
     @Query("DELETE FROM message")
     fun deleteAllMessages()

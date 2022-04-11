@@ -9,6 +9,7 @@ import com.maisel.domain.message.ChatModel
 
 fun MessageData.toMessageModel(userId: String?): ChatModel {
     return ChatModel(
+        messageId = messageId,
         userId = userId,
         senderId = this.senderId,
         receiverId = this.receiverId,
@@ -20,6 +21,7 @@ fun MessageData.toMessageModel(userId: String?): ChatModel {
 
 fun MessageData.toChatModel(userId: String?): ChatModel {
     return ChatModel(
+        messageId = this.messageId,
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,
@@ -28,8 +30,9 @@ fun MessageData.toChatModel(userId: String?): ChatModel {
     )
 }
 
-fun ChatDataModel.toMessageData() : MessageData {
+fun ChatDataModel.toMessageData(messageId: String) : MessageData {
     return MessageData(
+        messageId = messageId,
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,
@@ -39,6 +42,7 @@ fun ChatDataModel.toMessageData() : MessageData {
 
 fun ChatModel.toRecentMessageEntity() : RecentMessageEntity {
     return RecentMessageEntity(
+        messageId = this.messageId!!,
         userId = requireNotNull(this.userId),
         senderId = this.senderId,
         receiverId = this.receiverId,
@@ -50,6 +54,7 @@ fun ChatModel.toRecentMessageEntity() : RecentMessageEntity {
 
 fun RecentMessageEntity.toChatModel() : ChatModel {
     return ChatModel(
+        messageId = this.messageId,
         userId = this.userId,
         senderId = this.senderId,
         receiverId = this.receiverId,
@@ -61,6 +66,7 @@ fun RecentMessageEntity.toChatModel() : ChatModel {
 
 fun ChatModel.toMessageEntity() : MessageEntity {
     return MessageEntity(
+        messageId = this.messageId!!,
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,
@@ -71,6 +77,7 @@ fun ChatModel.toMessageEntity() : MessageEntity {
 
 fun MessageEntity.toChatModel() : ChatModel {
     return ChatModel(
+        messageId = this.messageId,
         senderId = this.senderId,
         receiverId = this.receiverId,
         message = this.message,

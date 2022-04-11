@@ -5,12 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import com.maisel.common.BaseViewModel
 import com.maisel.domain.message.ChatDataModel
 import com.maisel.domain.message.usecase.SendMessageUseCase
+import com.maisel.domain.user.usecase.GetLoggedInUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MessageViewModel @Inject constructor(private val sendMessageUseCase: SendMessageUseCase) :
+class MessageViewModel @Inject constructor(
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val loggedInUser: GetLoggedInUser
+) :
     BaseViewModel() {
 
     val state = MutableLiveData<MessageState>()

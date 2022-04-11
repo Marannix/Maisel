@@ -64,7 +64,8 @@ class ChatDetailActivity : BaseActivity() {
         messageViewModel.setSenderUid(senderId)
         messageViewModel.setReceiverId(receiverId)
 
-        viewModel.getMessageItems(senderId, receiverId)
+        viewModel.getMessageItem(senderId, receiverId)
+        viewModel.listToChatMessage(senderId, receiverId)
     }
 
     companion object {

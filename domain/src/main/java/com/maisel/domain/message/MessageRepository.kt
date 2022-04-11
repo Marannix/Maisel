@@ -20,7 +20,7 @@ interface MessageRepository {
 
     suspend fun insertMessages(messages: List<ChatModel>)
 
-    suspend fun getListOfChatMessages(): Flow<List<ChatModel>>
+    suspend fun getListOfChatMessages(senderId: String, receiverId: String): Flow<List<ChatModel>>
 
     fun deleteAllMessages()
 

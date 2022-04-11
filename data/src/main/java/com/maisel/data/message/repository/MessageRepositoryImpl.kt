@@ -1,5 +1,6 @@
 package com.maisel.data.message.repository
 
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.util.*
 
 @ExperimentalCoroutinesApi
 class MessageRepositoryImpl(
@@ -48,6 +50,7 @@ class MessageRepositoryImpl(
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val list = mutableListOf<ChatModel>()
                     snapshot.children.forEach { children ->
+                        Log.d("joshua repo message", children.value.toString())
                         val messageData = children.getValue(MessageData::class.java)
                         messageData?.toChatModel(children.key)?.let(list::add)
                     }
@@ -71,33 +74,41 @@ class MessageRepositoryImpl(
     }
 
     override fun sendMessage(
-        input: String,
+        input: String, //todo: Delete
         senderUid: String,
         receiverId: String,
         model: ChatDataModel
     ) {
+
+        //TODO: Convert to coroutines
 //        if (sendMessageSenderListeners != null && sendMessageReceiverListeners != null) {
 //            Log.w("Message Repo send:", " Calling start listening while already started")
 //            return
 //        }
 
+        val senderMessageId = generateMessageId(senderUid)
+        val receiverMessageId = generateMessageId(receiverId)
         sendMessageSenderListeners = database.ref.child(MESSAGES)
             .child(senderUid)
             .child(receiverId)
             .push()
-            .setValue(model.toMessageData())
+            .setValue(model.toMessageData(senderMessageId))
             .addOnSuccessListener {
                 sendMessageReceiverListeners = database.ref.child(MESSAGES)
                     .child(receiverId)
                     .child(senderUid)
                     .push()
-                    .setValue(model.toMessageData())
+                    .setValue(model.toMessageData(receiverMessageId))
                     .addOnSuccessListener {
 
                     }
             }
 
-        setLatestMessage(receiverId, model)
+        setLatestMessage(receiverId, model, senderMessageId, receiverMessageId)
+    }
+
+    private fun generateMessageId(uid: String): String {
+        return uid + "-" + UUID.randomUUID().toString()
     }
 
     override fun stopListeningToSendMessages(senderRoom: String) {
@@ -112,17 +123,23 @@ class MessageRepositoryImpl(
             .observeLastMessage()
     }
 
-    private fun setLatestMessage(receiverId: String, model: ChatDataModel) {
+    private fun setLatestMessage(
+        receiverId: String,
+        model: ChatDataModel,
+        senderMessageId: String,
+        receiverMessageId: String
+    ) {
+        //TODO: Convert to coroutines
         firebaseAuth.uid?.let { firebaseAuthUid ->
             database.ref.child(LATEST_MESSAGES)
                 .child(firebaseAuthUid)
                 .child(receiverId)
-                .setValue(model.toMessageData())
+                .setValue(model.toMessageData(senderMessageId))
                 .addOnSuccessListener {
                     database.ref.child(LATEST_MESSAGES)
                         .child(receiverId)
                         .child(firebaseAuthUid)
-                        .setValue(model.toMessageData())
+                        .setValue(model.toMessageData(receiverMessageId))
                         .addOnSuccessListener {
 
                         }
@@ -183,11 +200,16 @@ class MessageRepositoryImpl(
         messageDao.insertMessages(messages.map { it.toMessageEntity() })
     }
 
-    override suspend fun getListOfChatMessages(): Flow<List<ChatModel>> {
+    //TODO: Need to get list of chat
+    override suspend fun getListOfChatMessages(
+        senderId: String,
+        receiverId: String
+    ): Flow<List<ChatModel>> {
         return withContext(DispatcherProvider.IO) {
-            messageDao.getMessages()
+            messageDao.getMessages(senderId, receiverId)
                 .distinctUntilChanged()
                 .map { listOfMessagesEntity ->
+                    Log.d("joshua entity", listOfMessagesEntity.toString())
                     listOfMessagesEntity.map { entity ->
                         entity.toChatModel()
                     }
