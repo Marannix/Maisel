@@ -9,5 +9,6 @@ data class ChatModel(
     val receiverId: String,
     val message: String,
     val time: String,
-    val date: String = Date().date.toString()
+    val date: String = Date().date.toString(),
+    val timestamp: Long
 )

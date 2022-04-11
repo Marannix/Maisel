@@ -16,6 +16,7 @@ fun MessageData.toMessageModel(userId: String?): ChatModel {
         message = this.message,
         time = DateFormatter().getChatTime(this.timestamp),
         date = DateFormatter().getDate(this.timestamp),
+        timestamp = this.timestamp
     )
 }
 
@@ -27,6 +28,7 @@ fun MessageData.toChatModel(userId: String?): ChatModel {
         message = this.message,
         time = DateFormatter().getChatTime(this.timestamp),
         date = DateFormatter().getDate(this.timestamp),
+        timestamp = this.timestamp
     )
 }
 
@@ -48,7 +50,8 @@ fun ChatModel.toRecentMessageEntity() : RecentMessageEntity {
         receiverId = this.receiverId,
         message = this.message,
         time = this.time,
-        date = this.date
+        date = this.date,
+        timestamp = this.timestamp
     )
 }
 
@@ -60,7 +63,8 @@ fun RecentMessageEntity.toChatModel() : ChatModel {
         receiverId = this.receiverId,
         message = this.message,
         time = this.time,
-        date = this.date
+        date = this.date,
+        timestamp = this.timestamp
     )
 }
 
@@ -71,7 +75,8 @@ fun ChatModel.toMessageEntity() : MessageEntity {
         receiverId = this.receiverId,
         message = this.message,
         time = this.time,
-        date = this.date
+        date = this.date,
+        timestamp = this.timestamp
     )
 }
 
@@ -82,6 +87,7 @@ fun MessageEntity.toChatModel() : ChatModel {
         receiverId = this.receiverId,
         message = this.message,
         time = this.time,
-        date = this.date
+        date = this.date,
+        timestamp = this.timestamp
     )
 }

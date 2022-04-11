@@ -191,7 +191,7 @@ class MessageRepositoryImpl(
                 .map { listOfRecentMessagesEntity ->
                     listOfRecentMessagesEntity.map { entity ->
                         entity.toChatModel()
-                    }
+                    }.sortedBy { it.timestamp }
                 }
         }
     }
@@ -212,7 +212,7 @@ class MessageRepositoryImpl(
                     Log.d("joshua entity", listOfMessagesEntity.toString())
                     listOfMessagesEntity.map { entity ->
                         entity.toChatModel()
-                    }
+                    }.sortedBy { it.timestamp }
                 }
         }
     }

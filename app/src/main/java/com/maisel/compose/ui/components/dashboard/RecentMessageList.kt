@@ -103,14 +103,13 @@ fun RecentMessageItem(
                             modifier = Modifier
                                 .height(20.dp)
                                 .width(20.dp)
-                                .padding(top = 2.dp, bottom = 2.dp)
+                                .padding(top = 2.dp, bottom = 2.dp, start = 4.dp, end = 4.dp)
                         )
                     }
 
                     Text(
                         text = messageModel.message,
                         style = ChatTheme.typography.subtitle2,
-                        modifier = Modifier.padding(start = 4.dp, end = 4.dp),
                         maxLines = 1
                     )
                 }

@@ -11,5 +11,6 @@ data class RecentMessageEntity(
     @ColumnInfo(name = "receiver_id") val receiverId: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "time") val time: String,
-    @ColumnInfo(name = "date") val date : String
+    @ColumnInfo(name = "date") val date : String,
+    @ColumnInfo(name = "timestamp") val timestamp : Long
 )
