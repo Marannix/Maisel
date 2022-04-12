@@ -16,6 +16,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.R
 import com.maisel.common.BaseFragmentActivity
 import com.maisel.dashboard.chat.ChatsFragment
+import com.maisel.dashboard.chat.ChatsFragmentDirections
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.domain.user.entity.User
 import com.maisel.signin.SignInActivity
@@ -75,9 +76,18 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOpenChatsDetails(receiverUser: User) {
-        val action = DashboardFragmentDirections.viewChatDetail(receiverUser.userId!!)
-        findNavController(R.id.main_nav_host_fragment).navigate(action)
+    override fun onOpenChatsDetails(receiverUser: User, path: String) {
+        when (path) {
+            "dashboard" -> {
+                val action = DashboardFragmentDirections.viewChatDetail(receiverUser.userId!!)
+                findNavController(R.id.main_nav_host_fragment).navigate(action)
+            }
+            "contacts" -> {
+                val action = ChatsFragmentDirections.viewChatsDetailsFragment(receiverUser.userId!!)
+                findNavController(R.id.main_nav_host_fragment).navigate(action)
+            }
+        }
+
 //        ChatDetailActivity.createIntent(this, receiverUser).also {
 //            startActivity(it)
 //        }

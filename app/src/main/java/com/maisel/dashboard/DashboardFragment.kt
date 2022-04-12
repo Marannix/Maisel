@@ -22,7 +22,7 @@ class DashboardFragment : Fragment() {
     private var callback: DashboardFragmentCallback? = null
 
     interface DashboardFragmentCallback {
-        fun onOpenChatsDetails(receiverUser: User)
+        fun onOpenChatsDetails(receiverUser: User, path: String)
         fun openContactsList()
         fun onLogOut()
     }

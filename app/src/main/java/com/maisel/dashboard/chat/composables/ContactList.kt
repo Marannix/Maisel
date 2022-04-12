@@ -89,7 +89,7 @@ fun ChatListItem(
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
-            .clickable { listener?.onOpenChatsDetails(user) }
+            .clickable { listener?.onOpenChatsDetails(user, "contacts") }
             .padding(4.dp)
     ) {
         Image(

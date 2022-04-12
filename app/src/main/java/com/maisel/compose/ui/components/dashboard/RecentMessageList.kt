@@ -68,7 +68,7 @@ fun RecentMessageItem(
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
-                .clickable { listener?.onOpenChatsDetails(receiverUser) }
+                .clickable { listener?.onOpenChatsDetails(receiverUser, "dashboard") }
                 .padding(4.dp)
         ) {
             Image(
