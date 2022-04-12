@@ -84,6 +84,7 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
     }
 
     override fun openContactsList() {
+        findNavController(R.id.main_nav_host_fragment).navigate(R.id.chatsFragment)
       //  replaceFragment(ChatsFragment())
     }
 

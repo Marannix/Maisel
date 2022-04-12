@@ -16,6 +16,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/viewChatsFragment"
+            app:destination="@id/chatsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -28,4 +35,9 @@
             android:defaultValue=""
             />
     </fragment>
+
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.maisel.dashboard.chat.ChatsFragment"
+        android:label="ChatsFragment" />
 </navigation>
