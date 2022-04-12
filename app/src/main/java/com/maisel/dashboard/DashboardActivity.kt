@@ -15,8 +15,8 @@ import androidx.navigation.findNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.R
 import com.maisel.common.BaseFragmentActivity
-import com.maisel.dashboard.chat.ChatsFragment
-import com.maisel.dashboard.chat.ChatsFragmentDirections
+import com.maisel.dashboard.chat.ContactsFragment
+import com.maisel.dashboard.chat.ContactsFragmentDirections
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.domain.user.entity.User
 import com.maisel.signin.SignInActivity
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
-class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback,
+class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragmentCallback,
     DashboardFragment.DashboardFragmentCallback {
 
     private lateinit var binding: ActivityMainBinding
@@ -83,7 +83,7 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
                 findNavController(R.id.main_nav_host_fragment).navigate(action)
             }
             "contacts" -> {
-                val action = ChatsFragmentDirections.viewChatsDetailsFragment(receiverUser.userId!!)
+                val action = ContactsFragmentDirections.viewChatsDetailsFragment(receiverUser.userId!!)
                 findNavController(R.id.main_nav_host_fragment).navigate(action)
             }
         }
@@ -94,7 +94,7 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
     }
 
     override fun openContactsList() {
-        findNavController(R.id.main_nav_host_fragment).navigate(R.id.chatsFragment)
+        findNavController(R.id.main_nav_host_fragment).navigate(R.id.contactsFragment)
       //  replaceFragment(ChatsFragment())
     }
 

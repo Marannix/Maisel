@@ -18,12 +18,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
 @AndroidEntryPoint
-//Rename ContactsFragment
-class ChatsFragment : Fragment() {
+class ContactsFragment : Fragment() {
 
-    private var callback: ChatsFragmentCallback? = null
+    private var callback: ContactsFragmentCallback? = null
 
-    interface ChatsFragmentCallback {
+    interface ContactsFragmentCallback {
         fun onOpenChatsDetails(receiverUser: User, path: String)
     }
 
@@ -41,10 +40,10 @@ class ChatsFragment : Fragment() {
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         callback = try {
-            activity as ChatsFragmentCallback
+            activity as ContactsFragmentCallback
         } catch (e: ClassCastException) {
             throw ClassCastException(
-                "$activity must implement ChatsFragmentCallback "
+                "$activity must implement ContactsFragment "
             )
         }
     }

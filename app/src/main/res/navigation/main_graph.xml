@@ -17,7 +17,7 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/viewChatsFragment"
-            app:destination="@id/chatsFragment"
+            app:destination="@id/contactsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -36,9 +36,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/chatsFragment"
-        android:name="com.maisel.dashboard.chat.ChatsFragment"
-        android:label="ChatsFragment">
+        android:id="@+id/contactsFragment"
+        android:name="com.maisel.dashboard.chat.ContactsFragment"
+        android:label="ContactsFragment">
 
         <action
             android:id="@+id/viewChatsDetailsFragment"
