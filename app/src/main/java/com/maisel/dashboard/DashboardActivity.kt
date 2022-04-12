@@ -7,14 +7,13 @@ import android.view.Menu
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.R
-import com.maisel.chat.ChatDetailActivity
 import com.maisel.common.BaseFragmentActivity
 import com.maisel.dashboard.chat.ChatsFragment
 import com.maisel.databinding.ActivityMainBinding
@@ -68,7 +67,7 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
     }
 
     private fun setUp() {
-        replaceFragment(DashboardFragment())
+     //   replaceFragment(DashboardFragment())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,13 +76,15 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
     }
 
     override fun onOpenChatsDetails(receiverUser: User) {
-        ChatDetailActivity.createIntent(this, receiverUser).also {
-            startActivity(it)
-        }
+        val action = DashboardFragmentDirections.viewChatDetail(receiverUser.userId!!)
+        findNavController(R.id.main_nav_host_fragment).navigate(action)
+//        ChatDetailActivity.createIntent(this, receiverUser).also {
+//            startActivity(it)
+//        }
     }
 
     override fun openContactsList() {
-        replaceFragment(ChatsFragment())
+      //  replaceFragment(ChatsFragment())
     }
 
     override fun onLogOut() {
@@ -91,12 +92,12 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
     }
 
     //TODO: Replace with Jetpack Navigation
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.dashboardFragmentContainer.id, fragment)
-        fragmentTransaction.commit()
-    }
+//    private fun replaceFragment(fragment: Fragment) {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction = fragmentManager.beginTransaction()
+//        fragmentTransaction.replace(binding.dashboardFragmentContainer.id, fragment)
+//        fragmentTransaction.commit()
+//    }
 
     companion object {
         fun createIntent(context: Context): Intent {

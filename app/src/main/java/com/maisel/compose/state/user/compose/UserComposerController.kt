@@ -21,7 +21,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserComposerController @Inject constructor(
     private val lastMessageUseCase: GetLastMessageUseCase,
     private val getLoggedInUser: GetLoggedInUser,

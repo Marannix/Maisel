@@ -39,4 +39,6 @@ interface UserRepository {
     suspend fun insertUsers(users: List<User>)
 
     fun deleteAllUsers()
+
+    fun getRecipientUser(userId: String): User
 }
