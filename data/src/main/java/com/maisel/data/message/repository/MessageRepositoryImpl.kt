@@ -191,7 +191,7 @@ class MessageRepositoryImpl(
                 .map { listOfRecentMessagesEntity ->
                     listOfRecentMessagesEntity.map { entity ->
                         entity.toChatModel()
-                    }.sortedBy { it.timestamp }
+                    }.sortedByDescending { it.timestamp }
                 }
         }
     }

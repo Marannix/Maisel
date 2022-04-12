@@ -161,8 +161,8 @@ fun Screen(
                     backgroundColor = ChatTheme.colors.barsBackground
                 )
             },
-            bottomBar = { MessageBox(messageViewModel) },
-            content = { padding -> Content(padding, messageItems) }
+            content = { padding -> Content(padding, messageItems) },
+            bottomBar = { MessageBox(messageViewModel) }
         )
     }
 }

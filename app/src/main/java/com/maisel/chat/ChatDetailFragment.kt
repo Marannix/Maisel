@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ChatDetailFragment : Fragment() {
 
-   // private val receiverUser: User by lazy { requireNotNull(intent.getParcelableExtra(RECEIVER_USER_KEY)) }
+    // private val receiverUser: User by lazy { requireNotNull(intent.getParcelableExtra(RECEIVER_USER_KEY)) }
 
 //    private val viewModel: ChatDetailViewModel by lazy {
 //        ViewModelProvider(this)[ChatDetailViewModel::class.java]
@@ -42,14 +42,14 @@ class ChatDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       // WindowCompat.setDecorFitsSystemWindows(window, false)
+        // WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setup()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-      //  receiverUserId =
+        //  receiverUserId =
     }
 
     override fun onCreateView(
@@ -60,7 +60,10 @@ class ChatDetailFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ChatTheme {
-                    ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                    ProvideWindowInsets(
+                        windowInsetsAnimationsEnabled = true,
+                        consumeWindowInsets = false
+                    ) {
                         Surface {
                             viewModel.setUser(args.id)
                             ChatDetailScreen(viewModel, messageViewModel, null)

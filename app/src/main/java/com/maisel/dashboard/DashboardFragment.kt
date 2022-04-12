@@ -10,6 +10,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.maisel.compose.ui.components.dashboard.DashboardScreen
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.User
@@ -51,8 +52,10 @@ class DashboardFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ChatTheme {
-                    Surface(color = ChatTheme.colors.appBackground) {
-                        DashboardScreen(viewModel, callback)
+                    ProvideWindowInsets(windowInsetsAnimationsEnabled = true, consumeWindowInsets = false) {
+                        Surface(color = ChatTheme.colors.appBackground) {
+                            DashboardScreen(viewModel, callback)
+                        }
                     }
                 }
             }
