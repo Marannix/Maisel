@@ -25,25 +25,25 @@ fun DashboardDrawer(
     header: @Composable () -> Unit = { DefaultComposerDrawerHeader() },
     body: @Composable () -> Unit = { DefaultComposerDrawerBody(items = items, listener = listener) }
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 64.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        header()
-        body()
-    }
+    header()
+    body()
 }
 
 
 @Composable
 internal fun DefaultComposerDrawerHeader() {
-    Text(
-        text = "Header",
-        color = ChatTheme.colors.textLowEmphasis,
-        fontSize = 60.sp
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 64.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Header",
+            color = ChatTheme.colors.textLowEmphasis,
+            fontSize = 60.sp
+        )
+    }
 }
 
 @ExperimentalComposeUiApi

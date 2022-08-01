@@ -32,8 +32,9 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun getMenuItems() : List<DashboardDrawerMenuItem> {
-        return emptyList()
+        return DashboardDrawerMenuItem.get()
     }
+
     /**
      * Disposes the inner [DashboardViewModel].
      */
