@@ -93,6 +93,10 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
         viewModel.logOutUser()
     }
 
+    override fun onDrawerMenuItemClicked(item: DashboardDrawerMenuItem) {
+        notImplementedYet()
+    }
+
     companion object {
         fun createIntent(context: Context): Intent {
             return Intent(context, DashboardActivity::class.java)

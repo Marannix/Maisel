@@ -31,6 +31,9 @@ class DashboardViewModel @Inject constructor(
         userComposerController.logoutUser()
     }
 
+    fun getMenuItems() : List<DashboardDrawerMenuItem> {
+        return emptyList()
+    }
     /**
      * Disposes the inner [DashboardViewModel].
      */
