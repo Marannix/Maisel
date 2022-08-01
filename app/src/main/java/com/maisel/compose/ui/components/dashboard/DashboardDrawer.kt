@@ -1,5 +1,6 @@
 package com.maisel.compose.ui.components.dashboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,6 +36,7 @@ internal fun DefaultComposerDrawerHeader() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .background(ChatTheme.colors.barsBackground)
             .padding(vertical = 64.dp),
         contentAlignment = Alignment.Center
     ) {

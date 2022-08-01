@@ -73,6 +73,7 @@ fun DashboardAppBar(
         },
         elevation = AppBarDefaults.TopAppBarElevation,
         backgroundColor = ChatTheme.colors.barsBackground,
+        contentColor = ChatTheme.colors.onPrimaryAccent,
         navigationIcon =
         {
             IconButton(onClick = {

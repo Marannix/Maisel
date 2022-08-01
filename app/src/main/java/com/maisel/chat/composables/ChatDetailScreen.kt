@@ -158,7 +158,8 @@ fun Screen(
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = ChatTheme.colors.barsBackground
+                    backgroundColor = ChatTheme.colors.barsBackground,
+                    contentColor = ChatTheme.colors.onPrimaryAccent
                 )
             },
             content = { padding -> Content(padding, messageItems) },
