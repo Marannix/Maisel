@@ -203,4 +203,8 @@ class UserRepositoryImpl(
     override fun deleteAllUsers() {
         userDao.deleteAllUsers()
     }
+
+    override fun getRecipientUser(userId: String): User {
+        return userDao.getUser(userId).toDomain()
+    }
 }

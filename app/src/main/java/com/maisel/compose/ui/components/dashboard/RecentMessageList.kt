@@ -37,14 +37,14 @@ fun RecentMessageList(
     val users by viewModel.users.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
 
-    when (viewState.recentMessageState) {
+    when (val state = viewState.recentMessageState) {
         RecentMessageState.Loading -> {
 
         }
         is RecentMessageState.Success -> {
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(Modifier.fillMaxSize()) {
-                    items(items = (viewState.recentMessageState as RecentMessageState.Success).listOfMessages) { latestMessages ->
+                    items(items = state.listOfMessages) { latestMessages ->
                         RecentMessageItem(listener, currentUser, users, latestMessages)
                     }
                 }
@@ -68,7 +68,7 @@ fun RecentMessageItem(
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
-                .clickable { listener?.onOpenChatsDetails(receiverUser) }
+                .clickable { listener?.onOpenChatsDetails(receiverUser, "dashboard") }
                 .padding(4.dp)
         ) {
             Image(

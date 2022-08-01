@@ -10,6 +10,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.composables.ContactList
@@ -18,20 +19,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
 @AndroidEntryPoint
-//Rename ContactsFragment
-class ChatsFragment : Fragment() {
+class ContactsFragment : Fragment() {
 
-    private var callback: ChatsFragmentCallback? = null
+    private var callback: ContactsFragmentCallback? = null
 
-    interface ChatsFragmentCallback {
-        fun onOpenChatsDetails(receiverUser: User)
+    interface ContactsFragmentCallback {
+        fun onOpenChatsDetails(receiverUser: User, path: String)
     }
 
-    //TODO: ContactsViewModel
-    private val viewModel: DashboardViewModel by lazy {
-        ViewModelProvider(this).get(
-            DashboardViewModel::class.java
-        )
+    private val viewModel: ContactsViewModel by lazy {
+        ViewModelProvider(this)[ContactsViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,10 +38,10 @@ class ChatsFragment : Fragment() {
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         callback = try {
-            activity as ChatsFragmentCallback
+            activity as ContactsFragmentCallback
         } catch (e: ClassCastException) {
             throw ClassCastException(
-                "$activity must implement ChatsFragmentCallback "
+                "$activity must implement ContactsFragment "
             )
         }
     }
@@ -56,8 +53,13 @@ class ChatsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ChatTheme {
-                    Surface(color = ChatTheme.colors.appBackground) {
-                        ContactList(viewModel, callback)
+                    ProvideWindowInsets(
+                        windowInsetsAnimationsEnabled = true,
+                        consumeWindowInsets = false
+                    ) {
+                        Surface(color = ChatTheme.colors.appBackground) {
+                            ContactList(viewModel, callback)
+                        }
                     }
                 }
             }

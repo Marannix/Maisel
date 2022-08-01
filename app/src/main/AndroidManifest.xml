@@ -23,7 +23,8 @@
         <activity
             android:name=".dashboard.DashboardActivity"
             android:exported="true"
-            android:theme="@style/Theme.Maisel" />
+            android:theme="@style/Theme.Maisel"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".signup.SignUpActivity"
             android:exported="true"

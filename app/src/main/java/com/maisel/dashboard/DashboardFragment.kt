@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.maisel.compose.ui.components.dashboard.DashboardScreen
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.domain.user.entity.User
@@ -22,7 +24,7 @@ class DashboardFragment : Fragment() {
     private var callback: DashboardFragmentCallback? = null
 
     interface DashboardFragmentCallback {
-        fun onOpenChatsDetails(receiverUser: User)
+        fun onOpenChatsDetails(receiverUser: User, path: String)
         fun openContactsList()
         fun onLogOut()
     }
@@ -51,8 +53,10 @@ class DashboardFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ChatTheme {
-                    Surface(color = ChatTheme.colors.appBackground) {
-                        DashboardScreen(viewModel, callback)
+                    ProvideWindowInsets(windowInsetsAnimationsEnabled = true, consumeWindowInsets = true) {
+                        Surface(color = ChatTheme.colors.appBackground) {
+                            DashboardScreen(viewModel, callback)
+                        }
                     }
                 }
             }

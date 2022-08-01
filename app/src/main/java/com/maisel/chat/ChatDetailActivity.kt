@@ -43,7 +43,7 @@ class ChatDetailActivity : BaseActivity() {
             ChatTheme {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Surface {
-                        viewModel.setUser(receiverUser)
+                        viewModel.setUser("delete")
                         ChatDetailScreen(viewModel, messageViewModel, ::onBackPressed)
                     }
                 }

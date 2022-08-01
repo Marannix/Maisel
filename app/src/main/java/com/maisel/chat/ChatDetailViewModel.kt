@@ -5,11 +5,12 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.maisel.common.BaseViewModel
+import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetMessagesUseCase
-import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.usecase.GetLoggedInUser
+import com.maisel.domain.user.usecase.GetRecipientUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -19,10 +20,14 @@ import javax.inject.Inject
 class ChatDetailViewModel @Inject constructor(
     private val messagesUseCase: GetMessagesUseCase,
     private val loggedInUser: GetLoggedInUser,
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val userComposerController: UserComposerController,
+    private val getRecipientUser : GetRecipientUserUseCase
 ) : BaseViewModel() {
 
     val viewState = MutableLiveData<ChatDetailViewState>()
+
+    //private val currentUser: MutableStateFlow<User> = userComposerController.currentUser
 
     init {
         viewState.value = ChatDetailViewState(senderUid = loggedInUser.getLoggedInUser()!!.userId)
@@ -30,8 +35,9 @@ class ChatDetailViewModel @Inject constructor(
 
     private fun currentViewState(): ChatDetailViewState = viewState.value!!
 
-    fun setUser(user: User) {
-        viewState.value = currentViewState().copy(user = user)
+    fun setUser(userId: String) {
+        val user = getRecipientUser.invoke(userId)
+        viewState.value = currentViewState().copy(recipient = user)
     }
 
     fun listToChatMessage(senderId: String, receiverId: String) {

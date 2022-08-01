@@ -43,13 +43,15 @@ import java.util.*
 fun ChatDetailScreen(
     viewModel: ChatDetailViewModel,
     messageViewModel: MessageViewModel,
-    onBackButton: () -> Unit
+    onBackButton: (() -> Unit?)?
 ) {
-    val user: User =
-        viewModel.viewState.observeAsState().value?.user
-            ?: throw Exception() //TODO: Handle this better
+    val user: User? =
+        viewModel.viewState.observeAsState().value?.recipient
+         //   ?: throw Exception() //TODO: Handle this better
 
-    Screen(viewModel, messageViewModel, user, onBackButton)
+    user?.let { it ->
+        Screen(viewModel, messageViewModel, it, onBackButton)
+    }
 }
 
 @Composable
@@ -59,7 +61,7 @@ fun Screen(
     viewModel: ChatDetailViewModel,
     messageViewModel: MessageViewModel,
     user: User,
-    onBackButton: () -> Unit
+    onBackButton: (() -> Unit?)?
 ) {
 
     val messageItems: List<MessageItem> =
@@ -78,7 +80,7 @@ fun Screen(
                         IconButton(
                             onClick = {
                                 result.value = "Back Arrow icon clicked"
-                                onBackButton()
+                                onBackButton?.invoke()
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
@@ -159,8 +161,8 @@ fun Screen(
                     backgroundColor = ChatTheme.colors.barsBackground
                 )
             },
-            bottomBar = { MessageBox(messageViewModel) },
-            content = { padding -> Content(padding, messageItems) }
+            content = { padding -> Content(padding, messageItems) },
+            bottomBar = { MessageBox(messageViewModel) }
         )
     }
 }

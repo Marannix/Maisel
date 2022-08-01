@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.maisel.dashboard.DashboardFragment"
+        android:label="DashboardFragment" >
+        <action
+            android:id="@+id/viewContactsFragment"
+            app:destination="@id/contactsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+<!--        <action-->
+<!--            android:id="@+id/viewContactsFragment"-->
+<!--            app:destination="@id/contactsFragment"-->
+<!--            app:enterAnim="@android:anim/activity_translucent_open_enter"-->
+<!--            app:exitAnim="@android:anim/activity_translucent_close_exit"-->
+<!--            app:popEnterAnim="@android:anim/activity_translucent_open_enter"-->
+<!--            app:popExitAnim="@android:anim/activity_translucent_close_exit" />-->
+        <action
+            android:id="@+id/viewChatDetail"
+            app:destination="@id/chatDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatDetailFragment"
+        android:name="com.maisel.chat.ChatDetailFragment"
+        android:label="ChatDetailFragment">
+        <argument
+            android:name="id"
+            app:argType="string"
+            android:defaultValue=""
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.maisel.dashboard.chat.ContactsFragment"
+        android:label="ContactsFragment">
+
+        <action
+            android:id="@+id/viewChatsDetailsFragment"
+            app:destination="@id/chatDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+</navigation>

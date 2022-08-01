@@ -19,14 +19,15 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
-import com.maisel.dashboard.chat.ChatsFragment
+import com.maisel.dashboard.chat.ContactsFragment
+import com.maisel.dashboard.chat.ContactsViewModel
 import com.maisel.domain.user.entity.User
 
 @Composable
 @ExperimentalComposeUiApi
 fun ContactList(
-    viewModel: DashboardViewModel,
-    listener: ChatsFragment.ChatsFragmentCallback?
+    viewModel: ContactsViewModel,
+    listener: ContactsFragment.ContactsFragmentCallback?
 ) {
     val users by viewModel.users.collectAsState()
 
@@ -69,7 +70,7 @@ fun ContactList(
 @ExperimentalComposeUiApi
 private fun ContactList(
     users: List<User>,
-    listener: ChatsFragment.ChatsFragmentCallback?,
+    listener: ContactsFragment.ContactsFragmentCallback?,
 ) {
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
@@ -83,13 +84,13 @@ private fun ContactList(
 @ExperimentalComposeUiApi
 @Composable
 fun ChatListItem(
-    listener: ChatsFragment.ChatsFragmentCallback?,
+    listener: ContactsFragment.ContactsFragmentCallback?,
     user: User,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
-            .clickable { listener?.onOpenChatsDetails(user) }
+            .clickable { listener?.onOpenChatsDetails(user, "contacts") }
             .padding(4.dp)
     ) {
         Image(

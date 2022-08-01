@@ -7,16 +7,17 @@ import android.view.Menu
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.fragment.app.Fragment
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.R
-import com.maisel.chat.ChatDetailActivity
 import com.maisel.common.BaseFragmentActivity
-import com.maisel.dashboard.chat.ChatsFragment
+import com.maisel.dashboard.chat.ContactsFragment
+import com.maisel.dashboard.chat.ContactsFragmentDirections
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.domain.user.entity.User
 import com.maisel.signin.SignInActivity
@@ -27,10 +28,8 @@ import kotlinx.coroutines.flow.collectLatest
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
-class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCallback,
+class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragmentCallback,
     DashboardFragment.DashboardFragmentCallback {
-
-    private lateinit var binding: ActivityMainBinding
 
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(this)[DashboardViewModel::class.java]
@@ -38,9 +37,8 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setUp()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setContentView(ActivityMainBinding.inflate(layoutInflater).root)
         observeViewState()
 
     }
@@ -67,35 +65,32 @@ class DashboardActivity : BaseFragmentActivity(), ChatsFragment.ChatsFragmentCal
         }
     }
 
-    private fun setUp() {
-        replaceFragment(DashboardFragment())
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOpenChatsDetails(receiverUser: User) {
-        ChatDetailActivity.createIntent(this, receiverUser).also {
-            startActivity(it)
+    override fun onOpenChatsDetails(receiverUser: User, path: String) {
+        when (path) {
+            "dashboard" -> {
+                val action = DashboardFragmentDirections.viewChatDetail(receiverUser.userId!!)
+                findNavController(R.id.main_nav_host_fragment).navigate(action)
+            }
+            "contacts" -> {
+                val action =
+                    ContactsFragmentDirections.viewChatsDetailsFragment(receiverUser.userId!!)
+                findNavController(R.id.main_nav_host_fragment).navigate(action)
+            }
         }
     }
 
     override fun openContactsList() {
-        replaceFragment(ChatsFragment())
+        val action = DashboardFragmentDirections.viewContactsFragment()
+        findNavController(R.id.main_nav_host_fragment).navigate(action)
     }
 
     override fun onLogOut() {
         viewModel.logOutUser()
-    }
-
-    //TODO: Replace with Jetpack Navigation
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.dashboardFragmentContainer.id, fragment)
-        fragmentTransaction.commit()
     }
 
     companion object {

@@ -5,7 +5,7 @@ import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.user.entity.User
 
 data class ChatDetailViewState(
-    val user: User? = null,
+    val recipient: User? = null,
     val messageItemState: GetMessagesUseCase.MessageDataState? = null,
     val senderUid: String? = null
 ) {
