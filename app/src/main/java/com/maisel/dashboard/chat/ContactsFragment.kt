@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -25,6 +27,7 @@ class ContactsFragment : Fragment() {
 
     interface ContactsFragmentCallback {
         fun onOpenChatsDetails(receiverUser: User, path: String)
+        fun onContactsBackPressed()
     }
 
     private val viewModel: ContactsViewModel by lazy {
