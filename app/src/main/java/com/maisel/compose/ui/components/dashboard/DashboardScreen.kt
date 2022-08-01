@@ -3,20 +3,14 @@ package com.maisel.compose.ui.components.dashboard
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.Message
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.statusBarsPadding
-import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
 import kotlinx.coroutines.launch
@@ -28,7 +22,7 @@ fun DashboardScreen(
     listener: DashboardFragment.DashboardFragmentCallback?,
     drawer: @Composable ColumnScope.() -> Unit = {
         DashboardDrawer(
-            viewModel.getMenuItems(),
+            viewModel,
             listener
         )
     }
