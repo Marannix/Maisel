@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -52,7 +53,7 @@ class DashboardFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ChatTheme {
-                    ProvideWindowInsets(windowInsetsAnimationsEnabled = true, consumeWindowInsets = false) {
+                    ProvideWindowInsets(windowInsetsAnimationsEnabled = true, consumeWindowInsets = true) {
                         Surface(color = ChatTheme.colors.appBackground) {
                             DashboardScreen(viewModel, callback)
                         }

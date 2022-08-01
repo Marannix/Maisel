@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.cutoutPadding
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardFragment
@@ -81,6 +83,7 @@ fun DashboardScreen(
             },
             floatingActionButton = {
                 FloatingActionButton(
+                    modifier = Modifier.navigationBarsWithImePadding(),
                     onClick = { listener?.openContactsList() }
                 ) {
                     Icon(imageVector = Icons.Rounded.Message, contentDescription = "Navigate to Contacts Screen")
