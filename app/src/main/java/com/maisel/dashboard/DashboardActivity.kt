@@ -31,8 +31,6 @@ import kotlinx.coroutines.flow.collectLatest
 class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragmentCallback,
     DashboardFragment.DashboardFragmentCallback {
 
-    private lateinit var binding: ActivityMainBinding
-
     private val viewModel: DashboardViewModel by lazy {
         ViewModelProvider(this)[DashboardViewModel::class.java]
     }
@@ -40,9 +38,7 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setUp()
+        setContentView(ActivityMainBinding.inflate(layoutInflater).root)
         observeViewState()
 
     }
@@ -69,10 +65,6 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
         }
     }
 
-    private fun setUp() {
-     //   replaceFragment(DashboardFragment())
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -85,32 +77,21 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
                 findNavController(R.id.main_nav_host_fragment).navigate(action)
             }
             "contacts" -> {
-                val action = ContactsFragmentDirections.viewChatsDetailsFragment(receiverUser.userId!!)
+                val action =
+                    ContactsFragmentDirections.viewChatsDetailsFragment(receiverUser.userId!!)
                 findNavController(R.id.main_nav_host_fragment).navigate(action)
             }
         }
-
-//        ChatDetailActivity.createIntent(this, receiverUser).also {
-//            startActivity(it)
-//        }
     }
 
     override fun openContactsList() {
-        findNavController(R.id.main_nav_host_fragment).navigate(R.id.contactsFragment)
-      //  replaceFragment(ChatsFragment())
+        val action = DashboardFragmentDirections.viewContactsFragment()
+        findNavController(R.id.main_nav_host_fragment).navigate(action)
     }
 
     override fun onLogOut() {
         viewModel.logOutUser()
     }
-
-    //TODO: Replace with Jetpack Navigation
-//    private fun replaceFragment(fragment: Fragment) {
-//        val fragmentManager = supportFragmentManager
-//        val fragmentTransaction = fragmentManager.beginTransaction()
-//        fragmentTransaction.replace(binding.dashboardFragmentContainer.id, fragment)
-//        fragmentTransaction.commit()
-//    }
 
     companion object {
         fun createIntent(context: Context): Intent {

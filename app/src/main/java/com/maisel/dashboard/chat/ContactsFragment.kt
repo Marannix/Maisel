@@ -27,11 +27,8 @@ class ContactsFragment : Fragment() {
         fun onOpenChatsDetails(receiverUser: User, path: String)
     }
 
-    //TODO: ContactsViewModel
-    private val viewModel: DashboardViewModel by lazy {
-        ViewModelProvider(this).get(
-            DashboardViewModel::class.java
-        )
+    private val viewModel: ContactsViewModel by lazy {
+        ViewModelProvider(this)[ContactsViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

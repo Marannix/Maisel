@@ -20,12 +20,13 @@ import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ContactsFragment
+import com.maisel.dashboard.chat.ContactsViewModel
 import com.maisel.domain.user.entity.User
 
 @Composable
 @ExperimentalComposeUiApi
 fun ContactList(
-    viewModel: DashboardViewModel,
+    viewModel: ContactsViewModel,
     listener: ContactsFragment.ContactsFragmentCallback?
 ) {
     val users by viewModel.users.collectAsState()
