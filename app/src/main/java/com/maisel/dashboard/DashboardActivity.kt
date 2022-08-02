@@ -84,6 +84,10 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
         }
     }
 
+    override fun onContactsBackPressed() {
+        onBackPressed()
+    }
+
     override fun openContactsList() {
         val action = DashboardFragmentDirections.viewContactsFragment()
         findNavController(R.id.main_nav_host_fragment).navigate(action)
@@ -91,6 +95,14 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
 
     override fun onLogOut() {
         viewModel.logOutUser()
+    }
+
+    override fun onDrawerMenuItemClicked(item: DashboardDrawerMenuItem) {
+        notImplementedYet()
+    }
+
+    override fun onOpenSettings() {
+        notImplementedYet()
     }
 
     companion object {

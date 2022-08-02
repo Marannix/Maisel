@@ -27,6 +27,8 @@ class DashboardFragment : Fragment() {
         fun onOpenChatsDetails(receiverUser: User, path: String)
         fun openContactsList()
         fun onLogOut()
+        fun onDrawerMenuItemClicked(item: DashboardDrawerMenuItem)
+        fun onOpenSettings()
     }
 
     private val viewModel: DashboardViewModel by lazy { ViewModelProvider(requireActivity())[DashboardViewModel::class.java] }

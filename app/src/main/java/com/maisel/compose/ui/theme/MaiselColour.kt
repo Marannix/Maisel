@@ -34,7 +34,8 @@ data class MaiselColour(
     val onPrimaryAccent: Color,
     val secondaryAccent: Color,
     val errorAccent: Color,
-    val barsBackground: Color
+    val barsBackground: Color,
+    val bottomBarsBackground: Color
 ) {
 
     companion object {
@@ -57,7 +58,8 @@ data class MaiselColour(
             primaryAccent = colorResource(R.color.maisel_compose_primary_accent),
             onPrimaryAccent = colorResource(R.color.maisel_compose_on_primary_accent),
             secondaryAccent = colorResource(R.color.maisel_compose_secondary_accent),
-            errorAccent = colorResource(R.color.maisel_compose_error_accent)
+            errorAccent = colorResource(R.color.maisel_compose_error_accent),
+            bottomBarsBackground = colorResource(R.color.maisel_compose_bottom_bars_background)
         )
 
         /**
@@ -80,6 +82,7 @@ data class MaiselColour(
             onPrimaryAccent = colorResource(R.color.maisel_compose_on_primary_accent_dark),
             secondaryAccent = colorResource(R.color.maisel_compose_secondary_accent_dark),
             errorAccent = colorResource(R.color.maisel_compose_error_accent_dark),
+            bottomBarsBackground = colorResource(R.color.maisel_compose_bottom_bars_background)
         )
     }
 }

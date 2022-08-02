@@ -43,11 +43,11 @@ import java.util.*
 fun ChatDetailScreen(
     viewModel: ChatDetailViewModel,
     messageViewModel: MessageViewModel,
-    onBackButton: (() -> Unit?)?
+    onBackButton: () -> Unit,
 ) {
     val user: User? =
         viewModel.viewState.observeAsState().value?.recipient
-         //   ?: throw Exception() //TODO: Handle this better
+    //   ?: throw Exception() //TODO: Handle this better
 
     user?.let { it ->
         Screen(viewModel, messageViewModel, it, onBackButton)
@@ -158,7 +158,8 @@ fun Screen(
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = ChatTheme.colors.barsBackground
+                    backgroundColor = ChatTheme.colors.barsBackground,
+                    contentColor = ChatTheme.colors.onPrimaryAccent
                 )
             },
             content = { padding -> Content(padding, messageItems) },
@@ -203,7 +204,7 @@ fun MessageColumn(messageItems: List<MessageItem>) {
     }
 
     Box(Modifier.fillMaxSize()) {
-        val grouped = messageItems.groupBy{it.date}
+        val grouped = messageItems.groupBy { it.date }
 
         LazyColumn(
             state = listState,
@@ -245,6 +246,7 @@ fun SenderCard(state: MessageItem.SenderMessageItem, modifier: Modifier) {
 fun ReceiverCard(state: MessageItem.ReceiverMessageItem, modifier: Modifier) {
     RecipientMessageBox(state)
 }
+
 @Composable
 fun DayHeader(day: String) {
     val date = if (day == DateFormatter().getDate(Date().time)) {

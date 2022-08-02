@@ -26,30 +26,16 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ChatDetailFragment : Fragment() {
 
-    // private val receiverUser: User by lazy { requireNotNull(intent.getParcelableExtra(RECEIVER_USER_KEY)) }
-
-//    private val viewModel: ChatDetailViewModel by lazy {
-//        ViewModelProvider(this)[ChatDetailViewModel::class.java]
-//    }
-
     private val viewModel: ChatDetailViewModel by lazy { ViewModelProvider(requireActivity())[ChatDetailViewModel::class.java] }
 
     private val messageViewModel: MessageViewModel by lazy { ViewModelProvider(requireActivity())[MessageViewModel::class.java] }
 
     private val args: ChatDetailFragmentArgs by navArgs()
-
+    
     //https://android--code.blogspot.com/2021/03/jetpack-compose-how-to-use-topappbar.html
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setup()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        //  receiverUserId =
     }
 
     override fun onCreateView(
@@ -66,7 +52,7 @@ class ChatDetailFragment : Fragment() {
                     ) {
                         Surface {
                             viewModel.setUser(args.id)
-                            ChatDetailScreen(viewModel, messageViewModel, null)
+                            ChatDetailScreen(viewModel, messageViewModel) { onBackPressed() }
                         }
                     }
                 }
@@ -75,10 +61,6 @@ class ChatDetailFragment : Fragment() {
     }
 
     private fun setup() {
-//        if (receiverUser.userId == null) {
-//            f() //TODO: Is this possible?
-//        }
-
         val receiverId = args.id
         val senderId = viewModel.viewState.value?.senderUid!!
 
@@ -87,5 +69,9 @@ class ChatDetailFragment : Fragment() {
 
         viewModel.getMessageItem(senderId, receiverId)
         viewModel.listToChatMessage(senderId, receiverId)
+    }
+
+    private fun onBackPressed() {
+        requireActivity().onBackPressed()
     }
 }

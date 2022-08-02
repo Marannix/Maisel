@@ -118,7 +118,7 @@ fun MessageComposer(
     Surface(
         modifier = modifier,
         elevation = 4.dp,
-        color = ChatTheme.colors.barsBackground,
+        color = ChatTheme.colors.bottomBarsBackground,
     ) {
         Column(Modifier.padding(vertical = 4.dp)) {
             //headerContent(messageComposerState)

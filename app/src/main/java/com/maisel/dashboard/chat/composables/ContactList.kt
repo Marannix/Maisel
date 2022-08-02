@@ -18,7 +18,6 @@ import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.chat.ContactsFragment
 import com.maisel.dashboard.chat.ContactsViewModel
 import com.maisel.domain.user.entity.User
@@ -40,7 +39,8 @@ fun ContactList(
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
                     title = {
-                        Text("Select contact",
+                        Text(
+                            "Select contact",
                             style = ChatTheme.typography.h4,
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
@@ -49,14 +49,15 @@ fun ContactList(
                         IconButton(
                             onClick = {
                                 result.value = "Back Arrow icon clicked"
-                          //      onBackButton()
+                                listener?.onContactsBackPressed()
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = ChatTheme.colors.barsBackground
+                    backgroundColor = ChatTheme.colors.barsBackground,
+                    contentColor = ChatTheme.colors.onPrimaryAccent
                 )
             },
             content = { padding ->
