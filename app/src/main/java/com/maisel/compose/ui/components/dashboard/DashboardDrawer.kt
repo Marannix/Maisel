@@ -9,12 +9,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
@@ -23,7 +24,6 @@ import com.maisel.dashboard.DashboardDrawerMenuItem
 import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.domain.user.entity.User
-import kotlinx.coroutines.flow.StateFlow
 
 @ExperimentalComposeUiApi
 @Composable
@@ -32,7 +32,7 @@ fun DashboardDrawer(
     listener: DashboardFragment.DashboardFragmentCallback?,
     header: @Composable () -> Unit = {
         DefaultComposerDrawerHeader(
-            viewModel.currentUser,
+            viewModel.currentUser.collectAsState(),
             listener
         )
     },
@@ -50,7 +50,7 @@ fun DashboardDrawer(
 @ExperimentalComposeUiApi
 @Composable
 internal fun DefaultComposerDrawerHeader(
-    user: StateFlow<User>,
+    user: State<User>,
     listener: DashboardFragment.DashboardFragmentCallback?
 ) {
     Box(
@@ -71,7 +71,7 @@ internal fun DefaultComposerDrawerHeader(
                         ?: R.drawable.ic_son_goku, //TODO: Need a default profile picture
                     builder = {
                         crossfade(true)
-                        placeholder(R.drawable.ic_son_goku) //TODO: Need a default profile picture
+                   //     placeholder(R.drawable.ic_son_goku) //TODO: Need a default profile picture
                         transformations(CircleCropTransformation())
                     }
                 ),

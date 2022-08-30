@@ -20,7 +20,6 @@ class DashboardViewModel @Inject constructor(
 
     init {
         userComposerController.setLoggedInUser()
-        userComposerController.getLoggedInUser()
         userComposerController.listOfUsers()
         userComposerController.getUsers()
         userComposerController.listenToRecentMessages()

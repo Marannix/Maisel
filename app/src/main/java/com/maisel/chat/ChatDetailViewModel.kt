@@ -9,7 +9,7 @@ import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetMessagesUseCase
-import com.maisel.domain.user.usecase.GetLoggedInUser
+import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import com.maisel.domain.user.usecase.GetRecipientUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatDetailViewModel @Inject constructor(
     private val messagesUseCase: GetMessagesUseCase,
-    private val loggedInUser: GetLoggedInUser,
+    private val loggedInUser: GetLoggedInUserUseCase,
     private val messageRepository: MessageRepository,
     private val userComposerController: UserComposerController,
     private val getRecipientUser : GetRecipientUserUseCase

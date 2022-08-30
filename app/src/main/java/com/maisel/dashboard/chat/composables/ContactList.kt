@@ -99,7 +99,7 @@ fun ChatListItem(
                 data = user.profilePicture ?: R.drawable.ic_son_goku,
                 builder = {
                     crossfade(true)
-                    placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
+                    //placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
                     transformations(CircleCropTransformation())
                 }
             ),

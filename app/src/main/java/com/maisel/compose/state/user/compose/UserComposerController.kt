@@ -10,7 +10,7 @@ import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.room.ClearRoomDatabaseUseCase
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
-import com.maisel.domain.user.usecase.GetLoggedInUser
+import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
 import com.maisel.state.UserAuthState
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +26,7 @@ import javax.inject.Singleton
 @Singleton
 class UserComposerController @Inject constructor(
     private val lastMessageUseCase: GetLastMessageUseCase,
-    private val getLoggedInUser: GetLoggedInUser,
+    private val getLoggedInUser: GetLoggedInUserUseCase,
     private val userRepository: UserRepository,
     private val messageRepository: MessageRepository,
     private val logOutUseCase: LogOutUseCase,
@@ -63,14 +63,21 @@ class UserComposerController @Inject constructor(
      */
     fun setLoggedInUser() {
         scope.launch {
-            getLoggedInUser.invoke().collect()
+            getLoggedInUser.invoke().collect { result ->
+                result.onSuccess {
+                    currentUser.value = it
+                }
+                result.onFailure {
+                    getStoredLoggedInUser()
+                }
+            }
         }
     }
 
     /**
-     * Retrieve logged in user
+     * Retrieve offline logged in user
      */
-    fun getLoggedInUser() {
+    private fun getStoredLoggedInUser() {
         scope.launch {
             getLoggedInUser.getLoggedInUser()?.let { user ->
                 currentUser.value = user

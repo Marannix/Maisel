@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 
 class GetLoggedInUserTest {
 
-    private val getLoggedInUser: GetLoggedInUser = mockk()
+    private val getLoggedInUser: GetLoggedInUserUseCase = mockk()
     private val userRepository: UserRepository = mockk()
     private val user: User = mockk()
 

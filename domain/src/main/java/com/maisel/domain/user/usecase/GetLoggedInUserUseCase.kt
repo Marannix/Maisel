@@ -5,7 +5,7 @@ import com.maisel.domain.user.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetLoggedInUser @Inject constructor(private val userRepository: UserRepository) {
+class GetLoggedInUserUseCase @Inject constructor(private val userRepository: UserRepository) {
     operator fun invoke(): Flow<Result<User>> {
         return userRepository.listenToLoggedInUser()
     }
