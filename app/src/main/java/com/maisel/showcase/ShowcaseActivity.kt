@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
@@ -30,7 +31,12 @@ class ShowcaseActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Enable support for Splash Screen API for
+        // proper Android 12+ support
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
+
         signInCurrentUser()
 
         setContent {
