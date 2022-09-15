@@ -61,7 +61,7 @@ class ChatDetailViewModel @Inject constructor(
     fun getMessageItem(senderId: String, receiverId: String) {
         viewModelScope.launch(DispatcherProvider.Main) {
             messageRepository.getListOfChatMessages(senderId, receiverId).collect {
-                if (it.isNullOrEmpty()) {
+                if (it.isEmpty()) {
                     viewState.value =
                         currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Empty)
                 } else {
