@@ -12,6 +12,7 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.valueOf("DEBUG"));
     }
 
