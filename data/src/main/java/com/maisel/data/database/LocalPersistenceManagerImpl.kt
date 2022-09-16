@@ -9,6 +9,7 @@ import com.maisel.data.database.LocalPersistenceManagerImpl.Constants.KEY_USER
 import com.maisel.domain.user.entity.User
 import javax.inject.Inject
 
+//TODO: Replace with AppPreferences
 class LocalPersistenceManagerImpl @Inject constructor(
     private val preference: SharedPreferences,
     private val gson: Gson

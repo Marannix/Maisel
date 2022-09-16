@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
+@Deprecated("TODO: This activity can be deleted")
 class ShowcaseActivity : BaseActivity() {
 
     private var isSplashScreen = mutableStateOf(true)
@@ -49,7 +50,7 @@ class ShowcaseActivity : BaseActivity() {
 
         super.onCreate(savedInstanceState)
 
-        signInCurrentUser()
+     //   signInCurrentUser()
 
         setContent {
             ChatTheme {
@@ -60,7 +61,7 @@ class ShowcaseActivity : BaseActivity() {
                     color = ChatTheme.colors.appBackground,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Showcase(::launchLoginActivity)
+                 //   Showcase(::launchLoginActivity)
                 }
             }
         }
@@ -73,15 +74,15 @@ class ShowcaseActivity : BaseActivity() {
         }
     }
 
-    private fun signInCurrentUser() {
-        if (viewModel.isUserLoggedIn()) {
-            DashboardActivity.createIntent(this).also { startActivity(it) }
-            finish()
-        }
-    }
-
-    private fun launchLoginActivity() {
-        SignInActivity.createIntent(this).also { startActivity(it) }
-        finish()
-    }
+//    private fun signInCurrentUser() {
+//        if (viewModel.isUserLoggedIn()) {
+//            DashboardActivity.createIntent(this).also { startActivity(it) }
+//            finish()
+//        }
+//    }
+//
+//    private fun launchLoginActivity() {
+//        SignInActivity.createIntent(this).also { startActivity(it) }
+//        finish()
+//    }
 }

@@ -22,24 +22,39 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.navigation.Destination
+import com.maisel.showcase.ShowcaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@ExperimentalPagerApi
 @Composable
-fun Showcase(launchLoginActivity: () -> Unit) {
+fun Showcase(
+    navHostController: NavHostController,
+    viewModel: ShowcaseViewModel = hiltViewModel()
+) {
+    CarouselScreen(navHostController, viewModel)
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+private fun CarouselScreen(
+    navHostController: NavHostController,
+    viewModel: ShowcaseViewModel
+) {
     val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
         val items = ShowcaseItem.get()
         val state = rememberPagerState()
 
-        ShowcaseTopSection(launchLoginActivity, state, scope)
+        ShowcaseTopSection(navHostController, state, scope)
 
         HorizontalPager(
             state = state,
@@ -60,12 +75,16 @@ fun Showcase(launchLoginActivity: () -> Unit) {
                     state.scrollToPage(state.currentPage + 1)
                 }
             } else {
-                launchLoginActivity()
+                viewModel.setShowcase(true)
+                navHostController.navigate(Destination.Onboarding.name)
+                //    launchLoginActivity()
             }
         }
     }
 }
 
+
+@ExperimentalPagerApi
 @Composable
 fun ShowcaseBottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
     Box(
@@ -90,7 +109,7 @@ fun ShowcaseBottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
 @ExperimentalPagerApi
 @Composable
 fun ShowcaseTopSection(
-    launchLoginActivity: () -> Unit,
+    navHostController: NavHostController,
     state: PagerState,
     scope: CoroutineScope
 ) {
@@ -101,7 +120,7 @@ fun ShowcaseTopSection(
     ) {
         //back button
         IconButton(
-            onClick = { goBack(state, scope)},
+            onClick = { goBack(state, scope) },
             modifier = Modifier.align(Alignment.CenterStart)
         ) {
             Icon(Icons.Outlined.KeyboardArrowLeft, null)
@@ -109,7 +128,7 @@ fun ShowcaseTopSection(
 
         //skip button
         TextButton(
-            onClick = { launchLoginActivity() },
+            onClick = { navHostController.navigate(Destination.Onboarding.name) },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Text("Skip", color = ChatTheme.colors.onAppBackground)
@@ -172,7 +191,11 @@ fun ShowcaseItem(item: ShowcaseItem) {
             .fillMaxSize()
             .padding(16.dp),
     ) {
-        Image(painter = painterResource(id = item.image), contentDescription = null, modifier = Modifier.weight(0.5f))
+        Image(
+            painter = painterResource(id = item.image),
+            contentDescription = null,
+            modifier = Modifier.weight(0.5f)
+        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
