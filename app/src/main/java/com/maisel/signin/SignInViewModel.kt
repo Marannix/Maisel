@@ -1,6 +1,13 @@
 package com.maisel.signin
 
+import android.content.Intent
+import android.util.Log
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.common.BaseViewModel
 import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
@@ -50,6 +57,18 @@ class SignInViewModel @Inject constructor(
      */
      fun setSignInInput(value: AuthenticationState): Unit = signInComposerController.setSignInInput(value)
 
+    fun stuff(data: Task<GoogleSignInAccount>) {
+      //  val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        try {
+            // Google Sign In was successful, authenticate with Firebase
+            val account = data.getResult(ApiException::class.java)
+            Log.d("TAG", "firebaseAuthWithGoogle:" + account.id)
+            signInWithCredential(GoogleAuthProvider.getCredential(account.idToken, null))
+        } catch (e: ApiException) {
+            // Google Sign In failed, update UI appropriately
+            Log.w("TAG", "Google sign in failed", e)
+        }
+    }
     /**
      * Disposes the inner [SignInComposerController].
      */

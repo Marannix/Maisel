@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.collectLatest
 @ExperimentalPagerApi
 class SignInActivity : BaseActivity() {
 
-    private lateinit var googleSignInClient: GoogleSignInClient
+  //  private lateinit var googleSignInClient: GoogleSignInClient
 
     private val viewModel: SignInViewModel by lazy {
         ViewModelProvider(this)[SignInViewModel::class.java]
@@ -48,26 +48,26 @@ class SignInActivity : BaseActivity() {
         setContent {
             ChatTheme {
                 Surface(color = ChatTheme.colors.appBackground) {
-                    SignInPage(
-                        viewModel,
-                        ::signInWithGoogle,
-                        ::signInWithFacebook,
-                        ::forgotPassword,
-                        ::navigateToSignUp
-                    )
+//                    SignInPage(
+//                        viewModel,
+//                        ::signInWithGoogle,
+//                        ::signInWithFacebook,
+//                        ::forgotPassword,
+//                        ::navigateToSignUp
+//                    )
                 }
             }
         }
 
         observeViewState()
 
-        createGoogleSignInClient()
+        //createGoogleSignInClient()
     }
 
     private fun observeViewState() {
         lifecycleScope.launchWhenStarted {
             viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collectLatest {
-                render(it)
+            //    render(it)
             }
         }
     }
@@ -102,10 +102,10 @@ class SignInActivity : BaseActivity() {
         }
     }
 
-    private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
+//    private fun signInWithGoogle() {
+//        val signInIntent = googleSignInClient.signInIntent
+//        startActivityForResult(signInIntent, RC_SIGN_IN)
+//    }
 
     private fun signInWithFacebook() {
         Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
@@ -115,14 +115,14 @@ class SignInActivity : BaseActivity() {
         Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
     }
 
-    private fun createGoogleSignInClient() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
+//    private fun createGoogleSignInClient() {
+//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//            .requestIdToken(getString(R.string.default_web_client_id))
+//            .requestEmail()
+//            .build()
+//
+//        googleSignInClient = GoogleSignIn.getClient(this, gso)
+//    }
 
     private fun navigateToSignUp() {
         SignUpActivity.createIntent(this).also { startActivity(it) }

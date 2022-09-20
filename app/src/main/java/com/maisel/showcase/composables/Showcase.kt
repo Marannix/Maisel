@@ -76,7 +76,7 @@ private fun CarouselScreen(
                 }
             } else {
                 viewModel.setShowcase(true)
-                navHostController.navigate(Destination.Onboarding.name)
+                navHostController.navigate(Destination.SignIn.name)
                 //    launchLoginActivity()
             }
         }
@@ -128,7 +128,7 @@ fun ShowcaseTopSection(
 
         //skip button
         TextButton(
-            onClick = { navHostController.navigate(Destination.Onboarding.name) },
+            onClick = { navHostController.navigate(Destination.SignIn.name) },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Text("Skip", color = ChatTheme.colors.onAppBackground)

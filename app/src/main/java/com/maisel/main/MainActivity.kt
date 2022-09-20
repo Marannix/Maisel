@@ -19,10 +19,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.maisel.R
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.navigation.Destination
 import com.maisel.showcase.composables.Showcase
+import com.maisel.showcase.composables.SignInPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -53,7 +58,7 @@ class MainActivity : BaseActivity() {
                     Destination.Dashboard.name
                 }
                 hasSeenShowcase -> {
-                    Destination.Onboarding.name
+                    Destination.SignIn.name
                 }
                 else -> {
                     Destination.Showcase.name
@@ -75,11 +80,17 @@ class MainActivity : BaseActivity() {
                                 modifier = Modifier.padding(scaffoldPadding),
                                 navController = navController,
                                 startDestination = Destination.Showcase.name
-                                //    startDestination = startDestination,
                             ) {
                                 composable(Destination.Showcase.name) {
                                     Showcase(navHostController = navController)
-                                    //  MainScreen(navHostController = navController)
+                                }
+                                composable(Destination.SignIn.name) {
+                                    Surface(color = ChatTheme.colors.appBackground) {
+                                        SignInPage(
+                                            navHostController = navController,
+                                            googleSignInClient = getGoogleLoginAuth()
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -94,5 +105,13 @@ class MainActivity : BaseActivity() {
             delay(3000)
             isSplashScreen.value = false
         }
+    }
+
+    private fun getGoogleLoginAuth(): GoogleSignInClient {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        return GoogleSignIn.getClient(this, gso)
     }
 }

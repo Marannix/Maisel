@@ -2,6 +2,7 @@ package com.maisel.navigation
 
 enum class Destination {
     Dashboard,
-    Onboarding,
-    Showcase
+    Showcase,
+    SignIn,
+    SignUp
 }

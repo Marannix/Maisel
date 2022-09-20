@@ -1,5 +1,11 @@
 package com.maisel.compose.ui.components.onboarding
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,14 +18,20 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.signin.SignInViewModel
 
 @Composable
 fun OnboardingAlternativeLoginFooter(
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
-    label: String) {
+    label: String
+) {
     Column(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,8 +57,10 @@ fun OnboardingAlternativeLoginFooter(
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_google),
                 contentDescription = "Google icon",
-                modifier = Modifier.clickable { onGoogleClicked() },
+                modifier = Modifier.clickable { onGoogleClicked() }
             )
         }
     }
 }
+
+

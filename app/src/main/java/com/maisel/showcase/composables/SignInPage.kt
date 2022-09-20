@@ -1,10 +1,13 @@
 package com.maisel.showcase.composables
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -16,9 +19,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.tasks.Task
 import com.maisel.R
 import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultPasswordContent
@@ -35,14 +42,11 @@ import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
 
 @Composable
-@ExperimentalComposeUiApi
-@Preview(device = PIXEL_4)
+@OptIn(ExperimentalComposeUiApi::class)
 fun SignInPage(
-    viewModel: SignInViewModel,
-    onGoogleClicked: () -> Unit,
-    onFacebookClicked: () -> Unit,
-    onForgotPasswordClicked: () -> Unit,
-    onSignUpClicked: () -> Unit,
+    navHostController: NavHostController,
+    viewModel: SignInViewModel = hiltViewModel(),
+    googleSignInClient: GoogleSignInClient,
 ) {
     val viewState by viewModel.state.collectAsState()
     val authenticationState by viewModel.input.collectAsState()
@@ -52,6 +56,9 @@ fun SignInPage(
 
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
+    val signInRequestCode = 65
+
+    val authResultLauncher = managedActivityResultGoogleSignIn(viewModel)
 
     Column(Modifier.fillMaxSize()) {
         SignInMainCard(
@@ -63,13 +70,32 @@ fun SignInPage(
                 focusRequester,
                 localFocusRequester
             ),
-            onGoogleClicked = onGoogleClicked,
-            onFacebookClicked = onFacebookClicked,
-            onForgotPasswordClicked = onForgotPasswordClicked,
-            onSignUpClicked = onSignUpClicked
+            onGoogleClicked = { authResultLauncher.launch(googleSignInClient.signInIntent) },
+            onFacebookClicked = { },
+            onForgotPasswordClicked = { },
+            onSignUpClicked = { },
         )
     }
 }
+
+@Composable
+private fun managedActivityResultGoogleSignIn(viewModel: SignInViewModel) =
+    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            if (result.data != null) {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(intent)
+                viewModel.stuff(task)
+                //  handleSignInResult(task)
+            }
+        }
+    }
+
+//@Composable
+//private fun startResultForGoogleSignIn(viewModel: SignInViewModel): ManagedActivityResultLauncher<Intent, ActivityResult> {
+//    return
+//}
 
 @ExperimentalComposeUiApi
 @Composable
@@ -181,7 +207,7 @@ private fun ValidationUI(
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword("Forgot Password?", onForgotPasswordClicked, modifier)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))
-    DefaultCallToActionButton(onSignIn,"Sign in")
+    DefaultCallToActionButton(onSignIn, "Sign in")
 }
 
 @Composable
