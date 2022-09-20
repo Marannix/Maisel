@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -16,57 +16,56 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.maisel.R
 import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultNameContent
 import com.maisel.common.composable.DefaultPasswordContent
-import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
-import com.maisel.compose.state.onboarding.compose.ValidationState
-import com.maisel.compose.state.onboarding.compose.SignUpForm
 import com.maisel.compose.state.onboarding.compose.SignUpState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
+import com.maisel.navigation.Destination
 import com.maisel.signup.SignUpViewModel
+import com.maisel.state.AuthResultState
 
-@ExperimentalComposeUiApi
 @Composable
-@Preview(device = Devices.PIXEL_4)
+@OptIn(ExperimentalComposeUiApi::class)
 fun SignUpPage(
-    viewModel: SignUpViewModel,
+    navHostController: NavHostController,
+    viewModel: SignUpViewModel = hiltViewModel(),
     onGoogleClicked: () -> Unit = { },
     onFacebookClicked: () -> Unit = { }
 ) {
-    val showNameError =
-        viewModel.viewState.observeAsState().value?.signUpValidator?.showNameError ?: false
-    val showEmailError =
-        viewModel.viewState.observeAsState().value?.signUpValidator?.showEmailError ?: false
-    val showPasswordError =
-        viewModel.viewState.observeAsState().value?.signUpValidator?.showPasswordError ?: false
 
-    val authenticationState = remember { mutableStateOf(AuthenticationState()) }
+    val viewState by viewModel.state.collectAsState()
+    val authenticationState by viewModel.input.collectAsState()
+    val validationErrors by viewModel.validationErrors.collectAsState()
 
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
+
+    val showErrorDialog: Boolean = viewState.authResultState is AuthResultState.Error
+
+    when (viewState.authResultState) {
+        is AuthResultState.Success -> {
+            navHostController.navigate(Destination.Dashboard.name)
+        }
+    }
 
     Column(Modifier.fillMaxSize()) {
         SignUpMainCard(
             viewModel = viewModel,
             signUpState = SignUpState(
-                ValidationError.AuthenticationError(
-                    nameError = showNameError,
-                    emailError = showEmailError,
-                    passwordError = showPasswordError
-                ),
-                authenticationState = authenticationState,
+                validationErrors,
+                showErrorDialog,
+                authenticationState,
                 focusRequester,
-                localFocusRequester,
+                localFocusRequester
             ),
             onGoogleClicked = onGoogleClicked,
             onFacebookClicked = onFacebookClicked
@@ -79,23 +78,15 @@ fun SignUpPage(
 fun SignUpMainCard(
     viewModel: SignUpViewModel,
     signUpState: SignUpState,
-    onSignUp: () -> Unit = {
-        viewModel.onSignUpClicked(
-            SignUpForm(
-                signUpState.authenticationState.value.name,
-                signUpState.authenticationState.value.email,
-                signUpState.authenticationState.value.password
-            )
-        )
-    },
-    onSignUpFormValueChange: (AuthenticationState) -> Unit = { signUpState.authenticationState.value = it },
+    onSignUp: () -> Unit = { viewModel.onSignUpClicked(signUpState.authenticationState) },
+    onSignUpFormValueChange: (AuthenticationState) -> Unit = { viewModel.setSignUpInput(it) },
     onSignIn: () -> Unit = { },
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     nameContent: @Composable (SignUpState) -> Unit = {
         DefaultNameContent(
             state = it.validationState,
-            value = it.authenticationState.value,
+            value = it.authenticationState,
             onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,7 +98,7 @@ fun SignUpMainCard(
     emailContent: @Composable (SignUpState) -> Unit = {
         DefaultEmailContent(
             state = it.validationState,
-            value = it.authenticationState.value,
+            value = it.authenticationState,
             onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -119,7 +110,7 @@ fun SignUpMainCard(
     passwordContent: @Composable (SignUpState) -> Unit = {
         DefaultPasswordContent(
             state = it.validationState,
-            value = it.authenticationState.value,
+            value = it.authenticationState,
             onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()

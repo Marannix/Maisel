@@ -6,6 +6,7 @@ package com.maisel.compose.state.onboarding.compose
  * @param email The users account creation email address
  * @param password The users account creation password
  */
+//TODO: Rename AuthenticationFormState
 class AuthenticationState(
     val name: String = "",
     val email: String = "",

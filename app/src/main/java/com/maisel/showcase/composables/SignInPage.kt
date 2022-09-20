@@ -99,7 +99,7 @@ fun SignInPage(
                             )
                         }
                     },
-                    onSignUpClicked = { },
+                    onSignUpClicked = { navHostController.navigate(Destination.SignUp.name) },
                 )
             }
         }

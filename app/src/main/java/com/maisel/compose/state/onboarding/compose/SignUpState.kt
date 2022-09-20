@@ -15,11 +15,13 @@ import com.maisel.common.state.ValidationError
  */
 data class SignUpState(
     val validationState: ValidationError.AuthenticationError,
-    val authenticationState: MutableState<AuthenticationState>,
+    val showErrorBanner: Boolean = false,
+    val authenticationState: AuthenticationState = AuthenticationState(),
     val focusRequester: FocusRequester,
     val localFocusRequester: FocusManager
 )
 
+//TODO: Delete this
 /**
  * Represents the sign up form state within the sign up screen
  *

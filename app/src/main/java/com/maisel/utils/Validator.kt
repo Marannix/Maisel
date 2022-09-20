@@ -7,6 +7,10 @@ class Validator {
     private val VALID_PASSWORD_REGEX = Pattern.compile("^.{8,}$")
     private val VALID_EMAIL_REGEX = Pattern.compile("^[A-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[A-Z0-9.-]+\\.[A-Z]{2,64}$", Pattern.CASE_INSENSITIVE)
 
+    fun isNameValid(name: String): Boolean {
+        return name.isNotEmpty()
+    }
+
     fun isEmailValid(email: String): Boolean {
         return VALID_EMAIL_REGEX.matcher(email).find()
     }

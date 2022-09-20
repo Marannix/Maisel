@@ -38,20 +38,28 @@ class UserRepositoryImpl(
     private val userDao: UserDao
 ) : UserRepository {
 
-    override fun createAccount(
+    override suspend fun createAccount(
         name: String,
         email: String,
         password: String
-    ): Maybe<AuthResult> {
-        return RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
-            .map { authResults ->
-                val user = User(firebaseAuth.currentUser!!.uid, name, email, password, null, null)
+    ): AuthResult? {
+        return withContext(DispatcherProvider.IO) {
+            try {
+                firebaseAuth.createUserWithEmailAndPassword(email, password)
+                    .await()
+                    .also {
+                        val user =
+                            User(firebaseAuth.currentUser!!.uid, name, email, password, null, null)
 
-                //TODO: Maybe throw an exception if current user is null?
-                setUserInDatabase(user)
-                authResults
+                        //TODO: Maybe throw an exception if current user is null?
+                        setUserInDatabase(user)
+                        Log.d("joshua", " creating account")
+                    }
+            } catch (e: Exception) {
+                Log.d("joshua exception", e.toString())
+                null
             }
-            .subscribeOn(Schedulers.io())
+        }
     }
 
     override suspend fun makeLoginRequest(email: String, password: String): AuthResult? {
@@ -62,7 +70,7 @@ class UserRepositoryImpl(
                 firebaseAuth
                     .signInWithEmailAndPassword(email, password)
                     .await().also {
-                        Log.d("joshua", "trying to log in")
+                        Log.d("joshua", " trying to log in")
                     }
             } catch (e: Exception) {
                 Log.d("joshua exception", e.toString())
@@ -110,7 +118,7 @@ class UserRepositoryImpl(
                 this@callbackFlow.sendBlocking(Result.success(user))
             }
         }
-        
+
         Log.d("joshua", "current user: ${firebaseAuth.currentUser}")
         firebaseAuth.currentUser?.uid?.let { uid ->
             database.child("users").child(uid).addValueEventListener(postListener)

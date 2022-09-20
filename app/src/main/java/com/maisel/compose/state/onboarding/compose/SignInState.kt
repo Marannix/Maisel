@@ -9,8 +9,6 @@ import com.maisel.common.state.ValidationError
  *
  * @param validationState Validation errors
  * @param showErrorBanner Show error banner
- * @param emailInputState The current text value that's within the input.
- * @param passwordInputValue The current text value that's within the input.
  */
 data class SignInState(
     val validationState: ValidationError.AuthenticationError,

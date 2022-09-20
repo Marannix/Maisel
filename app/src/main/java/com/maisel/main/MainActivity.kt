@@ -29,6 +29,7 @@ import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.navigation.Destination
 import com.maisel.showcase.composables.Showcase
 import com.maisel.showcase.composables.SignInPage
+import com.maisel.showcase.composables.SignUpPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -90,6 +91,11 @@ class MainActivity : BaseActivity() {
                                         SignInPage(
                                             navHostController = navController
                                         )
+                                    }
+                                }
+                                composable(Destination.SignUp.name) {
+                                    Surface(color = ChatTheme.colors.appBackground) {
+                                        SignUpPage(navHostController = navController)
                                     }
                                 }
                             }

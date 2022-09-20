@@ -6,7 +6,8 @@ import io.reactivex.Maybe
 import javax.inject.Inject
 
 class SignUpUseCase @Inject constructor(private val userRepository: UserRepository) {
-    operator fun invoke(name: String, email: String, password: String): Maybe<AuthResult> {
+
+    suspend operator fun invoke(name: String, email: String, password: String): AuthResult? {
         return userRepository.createAccount(name, email, password)
     }
 }
