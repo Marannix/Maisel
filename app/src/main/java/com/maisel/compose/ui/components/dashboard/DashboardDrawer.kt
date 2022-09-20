@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
@@ -28,6 +29,7 @@ import com.maisel.domain.user.entity.User
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
 fun DashboardDrawer(
+    navHostController: NavHostController,
     viewModel: DashboardViewModel,
     header: @Composable () -> Unit = {
         DefaultComposerDrawerHeader(
@@ -36,6 +38,7 @@ fun DashboardDrawer(
     },
     body: @Composable () -> Unit = {
         DefaultComposerDrawerBody(
+            navHostController = navHostController,
             items = viewModel.getMenuItems()
         )
     }
@@ -77,7 +80,7 @@ internal fun DefaultComposerDrawerHeader(
                     .width(75.dp)
                     .padding(start = 5.dp)
                     .padding(5.dp)
-                    .clickable { } //TODO: Create listeners
+                    .clickable { }
             )
 
             Text(
@@ -100,6 +103,7 @@ internal fun DefaultComposerDrawerHeader(
 @ExperimentalComposeUiApi
 @Composable
 internal fun DefaultComposerDrawerBody(
+    navHostController: NavHostController,
     items: List<DashboardDrawerMenuItem>,
     modifier: Modifier = Modifier,
     itemTextStyle: TextStyle = ChatTheme.typography.body2
@@ -110,7 +114,7 @@ internal fun DefaultComposerDrawerBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-
+                        navHostController.navigate(item.screen.name)
                     }
                     .padding(16.dp)
             ) {

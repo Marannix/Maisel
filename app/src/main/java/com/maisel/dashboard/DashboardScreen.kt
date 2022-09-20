@@ -23,7 +23,7 @@ fun DashboardScreen(
     navHostController: NavHostController,
     viewModel: DashboardViewModel = hiltViewModel(),
     drawer: @Composable ColumnScope.() -> Unit = {
-        DashboardDrawer(viewModel)
+        DashboardDrawer(navHostController, viewModel)
     }
 ) {
     val scaffoldState = rememberScaffoldState()

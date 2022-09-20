@@ -6,6 +6,7 @@ enum class Screens {
     Contact,
     Dashboard,
     Help,
+    Placeholder,
     Showcase,
     Settings,
     SignIn,

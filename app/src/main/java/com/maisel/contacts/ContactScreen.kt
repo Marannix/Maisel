@@ -1,4 +1,4 @@
-package com.maisel.dashboard.chat.composables
+package com.maisel.contacts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,7 +20,6 @@ import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.contacts.ContactsViewModel
 import com.maisel.domain.user.entity.User
 import com.maisel.navigation.Screens
 

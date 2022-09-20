@@ -22,8 +22,9 @@ import com.maisel.chatdetail.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.dashboard.DashboardScreen
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.chat.composables.ContactScreen
+import com.maisel.contacts.ContactScreen
 import com.maisel.navigation.Screens
+import com.maisel.placeholder.PlaceholderScreen
 import com.maisel.showcase.ShowcaseScreen
 import com.maisel.signin.SignInScreen
 import com.maisel.signup.SignUpScreen
@@ -113,6 +114,9 @@ class MainActivity : BaseActivity() {
                                             ContactScreen(navHostController = navController)
                                         }
                                     }
+                                }
+                                composable(Screens.Placeholder.name) {
+                                    PlaceholderScreen(navHostController = navController)
                                 }
                             }
                         }

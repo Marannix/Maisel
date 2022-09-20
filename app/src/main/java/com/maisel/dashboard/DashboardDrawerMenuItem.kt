@@ -24,19 +24,19 @@ data class DashboardDrawerMenuItem(
                     icon = Icons.Default.Person
                 ),
                 DashboardDrawerMenuItem(
-                    screen = Screens.Calls,
+                    screen = Screens.Placeholder,
                     title = "Calls",
                     contentDescription = "Go to calls screen",
                     icon = Icons.Default.Call
                 ),
                 DashboardDrawerMenuItem(
-                    screen = Screens.Settings,
+                    screen = Screens.Placeholder,
                     title = "Settings",
                     contentDescription = "Go to settings screen",
                     icon = Icons.Default.Settings
                 ),
                 DashboardDrawerMenuItem(
-                    screen = Screens.Help,
+                    screen = Screens.Placeholder,
                     title = "Help",
                     contentDescription = "Get help",
                     icon = Icons.Default.Info
