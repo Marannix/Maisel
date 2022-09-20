@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "109739620739",
+    "firebase_url": "https://maisel-32ad9-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "maisel-32ad9",
     "storage_bucket": "maisel-32ad9.appspot.com"
   },
@@ -13,6 +14,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "109739620739-0t9ed4uri4r48m4c52b7jcu9c1pbd1gr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.marannix",
+            "certificate_hash": "ea0ad5357be69a658bd83b3ff856c855dd1e7baa"
+          }
+        },
+        {
+          "client_id": "109739620739-f68olqb1okqvc7rsmodln41cvimat5fr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.marannix",
+            "certificate_hash": "7116795ba2221dcd53dee49fc2e977d8068613bc"
+          }
+        },
         {
           "client_id": "109739620739-79jdvk7db3ft8l596m1g7n6buhudde3u.apps.googleusercontent.com",
           "client_type": 3
