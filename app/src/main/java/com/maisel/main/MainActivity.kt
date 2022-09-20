@@ -3,24 +3,18 @@ package com.maisel.main
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.compose.compiler.plugins.kotlin.EmptyFunctionMetrics.composable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -28,6 +22,7 @@ import com.maisel.chat.composables.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.components.dashboard.DashboardScreen
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.dashboard.chat.composables.ContactScreen
 import com.maisel.navigation.Screens
 import com.maisel.showcase.composables.Showcase
 import com.maisel.showcase.composables.SignInPage
@@ -107,6 +102,16 @@ class MainActivity : BaseActivity() {
                                         consumeWindowInsets = true
                                     ) {
                                         ChatDetailScreen(navHostController = navController)
+                                    }
+                                }
+                                composable(Screens.Contact.name) {
+                                    ProvideWindowInsets(
+                                        windowInsetsAnimationsEnabled = true,
+                                        consumeWindowInsets = true
+                                    ) {
+                                        Surface {
+                                            ContactScreen(navHostController = navController)
+                                        }
                                     }
                                 }
                             }

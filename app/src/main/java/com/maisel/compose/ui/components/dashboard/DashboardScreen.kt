@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
+import com.maisel.navigation.Screens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -70,7 +71,7 @@ private fun DashboardScaffold(
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.navigationBarsWithImePadding(),
-                onClick = { listener?.openContactsList() }
+                onClick = {  navHostController.navigate(Screens.Contact.name) }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Message,

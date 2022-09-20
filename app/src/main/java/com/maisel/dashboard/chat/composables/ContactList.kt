@@ -13,25 +13,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.chat.ContactsFragment
 import com.maisel.dashboard.chat.ContactsViewModel
 import com.maisel.domain.user.entity.User
+import com.maisel.navigation.Screens
 
 @Composable
-@ExperimentalComposeUiApi
-fun ContactList(
-    viewModel: ContactsViewModel,
-    listener: ContactsFragment.ContactsFragmentCallback?
+@OptIn(ExperimentalComposeUiApi::class)
+fun ContactScreen(
+    navHostController: NavHostController,
+    viewModel: ContactsViewModel = hiltViewModel()
 ) {
     val users by viewModel.users.collectAsState()
-
     val result = remember { mutableStateOf("") }
-    val expanded = remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -49,7 +50,7 @@ fun ContactList(
                         IconButton(
                             onClick = {
                                 result.value = "Back Arrow icon clicked"
-                                listener?.onContactsBackPressed()
+                                navHostController.navigateUp()
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
@@ -60,8 +61,8 @@ fun ContactList(
                     contentColor = ChatTheme.colors.onPrimaryAccent
                 )
             },
-            content = { padding ->
-                ContactList(users, listener)
+            content = {
+                ContactList(users, navHostController)
             }
         )
     }
@@ -71,12 +72,12 @@ fun ContactList(
 @ExperimentalComposeUiApi
 private fun ContactList(
     users: List<User>,
-    listener: ContactsFragment.ContactsFragmentCallback?,
+    navHostController: NavHostController
 ) {
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
             items(users) { user ->
-                ChatListItem(listener, user)
+                ChatListItem(navHostController, user)
             }
         }
     }
@@ -85,13 +86,17 @@ private fun ContactList(
 @ExperimentalComposeUiApi
 @Composable
 fun ChatListItem(
-    listener: ContactsFragment.ContactsFragmentCallback?,
+    navHostController: NavHostController,
     user: User,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
-            .clickable { listener?.onOpenChatsDetails(user, "contacts") }
+            .clickable {
+                navHostController.navigate(
+                    "${Screens.ChatDetail.name}/${user.userId}"
+                )
+            }
             .padding(4.dp)
     ) {
         Image(

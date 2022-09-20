@@ -13,10 +13,6 @@ class ContactsViewModel @Inject constructor(
     userComposerController: UserComposerController
 ) : BaseViewModel() {
 
-    val currentUser: StateFlow<User> = userComposerController.currentUser
-
     val users: StateFlow<List<User>> = userComposerController.users
-
-    val viewState: StateFlow<DashboardViewState> = userComposerController.state
 
 }

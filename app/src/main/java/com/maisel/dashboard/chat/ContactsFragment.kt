@@ -5,22 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.DashboardViewModel
-import com.maisel.dashboard.chat.composables.ContactList
 import com.maisel.domain.user.entity.User
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
 @AndroidEntryPoint
+@Deprecated("TODO: This activity can be deleted")
 class ContactsFragment : Fragment() {
 
     private var callback: ContactsFragmentCallback? = null
@@ -54,18 +48,7 @@ class ContactsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
-            setContent {
-                ChatTheme {
-                    ProvideWindowInsets(
-                        windowInsetsAnimationsEnabled = true,
-                        consumeWindowInsets = false
-                    ) {
-                        Surface(color = ChatTheme.colors.appBackground) {
-                            ContactList(viewModel, callback)
-                        }
-                    }
-                }
-            }
+
         }
     }
 
