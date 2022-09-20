@@ -25,6 +25,9 @@
         <item name="windowSplashScreenAnimationDuration">300</item>
         <item name="postSplashScreenTheme">@style/Theme.Maisel</item>
 
+<!--        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSecondary</item>-->
+<!--        <item name="android:navigationBarColor">?attr/colorSecondary</item>-->
+
         <!-- Status bar and Nav bar configs -->
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:navigationBarColor">@color/white</item>

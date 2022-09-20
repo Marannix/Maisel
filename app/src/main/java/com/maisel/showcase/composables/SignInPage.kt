@@ -65,7 +65,10 @@ fun SignInPage(
 
     when (viewState.authResultState) {
         is AuthResultState.Success -> {
-            navHostController.navigate(Destination.Dashboard.name)
+            viewModel.setIdleState()
+            LaunchedEffect(Unit) {
+                navHostController.navigate(Destination.Dashboard.name)
+            }
         }
     }
 
@@ -120,8 +123,8 @@ private fun managedActivityResultGoogleSignIn(viewModel: SignInViewModel) =
     }
 
 
-@ExperimentalComposeUiApi
 @Composable
+@ExperimentalComposeUiApi
 fun SignInMainCard(
     viewModel: SignInViewModel,
     signInState: SignInState,

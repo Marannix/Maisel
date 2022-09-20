@@ -22,6 +22,7 @@ import com.maisel.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
+import kotlin.math.sign
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
@@ -66,6 +67,10 @@ class SignInViewModel @Inject constructor(
      */
     fun setSignInInput(value: AuthenticationState): Unit =
         signInComposerController.setSignInInput(value)
+
+    fun setIdleState() {
+        signInComposerController.setIdleState()
+    }
 
     fun onGoogleSignInActivityResult(data: Task<GoogleSignInAccount>) {
         try {

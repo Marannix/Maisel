@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
@@ -26,12 +28,13 @@ import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.RecentMessageState
 import com.maisel.domain.message.ChatModel
 import com.maisel.domain.user.entity.User
+import com.maisel.navigation.Destination
 
 @Composable
 @ExperimentalComposeUiApi
 fun RecentMessageList(
-    viewModel: DashboardViewModel,
-    listener: DashboardFragment.DashboardFragmentCallback?
+    navHostController: NavHostController,
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val users by viewModel.users.collectAsState()
@@ -45,7 +48,12 @@ fun RecentMessageList(
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(Modifier.fillMaxSize()) {
                     items(items = state.listOfMessages) { latestMessages ->
-                        RecentMessageItem(listener, currentUser, users, latestMessages)
+                        RecentMessageItem(
+                            navHostController,
+                            currentUser,
+                            users,
+                            latestMessages
+                        )
                     }
                 }
             }
@@ -59,7 +67,7 @@ fun RecentMessageList(
 @ExperimentalComposeUiApi
 @Composable
 fun RecentMessageItem(
-    listener: DashboardFragment.DashboardFragmentCallback?,
+    navHostController: NavHostController,
     currentUser: User,
     users: List<User>,
     messageModel: ChatModel
@@ -68,7 +76,7 @@ fun RecentMessageItem(
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
-                .clickable { listener?.onOpenChatsDetails(receiverUser, "dashboard") }
+                .clickable { navHostController.navigate(Destination.ChatDetail.name) }
                 .padding(4.dp)
         ) {
             Image(

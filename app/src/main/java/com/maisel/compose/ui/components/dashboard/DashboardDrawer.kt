@@ -25,8 +25,8 @@ import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.domain.user.entity.User
 
-@ExperimentalComposeUiApi
 @Composable
+@OptIn(ExperimentalComposeUiApi::class)
 fun DashboardDrawer(
     viewModel: DashboardViewModel,
     listener: DashboardFragment.DashboardFragmentCallback?,

@@ -111,7 +111,8 @@ fun ShowcaseBottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
 fun ShowcaseTopSection(
     navHostController: NavHostController,
     state: PagerState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    viewModel: ShowcaseViewModel = hiltViewModel()
 ) {
     Box(
         modifier = Modifier
@@ -128,7 +129,10 @@ fun ShowcaseTopSection(
 
         //skip button
         TextButton(
-            onClick = { navHostController.navigate(Destination.SignIn.name) },
+            onClick = {
+                viewModel.setShowcase(true)
+                navHostController.navigate(Destination.SignIn.name)
+            },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Text("Skip", color = ChatTheme.colors.onAppBackground)

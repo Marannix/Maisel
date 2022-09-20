@@ -56,7 +56,7 @@ class DashboardFragment : Fragment() {
                 ChatTheme {
                     ProvideWindowInsets(windowInsetsAnimationsEnabled = true, consumeWindowInsets = true) {
                         Surface(color = ChatTheme.colors.appBackground) {
-                            DashboardScreen(viewModel, callback)
+           //                 DashboardScreen(viewModel, callback)
                         }
                     }
                 }
