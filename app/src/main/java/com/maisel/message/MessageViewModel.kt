@@ -2,25 +2,34 @@ package com.maisel.message
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.maisel.common.BaseViewModel
+import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.domain.message.ChatDataModel
 import com.maisel.domain.message.usecase.SendMessageUseCase
+import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class MessageViewModel @Inject constructor(
-    private val sendMessageUseCase: SendMessageUseCase,
-    private val loggedInUser: GetLoggedInUserUseCase
-) :
-    BaseViewModel() {
+    savedStateHandle: SavedStateHandle,
+    userComposerController: UserComposerController,
+    private val sendMessageUseCase: SendMessageUseCase
+) : BaseViewModel() {
 
+    //TODO: Convert all live data to flow
     val state = MutableLiveData<MessageState>()
 
-    init {
-        state.value = MessageState()
+    private val receiverId: String = checkNotNull(savedStateHandle["receiverId"])
+    private val senderId = userComposerController.currentUser.value.userId ?: throw Exception()
+
+    fun init() {
+        state.value = MessageState(receiverId = receiverId, senderUid = senderId)
     }
 
     private fun currentViewState(): MessageState = state.value!!
@@ -42,21 +51,5 @@ class MessageViewModel @Inject constructor(
                 Log.d("MessageViewModel: ", "Something has gone wrong")
             }
         }
-    }
-
-    fun setSenderUid(senderUid: String?) {
-        state.value = currentViewState().copy(senderUid = senderUid)
-    }
-
-    fun setReceiverId(receiverId: String?) {
-        state.value = currentViewState().copy(receiverId = receiverId)
-    }
-
-    fun onAttachmentRemoved() {
-        //TODO:
-    }
-
-    fun onCameraClicked() {
-        //TODO:
     }
 }

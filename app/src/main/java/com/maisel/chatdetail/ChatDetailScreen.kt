@@ -42,20 +42,21 @@ import java.util.*
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 fun ChatDetailScreen(
     navHostController: NavHostController,
-    viewModel: ChatDetailViewModel = hiltViewModel(),
+    chatDetailViewModel: ChatDetailViewModel = hiltViewModel(),
     messageViewModel: MessageViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(Unit) {
-        viewModel.init()
+        chatDetailViewModel.init()
+        messageViewModel.init()
     }
 
     val user: User? =
-        viewModel.viewState.observeAsState().value?.recipient
+        chatDetailViewModel.viewState.observeAsState().value?.recipient
     //   ?: throw Exception() //TODO: Handle this better
 
     user?.let { it ->
-        Screen(navHostController, viewModel, messageViewModel, it)
+        Screen(navHostController, chatDetailViewModel, messageViewModel, it)
     }
 }
 
