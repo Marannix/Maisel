@@ -17,9 +17,6 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".signin.SignInActivity"
-            android:exported="true"/>
-        <activity
             android:name=".dashboard.DashboardActivity"
             android:exported="true"
             android:theme="@style/Theme.Maisel"

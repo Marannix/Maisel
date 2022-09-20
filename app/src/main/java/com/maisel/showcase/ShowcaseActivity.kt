@@ -16,9 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.DashboardActivity
-import com.maisel.showcase.composables.Showcase
-import com.maisel.signin.SignInActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

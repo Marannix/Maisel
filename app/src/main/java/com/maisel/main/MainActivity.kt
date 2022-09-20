@@ -1,6 +1,7 @@
 package com.maisel.main
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -87,8 +88,7 @@ class MainActivity : BaseActivity() {
                                 composable(Destination.SignIn.name) {
                                     Surface(color = ChatTheme.colors.appBackground) {
                                         SignInPage(
-                                            navHostController = navController,
-                                            googleSignInClient = getGoogleLoginAuth()
+                                            navHostController = navController
                                         )
                                     }
                                 }
@@ -100,18 +100,18 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun signInWithFacebook() {
+        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun forgotPassword() {
+        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
+    }
+
     private fun handleSplashScreen() {
         lifecycleScope.launch(Dispatchers.Default) {
             delay(3000)
             isSplashScreen.value = false
         }
-    }
-
-    private fun getGoogleLoginAuth(): GoogleSignInClient {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        return GoogleSignIn.getClient(this, gso)
     }
 }

@@ -37,17 +37,23 @@ import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFoo
 import com.maisel.compose.ui.components.onboarding.ForgotPassword
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.navigation.Destination
 import com.maisel.signin.SignInViewModel
 import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
+import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
 fun SignInPage(
     navHostController: NavHostController,
     viewModel: SignInViewModel = hiltViewModel(),
-    googleSignInClient: GoogleSignInClient,
+    googleSignInClient: GoogleSignInClient = viewModel.getGoogleLoginAuth()
 ) {
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val viewState by viewModel.state.collectAsState()
     val authenticationState by viewModel.input.collectAsState()
     val validationErrors by viewModel.validationErrors.collectAsState()
@@ -56,26 +62,48 @@ fun SignInPage(
 
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
-    val signInRequestCode = 65
+
+    when (viewState.authResultState) {
+        is AuthResultState.Success -> {
+            navHostController.navigate(Destination.Dashboard.name)
+        }
+    }
 
     val authResultLauncher = managedActivityResultGoogleSignIn(viewModel)
 
-    Column(Modifier.fillMaxSize()) {
-        SignInMainCard(
-            viewModel = viewModel,
-            signInState = SignInState(
-                validationErrors,
-                showErrorDialog,
-                authenticationState,
-                focusRequester,
-                localFocusRequester
-            ),
-            onGoogleClicked = { authResultLauncher.launch(googleSignInClient.signInIntent) },
-            onFacebookClicked = { },
-            onForgotPasswordClicked = { },
-            onSignUpClicked = { },
-        )
-    }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        content = { innerPadding ->
+            Column(Modifier.fillMaxSize()) {
+                SignInMainCard(
+                    viewModel = viewModel,
+                    signInState = SignInState(
+                        validationErrors,
+                        showErrorDialog,
+                        authenticationState,
+                        focusRequester,
+                        localFocusRequester
+                    ),
+                    onGoogleClicked = { authResultLauncher.launch(googleSignInClient.signInIntent) },
+                    onFacebookClicked = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                "Not implemented yet"
+                            )
+                        }
+                    },
+                    onForgotPasswordClicked = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                "Not implemented yet"
+                            )
+                        }
+                    },
+                    onSignUpClicked = { },
+                )
+            }
+        }
+    )
 }
 
 @Composable
@@ -86,16 +114,11 @@ private fun managedActivityResultGoogleSignIn(viewModel: SignInViewModel) =
             if (result.data != null) {
                 val task: Task<GoogleSignInAccount> =
                     GoogleSignIn.getSignedInAccountFromIntent(intent)
-                viewModel.stuff(task)
-                //  handleSignInResult(task)
+                viewModel.onGoogleSignInActivityResult(task)
             }
         }
     }
 
-//@Composable
-//private fun startResultForGoogleSignIn(viewModel: SignInViewModel): ManagedActivityResultLauncher<Intent, ActivityResult> {
-//    return
-//}
 
 @ExperimentalComposeUiApi
 @Composable
@@ -238,6 +261,5 @@ fun SignInErrorBanner(
                 )
             }
         }
-
     }
 }

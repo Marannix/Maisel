@@ -20,7 +20,6 @@ import com.maisel.dashboard.chat.ContactsFragment
 import com.maisel.dashboard.chat.ContactsFragmentDirections
 import com.maisel.databinding.ActivityMainBinding
 import com.maisel.domain.user.entity.User
-import com.maisel.signin.SignInActivity
 import com.maisel.state.UserAuthState
 import kotlinx.coroutines.flow.collectLatest
 
@@ -55,8 +54,8 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
     private fun render(state: DashboardViewState) {
         when (state.userAuthState) {
             UserAuthState.LOGGED_OUT -> {
-                SignInActivity.createIntent(this@DashboardActivity)
-                    .also { intent -> startActivity(intent) }
+//                SignInActivity.createIntent(this@DashboardActivity)
+//                    .also { intent -> startActivity(intent) }
                 finish()
             }
             else -> {
