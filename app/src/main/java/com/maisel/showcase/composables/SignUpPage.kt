@@ -29,7 +29,7 @@ import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
-import com.maisel.navigation.Destination
+import com.maisel.navigation.Screens
 import com.maisel.signup.SignUpViewModel
 import com.maisel.state.AuthResultState
 
@@ -53,7 +53,12 @@ fun SignUpPage(
 
     when (viewState.authResultState) {
         is AuthResultState.Success -> {
-            navHostController.navigate(Destination.Dashboard.name)
+            navHostController.navigate(Screens.Dashboard.name) {
+                popUpTo(Screens.Showcase.name) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
         }
     }
 

@@ -29,7 +29,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.navigation.Destination
+import com.maisel.navigation.Screens
 import com.maisel.showcase.ShowcaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -76,7 +76,7 @@ private fun CarouselScreen(
                 }
             } else {
                 viewModel.setShowcase(true)
-                navHostController.navigate(Destination.SignIn.name)
+                navHostController.navigate(Screens.SignIn.name)
                 //    launchLoginActivity()
             }
         }
@@ -131,7 +131,7 @@ fun ShowcaseTopSection(
         TextButton(
             onClick = {
                 viewModel.setShowcase(true)
-                navHostController.navigate(Destination.SignIn.name)
+                navHostController.navigate(Screens.SignIn.name)
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {

@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
+@Deprecated("TODO: This activity can be deleted")
 class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragmentCallback,
     DashboardFragment.DashboardFragmentCallback {
 
@@ -39,7 +40,6 @@ class DashboardActivity : BaseFragmentActivity(), ContactsFragment.ContactsFragm
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(ActivityMainBinding.inflate(layoutInflater).root)
         observeViewState()
-
     }
 
     private fun observeViewState() {

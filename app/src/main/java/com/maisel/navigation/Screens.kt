@@ -1,6 +1,6 @@
 package com.maisel.navigation
 
-enum class Destination {
+enum class Screens {
     ChatDetail,
     Dashboard,
     Showcase,

@@ -22,58 +22,7 @@ import com.maisel.message.MessageViewModel
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
+@Deprecated("TODO: This activity can be deleted")
 class ChatDetailActivity : BaseActivity() {
 
-    private val receiverUser: User by lazy { requireNotNull(intent.getParcelableExtra(RECEIVER_USER_KEY)) }
-
-    private val viewModel: ChatDetailViewModel by lazy {
-        ViewModelProvider(this)[ChatDetailViewModel::class.java]
-    }
-
-    private val messageViewModel: MessageViewModel by lazy {
-        ViewModelProvider(this)[MessageViewModel::class.java]
-    }
-
-    //https://android--code.blogspot.com/2021/03/jetpack-compose-how-to-use-topappbar.html
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContent {
-            ChatTheme {
-                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                    Surface {
-                        viewModel.setUser("delete")
-                        ChatDetailScreen(viewModel, messageViewModel, ::onBackPressed)
-                    }
-                }
-            }
-        }
-
-        setup()
-    }
-
-    private fun setup() {
-        if (receiverUser.userId == null) {
-            finish() //TODO: Is this possible?
-        }
-
-        val receiverId = receiverUser.userId!!
-        val senderId = viewModel.viewState.value?.senderUid!!
-
-        messageViewModel.setSenderUid(senderId)
-        messageViewModel.setReceiverId(receiverId)
-
-        viewModel.getMessageItem(senderId, receiverId)
-        viewModel.listToChatMessage(senderId, receiverId)
-    }
-
-    companion object {
-        private const val RECEIVER_USER_KEY = "RECEIVER_USER"
-        fun createIntent(context: Context, receiverUser: User): Intent {
-            return Intent(context, ChatDetailActivity::class.java).apply {
-                putExtra(RECEIVER_USER_KEY, receiverUser)
-            }
-        }
-    }
 }

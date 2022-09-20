@@ -24,19 +24,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
 @AndroidEntryPoint
+@Deprecated("TODO: This fragment can be deleted")
 class ChatDetailFragment : Fragment() {
-
-    private val viewModel: ChatDetailViewModel by lazy { ViewModelProvider(requireActivity())[ChatDetailViewModel::class.java] }
-
-    private val messageViewModel: MessageViewModel by lazy { ViewModelProvider(requireActivity())[MessageViewModel::class.java] }
-
-    private val args: ChatDetailFragmentArgs by navArgs()
-    
-    //https://android--code.blogspot.com/2021/03/jetpack-compose-how-to-use-topappbar.html
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setup()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,34 +33,8 @@ class ChatDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
-            setContent {
-                ChatTheme {
-                    ProvideWindowInsets(
-                        windowInsetsAnimationsEnabled = true,
-                        consumeWindowInsets = false
-                    ) {
-                        Surface {
-                            viewModel.setUser(args.id)
-                            ChatDetailScreen(viewModel, messageViewModel) { onBackPressed() }
-                        }
-                    }
-                }
-            }
+
         }
     }
 
-    private fun setup() {
-        val receiverId = args.id
-        val senderId = viewModel.viewState.value?.senderUid!!
-
-        messageViewModel.setSenderUid(senderId)
-        messageViewModel.setReceiverId(receiverId)
-
-        viewModel.getMessageItem(senderId, receiverId)
-        viewModel.listToChatMessage(senderId, receiverId)
-    }
-
-    private fun onBackPressed() {
-        requireActivity().onBackPressed()
-    }
 }

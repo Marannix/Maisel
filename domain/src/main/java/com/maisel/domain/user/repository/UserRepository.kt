@@ -40,5 +40,5 @@ interface UserRepository {
 
     fun deleteAllUsers()
 
-    fun getRecipientUser(userId: String): User
+    fun getRecipientUser(userId: String): Flow<User>
 }

@@ -22,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -38,19 +40,23 @@ import com.maisel.message.MessageViewModel
 import java.util.*
 
 @Composable
-@ExperimentalComposeUiApi
-@ExperimentalFoundationApi
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 fun ChatDetailScreen(
-    viewModel: ChatDetailViewModel,
-    messageViewModel: MessageViewModel,
-    onBackButton: () -> Unit,
+    navHostController: NavHostController,
+    viewModel: ChatDetailViewModel = hiltViewModel(),
+    messageViewModel: MessageViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.init()
+    }
+
     val user: User? =
         viewModel.viewState.observeAsState().value?.recipient
     //   ?: throw Exception() //TODO: Handle this better
 
     user?.let { it ->
-        Screen(viewModel, messageViewModel, it, onBackButton)
+        Screen(navHostController, viewModel, messageViewModel, it)
     }
 }
 
@@ -58,17 +64,18 @@ fun ChatDetailScreen(
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
 fun Screen(
-    viewModel: ChatDetailViewModel,
+    navHostController: NavHostController,
+    chatDetailViewModel: ChatDetailViewModel,
     messageViewModel: MessageViewModel,
-    user: User,
-    onBackButton: (() -> Unit?)?
+    user: User
 ) {
 
     val messageItems: List<MessageItem> =
-        viewModel.viewState.observeAsState().value?.getMessagesItem() ?: emptyList()
+        chatDetailViewModel.viewState.observeAsState().value?.getMessagesItem() ?: emptyList()
 
     val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -80,7 +87,7 @@ fun Screen(
                         IconButton(
                             onClick = {
                                 result.value = "Back Arrow icon clicked"
-                                onBackButton?.invoke()
+                                navHostController.navigateUp()
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")

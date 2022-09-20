@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.compiler.plugins.kotlin.EmptyFunctionMetrics.name
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -37,7 +38,7 @@ import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFoo
 import com.maisel.compose.ui.components.onboarding.ForgotPassword
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.navigation.Destination
+import com.maisel.navigation.Screens
 import com.maisel.signin.SignInViewModel
 import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
@@ -67,7 +68,12 @@ fun SignInPage(
         is AuthResultState.Success -> {
             viewModel.setIdleState()
             LaunchedEffect(Unit) {
-                navHostController.navigate(Destination.Dashboard.name)
+                navHostController.navigate(Screens.Dashboard.name) {
+                    popUpTo(Screens.Showcase.name) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
             }
         }
     }
@@ -102,7 +108,7 @@ fun SignInPage(
                             )
                         }
                     },
-                    onSignUpClicked = { navHostController.navigate(Destination.SignUp.name) },
+                    onSignUpClicked = { navHostController.navigate(Screens.SignUp.name) },
                 )
             }
         }
