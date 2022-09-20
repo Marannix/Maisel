@@ -1,6 +1,5 @@
-package com.maisel.chat
+package com.maisel.chatdetail
 
-import com.maisel.chat.composables.MessageItem
 import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.user.entity.User
 

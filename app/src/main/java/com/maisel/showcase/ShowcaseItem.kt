@@ -1,4 +1,4 @@
-package com.maisel.showcase.composables
+package com.maisel.showcase
 
 import com.maisel.R
 

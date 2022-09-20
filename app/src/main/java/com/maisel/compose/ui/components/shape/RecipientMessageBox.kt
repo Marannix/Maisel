@@ -13,7 +13,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.chat.composables.MessageItem
+import com.maisel.chatdetail.MessageItem
 import com.maisel.compose.ui.theme.ChatTheme
 
 @Composable

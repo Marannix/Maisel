@@ -1,4 +1,4 @@
-package com.maisel.compose.ui.components.dashboard
+package com.maisel.dashboard
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -10,8 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.maisel.dashboard.DashboardFragment
-import com.maisel.dashboard.DashboardViewModel
+import com.maisel.compose.ui.components.dashboard.DashboardAppBar
+import com.maisel.compose.ui.components.dashboard.DashboardDrawer
+import com.maisel.compose.ui.components.dashboard.RecentMessageList
 import com.maisel.navigation.Screens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,12 +22,8 @@ import kotlinx.coroutines.launch
 fun DashboardScreen(
     navHostController: NavHostController,
     viewModel: DashboardViewModel = hiltViewModel(),
-    listener: DashboardFragment.DashboardFragmentCallback? = null,
     drawer: @Composable ColumnScope.() -> Unit = {
-        DashboardDrawer(
-            viewModel,
-            listener
-        )
+        DashboardDrawer(viewModel)
     }
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -40,7 +37,6 @@ fun DashboardScreen(
             drawer,
             result,
             expanded,
-            listener,
             scope
         )
     }
@@ -54,7 +50,6 @@ private fun DashboardScaffold(
     drawer: @Composable() (ColumnScope.() -> Unit),
     result: MutableState<String>,
     expanded: MutableState<Boolean>,
-    listener: DashboardFragment.DashboardFragmentCallback?,
     scope: CoroutineScope
 ) {
     Scaffold(
@@ -62,7 +57,7 @@ private fun DashboardScaffold(
         modifier = Modifier.fillMaxSize(),
         drawerContent = drawer,
         topBar = {
-            DashboardAppBar(result, expanded, listener, onNavigationItemClick = {
+            DashboardAppBar(result = result, expanded = expanded, onNavigationItemClick = {
                 scope.launch {
                     scaffoldState.drawerState.open()
                 }
@@ -71,7 +66,7 @@ private fun DashboardScaffold(
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.navigationBarsWithImePadding(),
-                onClick = {  navHostController.navigate(Screens.Contact.name) }
+                onClick = { navHostController.navigate(Screens.Contact.name) }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Message,

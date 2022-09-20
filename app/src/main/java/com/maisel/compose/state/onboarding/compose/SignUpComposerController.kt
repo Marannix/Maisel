@@ -27,7 +27,7 @@ class SignUpComposerController @Inject constructor(
     /**
      * UI state of the current composer input.
      */
-    val input: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState())
+    val input: MutableStateFlow<AuthenticationFormState> = MutableStateFlow(AuthenticationFormState())
 
     /**ko
      * Represents the validation errors for the current input
@@ -41,7 +41,7 @@ class SignUpComposerController @Inject constructor(
      *
      * @param value Current authentication state value.
      */
-    fun setSignUpInput(value: AuthenticationState) {
+    fun setSignUpInput(value: AuthenticationFormState) {
         this.input.value = value
     }
 
@@ -60,7 +60,7 @@ class SignUpComposerController @Inject constructor(
      * Makes a request request to sign up
      * @param value Current authentication state value.
      */
-    fun makeSignUpRequest(value: AuthenticationState) {
+    fun makeSignUpRequest(value: AuthenticationFormState) {
         handleValidationErrors()
         if (validationErrors.value.nameError || validationErrors.value.emailError || validationErrors.value.passwordError) {
             return

@@ -13,16 +13,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.DashboardFragment
+import com.maisel.dashboard.DashboardViewModel
 
 @ExperimentalComposeUiApi
 @Composable
 fun DashboardAppBar(
+    dashboardViewModel: DashboardViewModel = hiltViewModel(),
     result: MutableState<String>,
     expanded: MutableState<Boolean>,
-    listener: DashboardFragment.DashboardFragmentCallback?,
     onNavigationItemClick: () -> Unit
 ) {
     TopAppBar(
@@ -64,7 +65,7 @@ fun DashboardAppBar(
                     DropdownMenuItem(onClick = {
                         expanded.value = false
                         result.value = "Logout clicked"
-                        listener?.onLogOut()
+                        dashboardViewModel.logOutUser()
                     }) {
                         Text("Logout")
                     }

@@ -18,15 +18,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.maisel.chat.composables.ChatDetailScreen
+import com.maisel.chatdetail.ChatDetailScreen
 import com.maisel.common.BaseActivity
-import com.maisel.compose.ui.components.dashboard.DashboardScreen
+import com.maisel.dashboard.DashboardScreen
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.chat.composables.ContactScreen
 import com.maisel.navigation.Screens
-import com.maisel.showcase.composables.Showcase
-import com.maisel.showcase.composables.SignInPage
-import com.maisel.showcase.composables.SignUpPage
+import com.maisel.showcase.ShowcaseScreen
+import com.maisel.signin.SignInScreen
+import com.maisel.signup.SignUpScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,18 +67,18 @@ class MainActivity : BaseActivity() {
                                 startDestination = startDestination
                             ) {
                                 composable(Screens.Showcase.name) {
-                                    Showcase(navHostController = navController)
+                                    ShowcaseScreen(navHostController = navController)
                                 }
                                 composable(Screens.SignIn.name) {
                                     Surface(color = ChatTheme.colors.appBackground) {
-                                        SignInPage(
+                                        SignInScreen(
                                             navHostController = navController
                                         )
                                     }
                                 }
                                 composable(Screens.SignUp.name) {
                                     Surface(color = ChatTheme.colors.appBackground) {
-                                        SignUpPage(navHostController = navController)
+                                        SignUpScreen(navHostController = navController)
                                     }
                                 }
                                 composable(Screens.Dashboard.name) {

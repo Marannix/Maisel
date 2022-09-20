@@ -1,4 +1,4 @@
-package com.maisel.showcase.composables
+package com.maisel.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -23,19 +23,18 @@ import com.maisel.R
 import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultNameContent
 import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
-import com.maisel.compose.state.onboarding.compose.SignUpState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.navigation.Screens
-import com.maisel.signup.SignUpViewModel
 import com.maisel.state.AuthResultState
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
-fun SignUpPage(
+fun SignUpScreen(
     navHostController: NavHostController,
     viewModel: SignUpViewModel = hiltViewModel(),
     onGoogleClicked: () -> Unit = { },
@@ -65,7 +64,7 @@ fun SignUpPage(
     Column(Modifier.fillMaxSize()) {
         SignUpMainCard(
             viewModel = viewModel,
-            signUpState = SignUpState(
+            authenticationState = AuthenticationState(
                 validationErrors,
                 showErrorDialog,
                 authenticationState,
@@ -82,16 +81,16 @@ fun SignUpPage(
 @Composable
 fun SignUpMainCard(
     viewModel: SignUpViewModel,
-    signUpState: SignUpState,
-    onSignUp: () -> Unit = { viewModel.onSignUpClicked(signUpState.authenticationState) },
-    onSignUpFormValueChange: (AuthenticationState) -> Unit = { viewModel.setSignUpInput(it) },
+    authenticationState: AuthenticationState,
+    onSignUp: () -> Unit = { viewModel.onSignUpClicked(authenticationState.authenticationFormState) },
+    onSignUpFormValueChange: (AuthenticationFormState) -> Unit = { viewModel.setSignUpInput(it) },
     onSignIn: () -> Unit = { },
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
-    nameContent: @Composable (SignUpState) -> Unit = {
+    nameContent: @Composable (AuthenticationState) -> Unit = {
         DefaultNameContent(
             state = it.validationState,
-            value = it.authenticationState,
+            value = it.authenticationFormState,
             onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,10 +99,10 @@ fun SignUpMainCard(
             it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
     },
-    emailContent: @Composable (SignUpState) -> Unit = {
+    emailContent: @Composable (AuthenticationState) -> Unit = {
         DefaultEmailContent(
             state = it.validationState,
-            value = it.authenticationState,
+            value = it.authenticationFormState,
             onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,10 +111,10 @@ fun SignUpMainCard(
             it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
     },
-    passwordContent: @Composable (SignUpState) -> Unit = {
+    passwordContent: @Composable (AuthenticationState) -> Unit = {
         DefaultPasswordContent(
             state = it.validationState,
-            value = it.authenticationState,
+            value = it.authenticationFormState,
             onValueChange = onSignUpFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -152,7 +151,7 @@ fun SignUpMainCard(
         OnboardingUserHeader("Create your Account", modifier.padding(bottom = 12.dp))
 
         SignUpValidationUI(
-            signUpState,
+            authenticationState,
             nameContent,
             emailContent,
             passwordContent,
@@ -172,10 +171,10 @@ fun SignUpMainCard(
 @ExperimentalComposeUiApi
 @Composable
 private fun SignUpValidationUI(
-    signUpState: SignUpState,
-    nameContent: @Composable (SignUpState) -> Unit,
-    emailContent: @Composable (SignUpState) -> Unit,
-    passwordContent: @Composable (SignUpState) -> Unit,
+    signUpState: AuthenticationState,
+    nameContent: @Composable (AuthenticationState) -> Unit,
+    emailContent: @Composable (AuthenticationState) -> Unit,
+    passwordContent: @Composable (AuthenticationState) -> Unit,
     onSignUp: () -> Unit
 ) {
     nameContent(signUpState)

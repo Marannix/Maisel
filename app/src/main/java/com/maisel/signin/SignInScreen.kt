@@ -1,10 +1,9 @@
-package com.maisel.showcase.composables
+package com.maisel.signin
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.compiler.plugins.kotlin.EmptyFunctionMetrics.name
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -30,8 +29,8 @@ import com.google.android.gms.tasks.Task
 import com.maisel.R
 import com.maisel.common.composable.DefaultEmailContent
 import com.maisel.common.composable.DefaultPasswordContent
+import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.compose.state.onboarding.compose.AuthenticationState
-import com.maisel.compose.state.onboarding.compose.SignInState
 import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
@@ -39,14 +38,13 @@ import com.maisel.compose.ui.components.onboarding.ForgotPassword
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.navigation.Screens
-import com.maisel.signin.SignInViewModel
 import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
 import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
-fun SignInPage(
+fun SignInScreen(
     navHostController: NavHostController,
     viewModel: SignInViewModel = hiltViewModel(),
     googleSignInClient: GoogleSignInClient = viewModel.getGoogleLoginAuth()
@@ -86,7 +84,7 @@ fun SignInPage(
             Column(Modifier.fillMaxSize()) {
                 SignInMainCard(
                     viewModel = viewModel,
-                    signInState = SignInState(
+                    authenticationState = AuthenticationState(
                         validationErrors,
                         showErrorDialog,
                         authenticationState,
@@ -133,18 +131,18 @@ private fun managedActivityResultGoogleSignIn(viewModel: SignInViewModel) =
 @ExperimentalComposeUiApi
 fun SignInMainCard(
     viewModel: SignInViewModel,
-    signInState: SignInState,
+    authenticationState: AuthenticationState,
     onGoogleClicked: () -> Unit,
     onFacebookClicked: () -> Unit,
     onForgotPasswordClicked: () -> Unit,
-    onSignInFormValueChange: (AuthenticationState) -> Unit = { viewModel.setSignInInput(it) },
-    onSignIn: () -> Unit = { viewModel.onLoginClicked(signInState.authenticationState) },
+    onSignInFormValueChange: (AuthenticationFormState) -> Unit = { viewModel.setSignInInput(it) },
+    onSignIn: () -> Unit = { viewModel.onLoginClicked(authenticationState.authenticationFormState) },
     onLongPressed: () -> Unit = { viewModel.onLongPressed() },
     onSignUpClicked: () -> Unit,
-    emailContent: @Composable (SignInState) -> Unit = {
+    emailContent: @Composable (AuthenticationState) -> Unit = {
         DefaultEmailContent(
             state = it.validationState,
-            value = it.authenticationState,
+            value = it.authenticationFormState,
             onValueChange = onSignInFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -153,10 +151,10 @@ fun SignInMainCard(
             it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
     },
-    passwordContent: @Composable (SignInState) -> Unit = {
+    passwordContent: @Composable (AuthenticationState) -> Unit = {
         DefaultPasswordContent(
             state = it.validationState,
-            value = it.authenticationState,
+            value = it.authenticationFormState,
             onValueChange = onSignInFormValueChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -164,7 +162,7 @@ fun SignInMainCard(
         ) {
             it.localFocusRequester.moveFocus(FocusDirection.Down)
         }
-    }, errorBanner: @Composable (SignInState) -> Unit = {
+    }, errorBanner: @Composable (AuthenticationState) -> Unit = {
         SignInErrorBanner(
             Modifier
                 .fillMaxWidth()
@@ -201,7 +199,7 @@ fun SignInMainCard(
         OnboardingUserHeader("Login to your Account", modifier.padding(bottom = 12.dp))
 
         ValidationUI(
-            signInState,
+            authenticationState,
             modifier, //TODO: Delete this
             onForgotPasswordClicked,
             emailContent,
@@ -223,19 +221,19 @@ fun SignInMainCard(
 @ExperimentalComposeUiApi
 @Composable
 private fun ValidationUI(
-    signInState: SignInState,
+    authenticationState: AuthenticationState,
     modifier: Modifier,
     onForgotPasswordClicked: () -> Unit,
-    emailContent: @Composable (SignInState) -> Unit,
-    passwordContent: @Composable (SignInState) -> Unit,
-    errorBanner: @Composable (SignInState) -> Unit,
+    emailContent: @Composable (AuthenticationState) -> Unit,
+    passwordContent: @Composable (AuthenticationState) -> Unit,
+    errorBanner: @Composable (AuthenticationState) -> Unit,
     onSignIn: () -> Unit
 ) {
-    errorBanner(signInState)
+    errorBanner(authenticationState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    emailContent(signInState)
+    emailContent(authenticationState)
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    passwordContent(signInState)
+    passwordContent(authenticationState)
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     ForgotPassword("Forgot Password?", onForgotPasswordClicked, modifier)
     Spacer(modifier = Modifier.padding(vertical = 8.dp))

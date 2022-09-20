@@ -1,4 +1,4 @@
-package com.maisel.chat.composables
+package com.maisel.chatdetail
 
 sealed class MessageItem {
     abstract val uid: String

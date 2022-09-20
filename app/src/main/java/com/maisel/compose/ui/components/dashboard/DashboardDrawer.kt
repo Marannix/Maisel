@@ -16,12 +16,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardDrawerMenuItem
-import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.domain.user.entity.User
 
@@ -29,17 +29,14 @@ import com.maisel.domain.user.entity.User
 @OptIn(ExperimentalComposeUiApi::class)
 fun DashboardDrawer(
     viewModel: DashboardViewModel,
-    listener: DashboardFragment.DashboardFragmentCallback?,
     header: @Composable () -> Unit = {
         DefaultComposerDrawerHeader(
-            viewModel.currentUser.collectAsState(),
-            listener
+            viewModel.currentUser.collectAsState()
         )
     },
     body: @Composable () -> Unit = {
         DefaultComposerDrawerBody(
-            items = viewModel.getMenuItems(),
-            listener = listener
+            items = viewModel.getMenuItems()
         )
     }
 ) {
@@ -50,8 +47,7 @@ fun DashboardDrawer(
 @ExperimentalComposeUiApi
 @Composable
 internal fun DefaultComposerDrawerHeader(
-    user: State<User>,
-    listener: DashboardFragment.DashboardFragmentCallback?
+    user: State<User>
 ) {
     Box(
         modifier = Modifier
@@ -71,7 +67,7 @@ internal fun DefaultComposerDrawerHeader(
                         ?: R.drawable.ic_son_goku, //TODO: Need a default profile picture
                     builder = {
                         crossfade(true)
-                   //     placeholder(R.drawable.ic_son_goku) //TODO: Need a default profile picture
+                        //     placeholder(R.drawable.ic_son_goku) //TODO: Need a default profile picture
                         transformations(CircleCropTransformation())
                     }
                 ),
@@ -81,7 +77,7 @@ internal fun DefaultComposerDrawerHeader(
                     .width(75.dp)
                     .padding(start = 5.dp)
                     .padding(5.dp)
-                    .clickable { listener?.onOpenSettings() }
+                    .clickable { } //TODO: Create listeners
             )
 
             Text(
@@ -106,8 +102,7 @@ internal fun DefaultComposerDrawerHeader(
 internal fun DefaultComposerDrawerBody(
     items: List<DashboardDrawerMenuItem>,
     modifier: Modifier = Modifier,
-    itemTextStyle: TextStyle = ChatTheme.typography.body2,
-    listener: DashboardFragment.DashboardFragmentCallback?
+    itemTextStyle: TextStyle = ChatTheme.typography.body2
 ) {
     LazyColumn(modifier = modifier) {
         items(items) { item ->
@@ -115,7 +110,7 @@ internal fun DefaultComposerDrawerBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        listener?.onDrawerMenuItemClicked(item)
+
                     }
                     .padding(16.dp)
             ) {

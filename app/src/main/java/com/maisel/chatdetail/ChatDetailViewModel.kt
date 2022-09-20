@@ -1,18 +1,16 @@
-package com.maisel.chat
+package com.maisel.chatdetail
 
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.UserInfo
 import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.user.entity.User
-import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import com.maisel.domain.user.usecase.GetRecipientUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

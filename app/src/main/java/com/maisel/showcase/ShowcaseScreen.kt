@@ -1,4 +1,4 @@
-package com.maisel.showcase.composables
+package com.maisel.showcase
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -30,12 +30,11 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.navigation.Screens
-import com.maisel.showcase.ShowcaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun Showcase(
+fun ShowcaseScreen(
     navHostController: NavHostController,
     viewModel: ShowcaseViewModel = hiltViewModel()
 ) {

@@ -1,4 +1,4 @@
-package com.maisel.dashboard.chat
+package com.maisel.contacts
 
 import com.maisel.common.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController

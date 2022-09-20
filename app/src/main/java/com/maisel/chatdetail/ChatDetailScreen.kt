@@ -1,4 +1,4 @@
-package com.maisel.chat.composables
+package com.maisel.chatdetail
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -29,7 +29,6 @@ import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
-import com.maisel.chat.ChatDetailViewModel
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.components.shape.SenderMessageBox

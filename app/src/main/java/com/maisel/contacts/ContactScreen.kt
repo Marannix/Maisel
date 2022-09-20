@@ -20,7 +20,7 @@ import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.chat.ContactsViewModel
+import com.maisel.contacts.ContactsViewModel
 import com.maisel.domain.user.entity.User
 import com.maisel.navigation.Screens
 

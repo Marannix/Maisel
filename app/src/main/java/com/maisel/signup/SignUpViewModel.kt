@@ -2,7 +2,7 @@ package com.maisel.signup
 
 import com.maisel.common.BaseViewModel
 import com.maisel.common.state.ValidationError
-import com.maisel.compose.state.onboarding.compose.AuthenticationState
+import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.compose.state.onboarding.compose.SignUpComposerController
 import com.maisel.signin.SignInViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,13 +16,13 @@ class SignUpViewModel @Inject constructor(
 
     val state: StateFlow<SignInViewState> = signUpComposerController.state
 
-    val input: StateFlow<AuthenticationState> = signUpComposerController.input
+    val input: StateFlow<AuthenticationFormState> = signUpComposerController.input
 
     val validationErrors: StateFlow<ValidationError.AuthenticationError> =
         signUpComposerController.validationErrors
 
-    fun onSignUpClicked(authenticationState: AuthenticationState) {
-        signUpComposerController.makeSignUpRequest(authenticationState)
+    fun onSignUpClicked(authenticationFormState: AuthenticationFormState) {
+        signUpComposerController.makeSignUpRequest(authenticationFormState)
     }
 
     /**
@@ -30,6 +30,6 @@ class SignUpViewModel @Inject constructor(
      *
      * @param value Current state value.
      */
-    fun setSignUpInput(value: AuthenticationState): Unit =
+    fun setSignUpInput(value: AuthenticationFormState): Unit =
         signUpComposerController.setSignUpInput(value)
 }

@@ -1,6 +1,6 @@
 package com.maisel.state
 
-import com.maisel.chat.composables.MessageItem
+import com.maisel.chatdetail.MessageItem
 
 sealed class MessageItemState {
 
