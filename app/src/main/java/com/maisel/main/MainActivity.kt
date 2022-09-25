@@ -41,12 +41,13 @@ class MainActivity : BaseActivity() {
 
         // Enable support for Splash Screen API for
         // proper Android 12+ support
-        handleSplashScreen()
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                isSplashScreen.value
-            }
-        }
+        //   handleSplashScreen()
+        installSplashScreen()
+//            .apply {
+//            setKeepOnScreenCondition {
+//                isSplashScreen.value
+//            }
+//        }
 
         setContent {
             val mainViewModel = hiltViewModel<MainActivityViewModel>()
@@ -153,10 +154,10 @@ class MainActivity : BaseActivity() {
         Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
     }
 
-    private fun handleSplashScreen() {
-        lifecycleScope.launch(Dispatchers.Default) {
-            delay(3000)
-            isSplashScreen.value = false
-        }
-    }
+//    private fun handleSplashScreen() {
+//        lifecycleScope.launch(Dispatchers.Default) {
+//            delay(3000)
+//            isSplashScreen.value = false
+//        }
+//    }
 }

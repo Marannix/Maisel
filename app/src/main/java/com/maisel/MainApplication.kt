@@ -8,6 +8,6 @@ import dagger.hilt.android.HiltAndroidApp
 class MainApplication : Application() {
 
     init {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+   //     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 }

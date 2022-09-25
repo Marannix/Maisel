@@ -54,7 +54,7 @@
     <color name="maisel_compose_disabled_dark">#4C525C</color>
     <color name="maisel_compose_borders_dark">#272A30</color>
     <color name="maisel_compose_input_background_dark">#1C1E22</color>
-    <color name="maisel_compose_app_background_dark">#000000</color>
+    <color name="maisel_compose_app_background_dark">#ff2b2c35</color>
     <color name="maisel_compose_on_app_background_dark">#ecf0f1</color>
     <color name="maisel_compose_bars_background_dark">#121416</color>
     <color name="maisel_compose_link_background_dark">#00193D</color>

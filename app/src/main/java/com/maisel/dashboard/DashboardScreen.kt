@@ -14,6 +14,7 @@ import com.maisel.compose.ui.components.dashboard.DashboardAppBar
 import com.maisel.compose.ui.components.dashboard.DashboardDrawer
 import com.maisel.compose.ui.components.dashboard.RecentMessageList
 import com.maisel.navigation.Screens
+import com.maisel.state.UserAuthState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -33,6 +34,7 @@ fun DashboardScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         DashboardScaffold(
             navHostController,
+            viewModel,
             scaffoldState,
             drawer,
             result,
@@ -46,6 +48,7 @@ fun DashboardScreen(
 @ExperimentalComposeUiApi
 private fun DashboardScaffold(
     navHostController: NavHostController,
+    viewModel: DashboardViewModel,
     scaffoldState: ScaffoldState,
     drawer: @Composable() (ColumnScope.() -> Unit),
     result: MutableState<String>,
@@ -75,6 +78,21 @@ private fun DashboardScaffold(
             }
         },
         content = {
+            val viewState by remember(viewModel) { viewModel.viewState }.collectAsState()
+            when (viewState.userAuthState) {
+                UserAuthState.LOGGED_OUT -> {
+                    navHostController.navigate(Screens.SignIn.name) {
+                        popUpTo(Screens.SignIn.name) {
+                            inclusive = true
+                        }
+                       // launchSingleTop = true
+                    }
+                }
+                else -> {
+                    // DO NOTHING
+                }
+            }
+
             RecentMessageList(navHostController)
         }
     )
