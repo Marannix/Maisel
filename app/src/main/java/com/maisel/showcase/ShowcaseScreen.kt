@@ -130,7 +130,7 @@ fun ShowcaseTopSection(
         ) {
             Icon(Icons.Outlined.KeyboardArrowLeft, null)
         }
-        
+
         //skip button
         TextButton(
             onClick = {

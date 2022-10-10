@@ -23,7 +23,7 @@ fun OnboardingUserFooter(label: String, text: String, onClickListener: () -> Uni
 
     val spannedString = buildAnnotatedString {
         append(label)
-        withStyle(SpanStyle(color = Color(0xFFF05777))) {
+        withStyle(SpanStyle(color = Color(0xFFF05777))) { //TODO: Extract colour
             append(text)
         }
     }

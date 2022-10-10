@@ -68,15 +68,12 @@ class MainActivity : BaseActivity() {
                                 ShowcaseScreen(navHostController = navController)
                             }
                             composable(Screens.SignIn.name) {
-                                SignInScreen(
-                                    navHostController = navController
-                                )
+                                SignInScreen(navHostController = navController)
                             }
-//                                composable(Screens.SignUp.name) {
-//                                    Surface(color = ChatTheme.colors.appBackground) {
-//                                        SignUpScreen(navHostController = navController)
-//                                    }
-//                                }
+                            composable(Screens.SignUp.name) {
+                                SignUpScreen(navHostController = navController)
+
+                            }
 //                                composable(Screens.Dashboard.name) {
 //                                    ProvideWindowInsets(
 //                                        windowInsetsAnimationsEnabled = true,
