@@ -5,9 +5,6 @@ package com.maisel.common.state
  */
 sealed class ValidationError {
 
-    /**
-     * TODO:
-     */
     data class AuthenticationError (
         val nameError: Boolean = false,
         val emailError: Boolean = false,

@@ -16,7 +16,7 @@ interface UserDao {
     fun getUsers(): Flow<List<UserEntity>>
 
     @Query("select * from user where user_id = :userId")
-    fun getUser(userId: String): UserEntity
+    fun getUser(userId: String): Flow<UserEntity>
 
     @Query("DELETE FROM user")
     fun deleteAllUsers()

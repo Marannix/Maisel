@@ -37,19 +37,20 @@ class SignInComposerController @Inject constructor(
     /**
      * UI state of the current composer input.
      */
-    val input: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState())
+    val input: MutableStateFlow<AuthenticationFormState> = MutableStateFlow(AuthenticationFormState())
 
     /**ko
      * Represents the validation errors for the current input
      */
-    val validationErrors: MutableStateFlow<ValidationError.AuthenticationError> = MutableStateFlow(ValidationError.AuthenticationError())
+    val validationErrors: MutableStateFlow<ValidationError.AuthenticationError> =
+        MutableStateFlow(ValidationError.AuthenticationError())
 
     /**
      * Called when the input changes and the internal state needs to be updated.
      *
      * @param value Current authentication state value.
      */
-    fun setSignInInput(value: AuthenticationState) {
+    fun setSignInInput(value: AuthenticationFormState) {
         this.input.value = value
     }
 
@@ -62,11 +63,17 @@ class SignInComposerController @Inject constructor(
         )
     }
 
+    fun setIdleState() {
+        scope.launch {
+            _stateFlow.update { it.copy(authResultState = AuthResultState.Idle) }
+        }
+    }
+
     /**
      * Makes a login request to sign in the current user
      * @param value Current authentication state value.
      */
-    fun makeLoginRequest(value: AuthenticationState) {
+    fun makeLoginRequest(value: AuthenticationFormState) {
         handleValidationErrors()
         if (validationErrors.value.emailError) {
             return

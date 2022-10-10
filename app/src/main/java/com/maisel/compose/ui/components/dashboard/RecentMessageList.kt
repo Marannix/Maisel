@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -17,23 +18,25 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.dashboard.DashboardFragment
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.RecentMessageState
 import com.maisel.domain.message.ChatModel
 import com.maisel.domain.user.entity.User
+import com.maisel.navigation.Screens
 
 @Composable
 @ExperimentalComposeUiApi
 fun RecentMessageList(
-    viewModel: DashboardViewModel,
-    listener: DashboardFragment.DashboardFragmentCallback?
+    navHostController: NavHostController,
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
-    val viewState by viewModel.viewState.collectAsState()
+    val viewState by remember(viewModel) { viewModel.viewState }.collectAsState()
     val users by viewModel.users.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
 
@@ -45,7 +48,12 @@ fun RecentMessageList(
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(Modifier.fillMaxSize()) {
                     items(items = state.listOfMessages) { latestMessages ->
-                        RecentMessageItem(listener, currentUser, users, latestMessages)
+                        RecentMessageItem(
+                            navHostController,
+                            currentUser,
+                            users,
+                            latestMessages
+                        )
                     }
                 }
             }
@@ -59,7 +67,7 @@ fun RecentMessageList(
 @ExperimentalComposeUiApi
 @Composable
 fun RecentMessageItem(
-    listener: DashboardFragment.DashboardFragmentCallback?,
+    navHostController: NavHostController,
     currentUser: User,
     users: List<User>,
     messageModel: ChatModel
@@ -68,7 +76,11 @@ fun RecentMessageItem(
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
-                .clickable { listener?.onOpenChatsDetails(receiverUser, "dashboard") }
+                .clickable {
+                    navHostController.navigate(
+                        "${Screens.ChatDetail.name}/${receiverUser.userId}"
+                    )
+                }
                 .padding(4.dp)
         ) {
             Image(
@@ -103,7 +115,12 @@ fun RecentMessageItem(
                             modifier = Modifier
                                 .height(20.dp)
                                 .width(20.dp)
-                                .padding(top = 2.dp, bottom = 2.dp, start = 4.dp, end = 4.dp)
+                                .padding(
+                                    top = 2.dp,
+                                    bottom = 2.dp,
+                                    start = 4.dp,
+                                    end = 4.dp
+                                )
                         )
                     }
 

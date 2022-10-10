@@ -6,9 +6,10 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.maisel.navigation.Screens
 
 data class DashboardDrawerMenuItem(
-    val id: String,
+    val screen: Screens,
     val title: String,
     val contentDescription: String,
     val icon: ImageVector
@@ -17,25 +18,25 @@ data class DashboardDrawerMenuItem(
         fun get(): List<DashboardDrawerMenuItem> {
             return listOf(
                 DashboardDrawerMenuItem(
-                    id = "contacts",
+                    screen = Screens.Contact,
                     title = "Contacts",
                     contentDescription = "Go to contacts screen",
                     icon = Icons.Default.Person
                 ),
                 DashboardDrawerMenuItem(
-                    id = "calls",
+                    screen = Screens.Placeholder,
                     title = "Calls",
                     contentDescription = "Go to calls screen",
                     icon = Icons.Default.Call
                 ),
                 DashboardDrawerMenuItem(
-                    id = "settings",
+                    screen = Screens.Placeholder,
                     title = "Settings",
                     contentDescription = "Go to settings screen",
                     icon = Icons.Default.Settings
                 ),
                 DashboardDrawerMenuItem(
-                    id = "help",
+                    screen = Screens.Placeholder,
                     title = "Help",
                     contentDescription = "Get help",
                     icon = Icons.Default.Info

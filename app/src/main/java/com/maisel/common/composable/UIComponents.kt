@@ -22,15 +22,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.common.state.ValidationError
-import com.maisel.compose.state.onboarding.compose.AuthenticationState
+import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.compose.ui.theme.ChatTheme
 
 @ExperimentalComposeUiApi
 @Composable
 fun DefaultPasswordContent(
     state: ValidationError.AuthenticationError,
-    value: AuthenticationState,
-    onValueChange: (AuthenticationState) -> Unit,
+    value: AuthenticationFormState,
+    onValueChange: (AuthenticationFormState) -> Unit,
     modifier: Modifier,
     onImeAction: () -> Unit
 ) {
@@ -44,7 +44,7 @@ fun DefaultPasswordContent(
         value = passwordFieldValueState, onValueChange = {
             passwordFieldValueState = it
             if (value.password != it.text) {
-                onValueChange(AuthenticationState(value.name, value.email, it.text))
+                onValueChange(AuthenticationFormState(value.name, value.email, it.text))
             }
         },
         label = {
@@ -108,8 +108,8 @@ private fun setPasswordVisualTransformation(showPassword: MutableState<Boolean>)
 @Composable
 fun DefaultEmailContent(
     state: ValidationError.AuthenticationError,
-    value: AuthenticationState,
-    onValueChange: (AuthenticationState) -> Unit,
+    value: AuthenticationFormState,
+    onValueChange: (AuthenticationFormState) -> Unit,
     modifier: Modifier,
     onImeAction: () -> Unit,
 ) {
@@ -120,7 +120,7 @@ fun DefaultEmailContent(
         value = emailFieldValueState, onValueChange = {
             emailFieldValueState = it
             if (value.email != it.text) {
-                onValueChange(AuthenticationState(value.name, it.text.trim(), value.password))
+                onValueChange(AuthenticationFormState(value.name, it.text.trim(), value.password))
             }
         },
         label = {
@@ -153,8 +153,8 @@ fun DefaultEmailContent(
 fun DefaultNameContent(
     modifier: Modifier,
     state: ValidationError.AuthenticationError,
-    value: AuthenticationState,
-    onValueChange: (AuthenticationState) -> Unit,
+    value: AuthenticationFormState,
+    onValueChange: (AuthenticationFormState) -> Unit,
     onImeAction: () -> Unit,
 ) {
 
@@ -165,7 +165,7 @@ fun DefaultNameContent(
         value = nameFieldValueState, onValueChange = {
             nameFieldValueState = it
             if (value.password != it.text) {
-                onValueChange(AuthenticationState(it.text, value.email, value.password))
+                onValueChange(AuthenticationFormState(it.text, value.email, value.password))
             }
         },
         label = {

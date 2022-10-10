@@ -30,7 +30,7 @@ class DashboardViewModel @Inject constructor(
         userComposerController.logoutUser()
     }
 
-    fun getMenuItems() : List<DashboardDrawerMenuItem> {
+    fun getMenuItems(): List<DashboardDrawerMenuItem> {
         return DashboardDrawerMenuItem.get()
     }
 

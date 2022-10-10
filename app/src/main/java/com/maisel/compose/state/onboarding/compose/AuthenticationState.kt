@@ -1,13 +1,19 @@
 package com.maisel.compose.state.onboarding.compose
 
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import com.maisel.common.state.ValidationError
+
 /**
- * Represents the authentication form state within the sign up screen
+ * Represents the state within the sign up screen
  *
- * @param email The users account creation email address
- * @param password The users account creation password
+ * @param validationState Validation errors
+ * @param showErrorBanner Show error banner
  */
-class AuthenticationState(
-    val name: String = "",
-    val email: String = "",
-    val password: String = ""
+data class AuthenticationState(
+    val validationState: ValidationError.AuthenticationError,
+    val showErrorBanner: Boolean = false,
+    val authenticationFormState: AuthenticationFormState = AuthenticationFormState(),
+    val focusRequester: FocusRequester,
+    val localFocusRequester: FocusManager
 )

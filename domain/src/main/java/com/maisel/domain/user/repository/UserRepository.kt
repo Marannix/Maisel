@@ -12,7 +12,7 @@ interface UserRepository {
      * Creates an account to firebase using name, email and password.
      * @return an AuthResult which is either a success or failure.
      */
-    fun createAccount(name: String, email: String, password: String) : Maybe<AuthResult>
+    suspend fun createAccount(name: String, email: String, password: String): AuthResult?
 
     /**
      * Sign in using email and password.
@@ -40,5 +40,5 @@ interface UserRepository {
 
     fun deleteAllUsers()
 
-    fun getRecipientUser(userId: String): User
+    fun getRecipientUser(userId: String): Flow<User>
 }
