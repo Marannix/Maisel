@@ -5,12 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 
 @Composable
 fun OnboardingUserHeader(label: String, modifier: Modifier) {
     Text(
         text = label,
-        style = ChatTheme.typography.h3,
+        style = typography.h5,
         fontWeight = FontWeight.SemiBold,
         modifier = modifier
     )

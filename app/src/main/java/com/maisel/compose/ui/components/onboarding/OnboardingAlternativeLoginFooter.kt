@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.maisel.R
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 import com.maisel.signin.SignInViewModel
 
 @Composable
@@ -42,7 +43,7 @@ fun OnboardingAlternativeLoginFooter(
         Text(
             text = label,
             textAlign = TextAlign.Center,
-            style = ChatTheme.typography.subtitle1,
+            style = typography.subtitle1,
             fontWeight = FontWeight.SemiBold
         )
 

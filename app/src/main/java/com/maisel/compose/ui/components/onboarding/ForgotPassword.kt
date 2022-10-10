@@ -9,6 +9,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 
 @Composable
 fun ForgotPassword(label: String, onForgotPasswordClicked: () -> Unit, modifier: Modifier) {
@@ -17,7 +18,7 @@ fun ForgotPassword(label: String, onForgotPasswordClicked: () -> Unit, modifier:
             text = label,
             textAlign = TextAlign.End,
             modifier = modifier.clickable { onForgotPasswordClicked() },
-            style = ChatTheme.typography.subtitle2
+            style = typography.subtitle2
         )
     }
 }

@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -23,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 
 @ExperimentalComposeUiApi
 @Composable
@@ -48,10 +45,10 @@ fun DefaultPasswordContent(
             }
         },
         label = {
-            Text(text = stringResource(id = R.string.password), style = ChatTheme.typography.body2)
+            Text(text = stringResource(id = R.string.password), style = typography.body2)
         },
         placeholder = {
-            Text(text = stringResource(id = R.string.password), style = ChatTheme.typography.body2)
+            Text(text = stringResource(id = R.string.password), style = typography.body2)
         },
         visualTransformation = setPasswordVisualTransformation(showPassword),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
@@ -69,8 +66,8 @@ fun DefaultPasswordContent(
         Text(
             text = "Password must be 8 characters long",
             textAlign = TextAlign.Start,
-            color = ChatTheme.colors.errorAccent,
-            style = ChatTheme.typography.caption,
+            color = MaterialTheme.colors.error,
+            style = typography.caption,
             modifier = Modifier
                 .padding(start = 16.dp)
                 .fillMaxWidth()
@@ -124,10 +121,10 @@ fun DefaultEmailContent(
             }
         },
         label = {
-            Text(text = "Email", style = ChatTheme.typography.body2)
+            Text(text = "Email", style = typography.body2)
         },
         placeholder = {
-            Text(text = "Email", style = ChatTheme.typography.body2)
+            Text(text = "Email", style = typography.body2)
         },
         isError = state.emailError,
         singleLine = true,
@@ -140,8 +137,8 @@ fun DefaultEmailContent(
         Text(
             text = "Please enter a valid email",
             textAlign = TextAlign.Start,
-            color = ChatTheme.colors.errorAccent,
-            style = ChatTheme.typography.caption,
+            color = MaterialTheme.colors.error,
+            style = typography.caption,
             modifier = Modifier
                 .padding(start = 16.dp)
                 .fillMaxWidth()
@@ -169,10 +166,10 @@ fun DefaultNameContent(
             }
         },
         label = {
-            Text(text = "Name", style = ChatTheme.typography.body2)
+            Text(text = "Name", style = typography.body2)
         },
         placeholder = {
-            Text(text = "Name", style = ChatTheme.typography.body2)
+            Text(text = "Name", style = typography.body2)
         },
         isError = state.nameError,
         singleLine = true,
@@ -185,8 +182,8 @@ fun DefaultNameContent(
         Text(
             text = "Please enter a valid name",
             textAlign = TextAlign.Start,
-            color = ChatTheme.colors.errorAccent,
-            style = ChatTheme.typography.caption,
+            color = MaterialTheme.colors.error,
+            style = typography.caption,
             modifier = Modifier
                 .padding(start = 16.dp)
                 .fillMaxWidth()

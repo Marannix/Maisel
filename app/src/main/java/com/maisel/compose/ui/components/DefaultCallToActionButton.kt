@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 import com.maisel.ui.shapes
 
 @ExperimentalComposeUiApi
@@ -31,6 +32,6 @@ fun DefaultCallToActionButton(
             .padding(horizontal = 16.dp)
             .padding(top = 8.dp)
     ) {
-        Text(text = label, textAlign = TextAlign.Center, style = ChatTheme.typography.body1)
+        Text(text = label, textAlign = TextAlign.Center, style = typography.body1)
     }
 }

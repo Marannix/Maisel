@@ -38,7 +38,7 @@
     <color name="maisel_compose_on_app_background">#11181F</color>
     <color name="maisel_compose_bars_background">@color/maisel_compose_primary_accent</color>
     <color name="maisel_compose_bottom_bars_background">#FFFFFF</color>
-    <color name="maisel_compose_link_background">#E9F1FF</color>
+    <color name="maisel_compose_link_background">#E9F1FF</color> <!--Not used -->
     <color name="maisel_compose_overlay_regular">#80000000</color>
     <color name="maisel_compose_overlay_dark">#99000000</color>
     <color name="maisel_compose_primary_accent">#201A30</color>
