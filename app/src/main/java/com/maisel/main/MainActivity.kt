@@ -64,15 +64,13 @@ class MainActivity : BaseActivity() {
                             navController = navController,
                             startDestination = startDestination
                         ) {
-//                                composable(Screens.Showcase.name) {
-//                                    ShowcaseScreen(navHostController = navController)
-//                                }
+                            composable(Screens.Showcase.name) {
+                                ShowcaseScreen(navHostController = navController)
+                            }
                             composable(Screens.SignIn.name) {
-                                Surface {
-                                    SignInScreen(
-                                        navHostController = navController
-                                    )
-                                }
+                                SignInScreen(
+                                    navHostController = navController
+                                )
                             }
 //                                composable(Screens.SignUp.name) {
 //                                    Surface(color = ChatTheme.colors.appBackground) {
@@ -138,7 +136,7 @@ class MainActivity : BaseActivity() {
                 Screens.Showcase.name
             }
         }
-        return Screens.SignIn.name
+        return Screens.Showcase.name
     }
 
     private fun signInWithFacebook() {

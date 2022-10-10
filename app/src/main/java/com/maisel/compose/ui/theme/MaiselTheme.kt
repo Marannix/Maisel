@@ -93,7 +93,7 @@ fun MaiselTheme(
 
     MaterialTheme(
         colors = colors,
-        typography = com.maisel.ui.typography,
+        typography = com.maisel.ui.typography, //TODO: Update this
     ) {
         val systemUiController = rememberSystemUiController()
         systemUiController.setSystemBarsColor(
