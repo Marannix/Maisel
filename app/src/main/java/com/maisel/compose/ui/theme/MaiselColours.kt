@@ -58,6 +58,12 @@ object MaiselColours {
 
         override val surface = White
         override val onSurface = Neutral10
+
+        override val barsBackground = Primary30
+        override val bottomBarsBackground = White
+
+        override val lowEmphasis = Grey10
+        override val highEmphasis = Black
     }
 
     internal val Dark = object : Variant {
@@ -79,6 +85,12 @@ object MaiselColours {
 
         override val surface = Neutral10
         override val onSurface = Neutral90
+
+        override val barsBackground = Neutral10
+        override val bottomBarsBackground = Neutral10
+
+        override val lowEmphasis = Black
+        override val highEmphasis = Grey10
     }
 }
 
@@ -100,4 +112,10 @@ internal interface Variant {
 
     val surface: Color
     val onSurface: Color
+
+    val barsBackground: Color
+    val bottomBarsBackground: Color
+
+    val lowEmphasis: Color
+    val highEmphasis: Color
 }

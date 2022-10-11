@@ -23,7 +23,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.dashboard.RecentMessageState
 import com.maisel.domain.message.ChatModel
@@ -102,7 +102,7 @@ fun RecentMessageItem(
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     receiverUser.username.toString(),
-                    style = ChatTheme.typography.body1,
+                    style = typography.body1,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                 )
 
@@ -126,7 +126,7 @@ fun RecentMessageItem(
 
                     Text(
                         text = messageModel.message,
-                        style = ChatTheme.typography.subtitle2,
+                        style = typography.subtitle2,
                         maxLines = 1
                     )
                 }

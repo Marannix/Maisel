@@ -11,7 +11,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Immutable
 data class ExtendedColors(
-    val nothing: Color,
+    val barsBackground: Color,
+    val bottomBarsBackground: Color,
+    val lowEmphasis: Color,
+    val highEmphasis: Color,
 )
 
 private val LightColorPalette = lightColors(
@@ -32,7 +35,10 @@ private val LightColorPalette = lightColors(
  * Extending the color definitions for light color
  */
 internal val ExtendedLightColorPalette = ExtendedColors(
-    nothing = MaiselColours.Light.primaryContainer,
+    barsBackground = MaiselColours.Light.primaryContainer,
+    bottomBarsBackground = MaiselColours.Light.primaryContainer,
+    lowEmphasis = MaiselColours.Light.lowEmphasis,
+    highEmphasis = MaiselColours.Light.highEmphasis,
 )
 
 /**
@@ -56,7 +62,10 @@ private val DarkColorPalette = darkColors(
  * Extending the color definitions for dark color
  */
 val ExtendedDarkColorPalette = ExtendedColors(
-    nothing = MaiselColours.Dark.primaryContainer,
+    barsBackground = MaiselColours.Dark.primaryContainer,
+    bottomBarsBackground = MaiselColours.Dark.primaryContainer,
+    lowEmphasis = MaiselColours.Dark.lowEmphasis,
+    highEmphasis = MaiselColours.Dark.highEmphasis,
 )
 
 internal val LocalExtendedColors = staticCompositionLocalOf<ExtendedColors> {

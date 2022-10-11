@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -16,12 +17,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.extendedColors
+import com.maisel.compose.ui.theme.typography
 import com.maisel.dashboard.DashboardDrawerMenuItem
 import com.maisel.dashboard.DashboardViewModel
 import com.maisel.domain.user.entity.User
@@ -55,7 +56,7 @@ internal fun DefaultComposerDrawerHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ChatTheme.colors.barsBackground),
+            .background(MaterialTheme.colors.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -85,14 +86,14 @@ internal fun DefaultComposerDrawerHeader(
 
             Text(
                 text = user.value.username ?: "",
-                style = ChatTheme.typography.body2,
-                color = ChatTheme.colors.onPrimaryAccent,
+                style = typography.body2,
+                color = MaterialTheme.colors.primary,
                 modifier = Modifier.padding(start = 16.dp)
             )
             Text(
                 text = user.value.emailAddress ?: "",
-                style = ChatTheme.typography.body2,
-                color = ChatTheme.colors.textLowEmphasis,
+                style = typography.body2,
+                color = MaterialTheme.extendedColors.lowEmphasis,
                 modifier = Modifier.padding(start = 16.dp)
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -106,28 +107,31 @@ internal fun DefaultComposerDrawerBody(
     navHostController: NavHostController,
     items: List<DashboardDrawerMenuItem>,
     modifier: Modifier = Modifier,
-    itemTextStyle: TextStyle = ChatTheme.typography.body2
+    itemTextStyle: TextStyle = typography.body2
 ) {
-    LazyColumn(modifier = modifier) {
-        items(items) { item ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        navHostController.navigate(item.screen.name)
-                    }
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = item.icon, contentDescription = item.contentDescription
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = item.title,
-                    style = itemTextStyle,
-                    modifier = Modifier.weight(1f)
-                )
+    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+        LazyColumn(modifier = modifier) {
+            items(items) { item ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navHostController.navigate(item.screen.name)
+                        }
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = item.icon, contentDescription = item.contentDescription
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = item.title,
+                        style = itemTextStyle,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }
+
 }

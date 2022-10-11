@@ -18,7 +18,7 @@ class AppPreferences @Inject constructor(
 
     val hasSeenShowcase: Flow<Boolean> = dataStore.data
         .map { preferences ->
-            preferences[hasSeenShowcasePreferencesKey] ?: true
+            preferences[hasSeenShowcasePreferencesKey] ?: false
         }
 
     suspend fun setShowcase(newValue: Boolean) {

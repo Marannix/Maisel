@@ -7,24 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.maisel.chatdetail.ChatDetailScreen
 import com.maisel.common.BaseActivity
-import com.maisel.dashboard.DashboardScreen
-import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.compose.ui.theme.MaiselTheme
-import com.maisel.contacts.ContactScreen
+import com.maisel.dashboard.DashboardScreen
 import com.maisel.navigation.Screens
-import com.maisel.placeholder.PlaceholderScreen
 import com.maisel.showcase.ShowcaseScreen
 import com.maisel.signin.SignInScreen
 import com.maisel.signup.SignUpScreen
@@ -74,16 +71,14 @@ class MainActivity : BaseActivity() {
                                 SignUpScreen(navHostController = navController)
 
                             }
-//                                composable(Screens.Dashboard.name) {
-//                                    ProvideWindowInsets(
-//                                        windowInsetsAnimationsEnabled = true,
-//                                        consumeWindowInsets = true
-//                                    ) {
-//                                        Surface {
-//                                            DashboardScreen(navHostController = navController)
-//                                        }
-//                                    }
-//                                }
+                            composable(Screens.Dashboard.name) {
+                                ProvideWindowInsets(
+                                    windowInsetsAnimationsEnabled = true,
+                                    consumeWindowInsets = true
+                                ) {
+                                    DashboardScreen(navHostController = navController)
+                                }
+                            }
 //                                composable(
 //                                    "${Screens.ChatDetail.name}/{receiverId}",
 //                                    arguments = listOf(navArgument("receiverId") {
@@ -133,7 +128,7 @@ class MainActivity : BaseActivity() {
                 Screens.Showcase.name
             }
         }
-        return Screens.Showcase.name
+        return startDestination
     }
 
     private fun signInWithFacebook() {
