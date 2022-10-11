@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.compose.state.messages.compose.MessageComposerState
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.extendedColors
 import com.maisel.message.MessageViewModel
 
 /**
@@ -118,7 +118,8 @@ fun MessageComposer(
     Surface(
         modifier = modifier,
         elevation = 4.dp,
-        color = ChatTheme.colors.bottomBarsBackground,
+       // color = MaterialTheme.colors.bottomBarsBackground,
+        color = MaterialTheme.colors.background,
     ) {
         Column(Modifier.padding(vertical = 4.dp)) {
             //headerContent(messageComposerState)
@@ -150,7 +151,7 @@ fun MessageComposer(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_send),
                                 contentDescription = stringResource(id = R.string.compose_message_label),
-                                tint = if (isInputValid) ChatTheme.colors.primaryAccent else  ChatTheme.colors.textLowEmphasis
+                                tint = if (isInputValid) MaterialTheme.colors.primary else  MaterialTheme.extendedColors.lowEmphasis
                             )
                         },
                         onClick = {
@@ -198,7 +199,7 @@ internal fun DefaultComposerIntegrations(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_attachments),
                     contentDescription = "",
-                    tint = if (hasCommandInput) ChatTheme.colors.disabled else ChatTheme.colors.textLowEmphasis,
+                    tint = if (hasCommandInput) MaterialTheme.extendedColors.disabled else MaterialTheme.extendedColors.lowEmphasis,
                 )
             },
             onClick = onAttachmentsClick
@@ -224,6 +225,6 @@ internal fun DefaultComposerIntegrations(
 internal fun DefaultComposerLabel() {
     Text(
         text = stringResource(id = R.string.compose_message_label),
-        color = ChatTheme.colors.textLowEmphasis
+        color = MaterialTheme.extendedColors.lowEmphasis
     )
 }

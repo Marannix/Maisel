@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -15,7 +16,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.extendedColors
+import com.maisel.compose.ui.theme.typography
 import com.maisel.ui.shapes
 
 
@@ -40,7 +42,7 @@ fun InputField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
-    border: BorderStroke = BorderStroke(1.dp, ChatTheme.colors.borders),
+    border: BorderStroke = BorderStroke(1.dp, MaterialTheme.extendedColors.borders),
     innerPadding: Dp = 8.dp,
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
 ) {
@@ -63,7 +65,7 @@ fun InputField(
             // .border(border = border, shape = ChatTheme.shapes.inputField)
             .border(border = border, shape = RoundedCornerShape(24.dp))
             .clip(shapes.medium.copy(CornerSize(24.dp)))
-            .background(ChatTheme.colors.inputBackground)
+            .background(MaterialTheme.extendedColors.inputBackground)
             .padding(innerPadding),
         value = textFieldValue,
         onValueChange = {
@@ -72,10 +74,10 @@ fun InputField(
                 onValueChange(it.text)
             }
         },
-        textStyle = ChatTheme.typography.body1.copy(
-            color = ChatTheme.colors.textHighEmphasis,
+        textStyle = typography.body1.copy(
+            color = MaterialTheme.extendedColors.highEmphasis,
         ),
-        cursorBrush = SolidColor(ChatTheme.colors.primaryAccent),
+        cursorBrush = SolidColor(MaterialTheme.colors.primary),
         decorationBox = { innerTextField -> decorationBox(innerTextField) },
         maxLines = maxLines,
         singleLine = maxLines == 1

@@ -20,6 +20,8 @@ object MaiselColours {
 
     val Grey10 = Color(0xFF72767E)
     val Grey20 = Color(0xFFDBDDE1)
+    val Grey60 = Color(0xFFE9EAED)
+    val Grey90 = Color(0xFF272A30)
 
     val Orange80 = Color(0xFFFBF4DD)
 
@@ -59,6 +61,10 @@ object MaiselColours {
         override val surface = White
         override val onSurface = Neutral10
 
+        override val borders = Grey20
+
+        override val inputBackground = Grey60
+
         override val barsBackground = Primary30
         override val bottomBarsBackground = White
 
@@ -86,6 +92,10 @@ object MaiselColours {
         override val surface = Neutral10
         override val onSurface = Neutral90
 
+        override val borders = Grey90
+
+        override val inputBackground = Grey60
+
         override val barsBackground = Neutral10
         override val bottomBarsBackground = Neutral10
 
@@ -112,6 +122,10 @@ internal interface Variant {
 
     val surface: Color
     val onSurface: Color
+
+    val inputBackground: Color
+
+    val borders: Color
 
     val barsBackground: Color
     val bottomBarsBackground: Color

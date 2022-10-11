@@ -32,7 +32,7 @@ import com.maisel.R
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.components.shape.SenderMessageBox
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.*
 import com.maisel.data.utils.DateFormatter
 import com.maisel.domain.user.entity.User
 import com.maisel.message.MessageViewModel
@@ -113,7 +113,7 @@ fun Screen(
 
                         Text(
                             user.username ?: "User",
-                            style = ChatTheme.typography.h4,
+                            style = typography.h6,
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
                     },
@@ -165,8 +165,9 @@ fun Screen(
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = ChatTheme.colors.barsBackground,
-                    contentColor = ChatTheme.colors.onPrimaryAccent
+                    backgroundColor = MaterialTheme.colors.background,
+                   // backgroundColor = MaterialTheme.extendedColors.barsBackground,
+                    contentColor = MaterialTheme.colors.primary
                 )
             },
             content = { padding -> Content(padding, messageItems) },
@@ -192,7 +193,7 @@ fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(ChatTheme.colors.appBackground)
+            .background(MaterialTheme.colors.background)
             .padding(padding)
             .padding(horizontal = 8.dp)
     ) {
@@ -269,7 +270,7 @@ fun DayHeader(day: String) {
         Text(
             text = date,
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = ChatTheme.typography.body2
+            style = typography.body2
         )
         DayHeaderLine()
     }

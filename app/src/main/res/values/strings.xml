@@ -7,5 +7,4 @@
     <string name="hide_password">Hide Password</string>
 
     <string name="compose_message_label">Send a message</string>
-    <string name="compose_send_message">Send a message</string>
 </resources>

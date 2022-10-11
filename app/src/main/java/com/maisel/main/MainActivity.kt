@@ -14,10 +14,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.maisel.chatdetail.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.MaiselTheme
 import com.maisel.dashboard.DashboardScreen
@@ -79,19 +82,19 @@ class MainActivity : BaseActivity() {
                                     DashboardScreen(navHostController = navController)
                                 }
                             }
-//                                composable(
-//                                    "${Screens.ChatDetail.name}/{receiverId}",
-//                                    arguments = listOf(navArgument("receiverId") {
-//                                        type = NavType.StringType
-//                                    })
-//                                ) {
-//                                    ProvideWindowInsets(
-//                                        windowInsetsAnimationsEnabled = true,
-//                                        consumeWindowInsets = true
-//                                    ) {
-//                                        ChatDetailScreen(navHostController = navController)
-//                                    }
-//                                }
+                            composable(
+                                "${Screens.ChatDetail.name}/{receiverId}",
+                                arguments = listOf(navArgument("receiverId") {
+                                    type = NavType.StringType
+                                })
+                            ) {
+                                ProvideWindowInsets(
+                                    windowInsetsAnimationsEnabled = true,
+                                    consumeWindowInsets = true
+                                ) {
+                                    ChatDetailScreen(navHostController = navController)
+                                }
+                            }
 //                                composable(Screens.Contact.name) {
 //                                    ProvideWindowInsets(
 //                                        windowInsetsAnimationsEnabled = true,
