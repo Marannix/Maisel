@@ -12,9 +12,9 @@ import androidx.compose.ui.graphics.Color
  */
 object MaiselColours {
 
-    val Primary10 = Color(0xFF3F71AE)
-    val Primary20 = Color(0xFF0095C8)
-    val Primary30 = Color(0xFF00B7C7)
+    val Primary10 = Color(0xFF2B3648)
+    val Primary20 = Color(0xFF195E77)
+    val Primary30 = Color(0xFF008A93)
     val Primary90 = Color(0xFFD5DBFA)
     val Primary95 = Color(0xFFE6E9FC)
 
@@ -30,10 +30,12 @@ object MaiselColours {
     val Red10 = Color(0xFFFF3742)
     val Red90 = Color(0xFFF5D0D9)
 
-    val Neutral10 = Color(0xFF171A27)
+    val Neutral10 = Color(0xFF14161F)
     val Neutral90 = Color(0xFFD1D2D4)
 
     val Black = Color(0xFF000000)
+
+    val BVlack = Color(0xFF191D24)
 
     val White = Color(0xFFFFFFFF)
 
@@ -43,7 +45,7 @@ object MaiselColours {
 
     internal val Light = object : Variant {
 
-        override val primary = Primary30
+        override val primary = Primary10
         override val onPrimary = White
         override val primaryContainer = Primary95
         override val onPrimaryContainer = Primary10
@@ -86,7 +88,7 @@ object MaiselColours {
         override val error = Red90
         override val onError = Red10
 
-        override val background = Neutral10
+        override val background = BVlack
         override val onBackground = Neutral90
 
         override val surface = Neutral10

@@ -25,6 +25,7 @@ import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.MaiselTheme
 import com.maisel.dashboard.DashboardScreen
 import com.maisel.navigation.Screens
+import com.maisel.placeholder.PlaceholderScreen
 import com.maisel.showcase.ShowcaseScreen
 import com.maisel.signin.SignInScreen
 import com.maisel.signup.SignUpScreen
@@ -105,9 +106,9 @@ class MainActivity : BaseActivity() {
 //                                        }
 //                                    }
 //                                }
-//                                composable(Screens.Placeholder.name) {
-//                                    PlaceholderScreen(navHostController = navController)
-//                                }
+                            composable(Screens.Placeholder.name) {
+                                PlaceholderScreen(navHostController = navController)
+                            }
                         }
                     }
                 }

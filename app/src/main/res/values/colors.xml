@@ -22,7 +22,7 @@
     <color name="chatbackground">#AAAAAA</color>
     <color name="mirage">#201A30</color>
     <color name="buttonColour">@color/whatsAppColor</color>
-
+    
 <!-- TODO: New Palette-->
     <color name="sanMarino">#3f71ae</color>
     <color name="tuna">#3a3a3b</color>

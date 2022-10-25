@@ -15,6 +15,8 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.compose.ui.components.lottie.LottieAsset
 import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.extendedColors
+import com.maisel.compose.ui.theme.typography
 
 /**
  * Represents that a screen is not implemented yet
@@ -35,7 +37,7 @@ fun PlaceholderScreen(
                     title = {
                         Text(
                             "Not Implemented Yet",
-                            style = ChatTheme.typography.h4,
+                            style = typography.h6,
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
                     },
@@ -50,8 +52,8 @@ fun PlaceholderScreen(
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = ChatTheme.colors.barsBackground,
-                    contentColor = ChatTheme.colors.onPrimaryAccent
+                    backgroundColor = MaterialTheme.extendedColors.barsBackground,
+                    contentColor = MaterialTheme.colors.primary
                 )
             },
             content = {
@@ -63,7 +65,7 @@ fun PlaceholderScreen(
 
 @Composable
 fun PlaceholderDisguise() {
-    Surface(modifier = Modifier.fillMaxSize(), color = ChatTheme.colors.appBackground) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
         Box(Modifier.fillMaxSize()) {
             LottieAsset("placeholder_error_screen.json")
         }
