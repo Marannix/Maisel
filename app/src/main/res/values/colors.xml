@@ -72,4 +72,7 @@
     <color name="maisel_compose_receiver_chat_background">#f6f6f6</color>
     <color name="maisel_compose_sender_chat_background">#52437c</color>
 
+
+    <color name="maisel_splash_screen_background_dark">#FF191D24</color>
+
 </resources>

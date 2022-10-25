@@ -8,6 +8,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.maisel.ui.typography
 
 @Immutable
 data class ExtendedColors(
@@ -111,7 +112,7 @@ fun MaiselTheme(
 
     MaterialTheme(
         colors = colors,
-        typography = com.maisel.ui.typography, //TODO: Update this
+        typography = typography,
     ) {
         val systemUiController = rememberSystemUiController()
         systemUiController.setSystemBarsColor(
