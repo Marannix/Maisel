@@ -60,7 +60,7 @@ fun MessageComposer(
     },
 ) {
 
-  //  val value by viewModel.input.collectAsState()
+    //  val value by viewModel.input.collectAsState()
     val value: String =
         messageViewModel.state.observeAsState().value?.input ?: ""
     //    val cooldownTimer by viewModel.cooldownTimer.collectAsState()
@@ -118,12 +118,9 @@ fun MessageComposer(
     Surface(
         modifier = modifier,
         elevation = 4.dp,
-       // color = MaterialTheme.colors.bottomBarsBackground,
         color = MaterialTheme.colors.background,
     ) {
         Column(Modifier.padding(vertical = 4.dp)) {
-            //headerContent(messageComposerState)
-
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom
@@ -140,7 +137,7 @@ fun MessageComposer(
                 input(messageComposerState)
 
                 if (cooldownTimer > 0) {
-                 //   CooldownIndicator(cooldownTimer = cooldownTimer)
+                    //   CooldownIndicator(cooldownTimer = cooldownTimer)
                 } else {
                     val isInputValid = value.isNotEmpty()
 
@@ -151,7 +148,7 @@ fun MessageComposer(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_send),
                                 contentDescription = stringResource(id = R.string.compose_message_label),
-                                tint = if (isInputValid) MaterialTheme.colors.primary else  MaterialTheme.extendedColors.lowEmphasis
+                                tint = if (isInputValid) MaterialTheme.colors.primary else MaterialTheme.extendedColors.lowEmphasis
                             )
                         },
                         onClick = {
@@ -214,6 +211,7 @@ internal fun DefaultComposerIntegrations(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_camera),
                     contentDescription = null,
+                    tint = MaterialTheme.extendedColors.disabled
                 )
             },
             onClick = onCameraClick

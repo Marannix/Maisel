@@ -1,12 +1,12 @@
 package com.maisel.chatdetail
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -36,6 +38,7 @@ import com.maisel.compose.ui.theme.*
 import com.maisel.data.utils.DateFormatter
 import com.maisel.domain.user.entity.User
 import com.maisel.message.MessageViewModel
+import com.maisel.ui.shapes
 import java.util.*
 
 @Composable
@@ -165,7 +168,6 @@ fun Screen(
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
                     backgroundColor = MaterialTheme.colors.background,
-                    // backgroundColor = MaterialTheme.extendedColors.barsBackground,
                     contentColor = MaterialTheme.colors.primary
                 )
             },
@@ -262,24 +264,21 @@ fun DayHeader(day: String) {
 
     Row(
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .fillMaxWidth()
             .wrapContentSize()
+            .padding(vertical = 4.dp)
+            .border(
+                border = BorderStroke(1.dp, MaterialTheme.extendedColors.borders),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .clip(shapes.medium.copy(CornerSize(24.dp)))
+            .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
-        DayHeaderLine()
         Text(
             text = date,
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = typography.body2
+            style = typography.subtitle2,
+            textAlign = TextAlign.Center
         )
-        DayHeaderLine()
     }
-}
-
-@Composable
-private fun RowScope.DayHeaderLine() {
-    Divider(
-        modifier = Modifier
-            .weight(1f)
-            .align(Alignment.CenterVertically)
-    )
 }
