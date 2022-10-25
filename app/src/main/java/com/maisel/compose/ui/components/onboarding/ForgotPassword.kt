@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.compose.ui.theme.typography
 
 @Composable

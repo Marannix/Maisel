@@ -12,7 +12,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.compose.ui.theme.typography
 import com.maisel.ui.shapes
 
