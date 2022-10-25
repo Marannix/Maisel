@@ -113,7 +113,6 @@ fun Screen(
 
                         Text(
                             user.username ?: "User",
-                            style = typography.h6,
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
                     },
@@ -166,7 +165,7 @@ fun Screen(
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
                     backgroundColor = MaterialTheme.colors.background,
-                   // backgroundColor = MaterialTheme.extendedColors.barsBackground,
+                    // backgroundColor = MaterialTheme.extendedColors.barsBackground,
                     contentColor = MaterialTheme.colors.primary
                 )
             },

@@ -12,11 +12,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.statusBarsPadding
-import com.maisel.compose.ui.theme.extendedColors
-import com.maisel.compose.ui.theme.typography
 import com.maisel.dashboard.DashboardViewModel
 
 @ExperimentalComposeUiApi

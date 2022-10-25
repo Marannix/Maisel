@@ -19,7 +19,7 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 import com.maisel.domain.user.entity.User
 import com.maisel.navigation.Screens
 
@@ -39,11 +39,7 @@ fun ContactScreen(
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
                     title = {
-                        Text(
-                            "Select contact",
-                            style = ChatTheme.typography.h4,
-                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
-                        )
+                        Text("Select contact")
                     },
                     navigationIcon = {
                         IconButton(
@@ -56,8 +52,8 @@ fun ContactScreen(
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = ChatTheme.colors.barsBackground,
-                    contentColor = ChatTheme.colors.onPrimaryAccent
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.primary
                 )
             },
             content = {
@@ -117,7 +113,7 @@ fun ChatListItem(
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 user.username.toString(),
-                style = ChatTheme.typography.body1,
+                style = typography.body1,
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )
         }

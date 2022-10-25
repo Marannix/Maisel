@@ -23,6 +23,7 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.maisel.chatdetail.ChatDetailScreen
 import com.maisel.common.BaseActivity
 import com.maisel.compose.ui.theme.MaiselTheme
+import com.maisel.contacts.ContactScreen
 import com.maisel.dashboard.DashboardScreen
 import com.maisel.navigation.Screens
 import com.maisel.placeholder.PlaceholderScreen
@@ -96,16 +97,16 @@ class MainActivity : BaseActivity() {
                                     ChatDetailScreen(navHostController = navController)
                                 }
                             }
-//                                composable(Screens.Contact.name) {
-//                                    ProvideWindowInsets(
-//                                        windowInsetsAnimationsEnabled = true,
-//                                        consumeWindowInsets = true
-//                                    ) {
-//                                        Surface {
-//                                            ContactScreen(navHostController = navController)
-//                                        }
-//                                    }
-//                                }
+                            composable(Screens.Contact.name) {
+                                ProvideWindowInsets(
+                                    windowInsetsAnimationsEnabled = true,
+                                    consumeWindowInsets = true
+                                ) {
+                                    Surface {
+                                        ContactScreen(navHostController = navController)
+                                    }
+                                }
+                            }
                             composable(Screens.Placeholder.name) {
                                 PlaceholderScreen(navHostController = navController)
                             }

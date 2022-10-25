@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.LottieConstants
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.compose.ui.components.lottie.LottieAsset
 import com.maisel.compose.ui.theme.ChatTheme
@@ -35,11 +36,7 @@ fun PlaceholderScreen(
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
                     title = {
-                        Text(
-                            "Not Implemented Yet",
-                            style = typography.h6,
-                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
-                        )
+                        Text("Not Implemented Yet")
                     },
                     navigationIcon = {
                         IconButton(
@@ -52,8 +49,8 @@ fun PlaceholderScreen(
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = MaterialTheme.extendedColors.barsBackground,
-                    contentColor = MaterialTheme.colors.primary
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.primary,
                 )
             },
             content = {
@@ -67,7 +64,7 @@ fun PlaceholderScreen(
 fun PlaceholderDisguise() {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
         Box(Modifier.fillMaxSize()) {
-            LottieAsset("placeholder_error_screen.json")
+            LottieAsset("cat_sleeping.json", iterations = LottieConstants.IterateForever)
         }
     }
 }
