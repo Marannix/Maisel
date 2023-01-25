@@ -12,10 +12,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.statusBarsPadding
-import com.maisel.compose.ui.theme.ChatTheme
 import com.maisel.dashboard.DashboardViewModel
 
 @ExperimentalComposeUiApi
@@ -28,14 +26,7 @@ fun DashboardAppBar(
 ) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
-        title =
-        {
-            Text(
-                "Maisel",
-                style = ChatTheme.typography.h4,
-                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
-            )
-        },
+        title = { Text(text = "Maisel") },
         actions =
         {
             Box(
@@ -73,8 +64,8 @@ fun DashboardAppBar(
             }
         },
         elevation = AppBarDefaults.TopAppBarElevation,
-        backgroundColor = ChatTheme.colors.barsBackground,
-        contentColor = ChatTheme.colors.onPrimaryAccent,
+        backgroundColor = MaterialTheme.colors.background,
+        contentColor = MaterialTheme.colors.primary,
         navigationIcon =
         {
             IconButton(onClick = {

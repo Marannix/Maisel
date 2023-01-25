@@ -69,6 +69,8 @@ private fun DashboardScaffold(
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.navigationBarsWithImePadding(),
+                contentColor = MaterialTheme.colors.onSecondary,
+                backgroundColor = MaterialTheme.colors.secondary,
                 onClick = { navHostController.navigate(Screens.Contact.name) }
             ) {
                 Icon(
@@ -85,7 +87,7 @@ private fun DashboardScaffold(
                         popUpTo(Screens.SignIn.name) {
                             inclusive = true
                         }
-                       // launchSingleTop = true
+                        // launchSingleTop = true
                     }
                 }
                 else -> {

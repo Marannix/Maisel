@@ -1,11 +1,5 @@
 package com.maisel.compose.ui.components.onboarding
 
-import android.app.Activity
-import android.content.Intent
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,13 +12,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
 import com.maisel.R
-import com.maisel.compose.ui.theme.ChatTheme
-import com.maisel.signin.SignInViewModel
+import com.maisel.compose.ui.theme.typography
 
 @Composable
 fun OnboardingAlternativeLoginFooter(
@@ -42,7 +31,7 @@ fun OnboardingAlternativeLoginFooter(
         Text(
             text = label,
             textAlign = TextAlign.Center,
-            style = ChatTheme.typography.subtitle1,
+            style = typography.subtitle1,
             fontWeight = FontWeight.SemiBold
         )
 

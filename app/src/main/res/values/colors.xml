@@ -38,7 +38,7 @@
     <color name="maisel_compose_on_app_background">#11181F</color>
     <color name="maisel_compose_bars_background">@color/maisel_compose_primary_accent</color>
     <color name="maisel_compose_bottom_bars_background">#FFFFFF</color>
-    <color name="maisel_compose_link_background">#E9F1FF</color>
+    <color name="maisel_compose_link_background">#E9F1FF</color> <!--Not used -->
     <color name="maisel_compose_overlay_regular">#80000000</color>
     <color name="maisel_compose_overlay_dark">#99000000</color>
     <color name="maisel_compose_primary_accent">#201A30</color>
@@ -71,5 +71,8 @@
     <color name="random_chat_color">#98a6b1</color>
     <color name="maisel_compose_receiver_chat_background">#f6f6f6</color>
     <color name="maisel_compose_sender_chat_background">#52437c</color>
+
+
+    <color name="maisel_splash_screen_background_dark">#FF191D24</color>
 
 </resources>

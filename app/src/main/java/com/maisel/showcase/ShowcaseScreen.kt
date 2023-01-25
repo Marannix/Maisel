@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,7 +29,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 import com.maisel.navigation.Screens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -97,8 +98,8 @@ fun ShowcaseBottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
         FloatingActionButton(
             onClick = onNextClicked,
             modifier = Modifier.align(Alignment.CenterEnd),
-            backgroundColor = ChatTheme.colors.primaryAccent,
-            contentColor = ChatTheme.colors.onPrimaryAccent
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colors.onPrimary
         ) {
             Icon(Icons.Outlined.KeyboardArrowRight, null)
         }
@@ -119,9 +120,13 @@ fun ShowcaseTopSection(
             .padding(12.dp)
     ) {
         //back button
+        val backButtonAlpha = if (state.currentPage != 0) 1f else 0f
+
         IconButton(
             onClick = { goBack(state, scope) },
-            modifier = Modifier.align(Alignment.CenterStart)
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .alpha(backButtonAlpha)
         ) {
             Icon(Icons.Outlined.KeyboardArrowLeft, null)
         }
@@ -134,7 +139,7 @@ fun ShowcaseTopSection(
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
-            Text("Skip", color = ChatTheme.colors.onAppBackground)
+            Text("Skip", color = MaterialTheme.colors.onBackground)
         }
     }
 }
@@ -175,13 +180,11 @@ fun ShowcaseIndicator(isSelected: Boolean) {
             .width(width.value)
             .clip(CircleShape)
             .background(
-                if (isSelected) ChatTheme.colors.primaryAccent else ChatTheme.colors.onAppBackground.copy(
+                if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground.copy(
                     alpha = 0.5f
                 )
             )
-    ) {
-
-    }
+    )
 }
 
 @Composable
@@ -210,16 +213,16 @@ fun ShowcaseItem(item: ShowcaseItem) {
         ) {
             Text(
                 text = item.title,
-                style = ChatTheme.typography.h2,
-                color = ChatTheme.colors.onAppBackground,
+                style = typography.h5,
+                color = MaterialTheme.colors.onBackground,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
 
             Text(
                 text = item.text,
-                style = ChatTheme.typography.body1,
-                color = ChatTheme.colors.onAppBackground.copy(alpha = 0.8f),
+                style = typography.body1,
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center
             )
         }

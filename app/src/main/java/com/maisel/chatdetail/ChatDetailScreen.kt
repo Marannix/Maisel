@@ -1,12 +1,12 @@
 package com.maisel.chatdetail
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,7 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
@@ -32,10 +35,11 @@ import com.maisel.R
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.components.shape.SenderMessageBox
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.*
 import com.maisel.data.utils.DateFormatter
 import com.maisel.domain.user.entity.User
 import com.maisel.message.MessageViewModel
+import com.maisel.ui.shapes
 import java.util.*
 
 @Composable
@@ -113,7 +117,6 @@ fun Screen(
 
                         Text(
                             user.username ?: "User",
-                            style = ChatTheme.typography.h4,
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
                     },
@@ -165,8 +168,8 @@ fun Screen(
                         }
                     },
                     elevation = AppBarDefaults.TopAppBarElevation,
-                    backgroundColor = ChatTheme.colors.barsBackground,
-                    contentColor = ChatTheme.colors.onPrimaryAccent
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.primary
                 )
             },
             content = { padding -> Content(padding, messageItems) },
@@ -192,7 +195,7 @@ fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(ChatTheme.colors.appBackground)
+            .background(MaterialTheme.colors.background)
             .padding(padding)
             .padding(horizontal = 8.dp)
     ) {
@@ -227,14 +230,10 @@ fun MessageColumn(messageItems: List<MessageItem>) {
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                     when (item) {
                         is MessageItem.SenderMessageItem -> SenderCard(
-                            state = item,
-                            modifier = Modifier.fillMaxWidth(.85f)
+                            state = item
                         )
                         is MessageItem.ReceiverMessageItem -> ReceiverCard(
                             state = item,
-                            modifier = Modifier
-                                .fillMaxWidth(.85f)
-                                .padding(horizontal = 0.8.dp)
                         )
                     }
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
@@ -245,12 +244,12 @@ fun MessageColumn(messageItems: List<MessageItem>) {
 }
 
 @Composable
-fun SenderCard(state: MessageItem.SenderMessageItem, modifier: Modifier) {
+fun SenderCard(state: MessageItem.SenderMessageItem) {
     SenderMessageBox(state)
 }
 
 @Composable
-fun ReceiverCard(state: MessageItem.ReceiverMessageItem, modifier: Modifier) {
+fun ReceiverCard(state: MessageItem.ReceiverMessageItem) {
     RecipientMessageBox(state)
 }
 
@@ -262,24 +261,21 @@ fun DayHeader(day: String) {
 
     Row(
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .fillMaxWidth()
             .wrapContentSize()
+            .padding(vertical = 4.dp)
+            .border(
+                border = BorderStroke(1.dp, MaterialTheme.extendedColors.borders),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .clip(shapes.medium.copy(CornerSize(24.dp)))
+            .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
-        DayHeaderLine()
         Text(
             text = date,
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = ChatTheme.typography.body2
+            style = typography.subtitle2.copy(fontSize = 12.sp),
+            textAlign = TextAlign.Center
         )
-        DayHeaderLine()
     }
-}
-
-@Composable
-private fun RowScope.DayHeaderLine() {
-    Divider(
-        modifier = Modifier
-            .weight(1f)
-            .align(Alignment.CenterVertically)
-    )
 }

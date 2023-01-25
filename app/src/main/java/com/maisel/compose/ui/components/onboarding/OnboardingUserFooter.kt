@@ -15,14 +15,14 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.typography
 
 @Composable
 fun OnboardingUserFooter(label: String, text: String, onClickListener: () -> Unit) {
 
     val spannedString = buildAnnotatedString {
         append(label)
-        withStyle(SpanStyle(color = Color(0xFFF05777))) {
+        withStyle(SpanStyle(color = Color(0xFFF05777))) { //TODO: Extract colour
             append(text)
         }
     }
@@ -33,7 +33,7 @@ fun OnboardingUserFooter(label: String, text: String, onClickListener: () -> Uni
     ) {
         Text(
             text = spannedString,
-            style = ChatTheme.typography.subtitle1,
+            style = typography.subtitle1,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(vertical = 24.dp)

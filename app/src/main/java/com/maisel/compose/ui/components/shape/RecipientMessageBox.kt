@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.ZeroCornerSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.End
@@ -14,7 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maisel.R
 import com.maisel.chatdetail.MessageItem
-import com.maisel.compose.ui.theme.ChatTheme
+import com.maisel.compose.ui.theme.extendedColors
+import com.maisel.compose.ui.theme.typography
 
 @Composable
 fun RecipientMessageBox(state: MessageItem.ReceiverMessageItem) {
@@ -37,15 +39,15 @@ fun RecipientMessageBox(state: MessageItem.ReceiverMessageItem) {
             Text(
                 text = state.message,
                 color = colorResource(R.color.mirage),
-                style = ChatTheme.typography.subtitle1
+                style = typography.subtitle1
             )
         }
 
         Text(
             modifier = Modifier.align(End),
             text = state.time,
-            color = ChatTheme.colors.textLowEmphasis,
-            style = ChatTheme.typography.subtitle2,
+            color = MaterialTheme.extendedColors.lowEmphasis,
+            style = typography.subtitle2,
             fontWeight = FontWeight.Normal
         )
     }
