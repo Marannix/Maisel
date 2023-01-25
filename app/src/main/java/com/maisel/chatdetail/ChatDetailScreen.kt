@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
@@ -277,7 +278,7 @@ fun DayHeader(day: String) {
         Text(
             text = date,
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = typography.subtitle2,
+            style = typography.subtitle2.copy(fontSize = 12.sp),
             textAlign = TextAlign.Center
         )
     }
