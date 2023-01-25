@@ -2,7 +2,6 @@ package com.maisel.signin
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.test.core.app.ActivityScenario.launch
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -18,35 +17,47 @@ import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.compose.state.onboarding.compose.SignInComposerController
 import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
+import com.maisel.domain.user.usecase.SignInUseCase
+import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.navigation.Screens
 import com.maisel.utils.ContextProvider
 import com.maisel.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(
+class UpdatedSignInViewModel @Inject constructor(
     private val loggedInUser: GetLoggedInUserUseCase,
-    private val signInComposerController: SignInComposerController,
+    private val signInUseCase: SignInUseCase,
+    private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
     private val resourceProvider: ResourceProvider,
     private val contextProvider: ContextProvider
 ) : SignInContract.ViewModel() {
 
-    val state: StateFlow<SignInViewState> = signInComposerController.state
+    private val _snackbarMessage = MutableSharedFlow<String>()
+    val snackbarMessage = _snackbarMessage.asSharedFlow()
 
-    val input: StateFlow<AuthenticationFormState> = signInComposerController.input
+    private val _screenDestinationName = MutableSharedFlow<Screens>()
+    val screenDestinationName = _screenDestinationName.asSharedFlow()
 
-    val validationErrors: StateFlow<ValidationError.AuthenticationError> =
-        signInComposerController.validationErrors
+//    val state: StateFlow<SignInViewState> = signInComposerController.state
+//
+//    val input: StateFlow<AuthenticationFormState> = signInComposerController.input
+//
+//    val validationErrors: StateFlow<ValidationError.AuthenticationError> =
+//        signInComposerController.validationErrors
 
     private fun signInWithEmailAndPassword(authenticationState: AuthenticationFormState) {
-        signInComposerController.makeLoginRequest(authenticationState)
+        //      signInComposerController.makeLoginRequest(authenticationState)
     }
 
     fun signInWithCredential(credential: AuthCredential) {
-        signInComposerController.signInWithCredential(credential)
+        //     signInComposerController.signInWithCredential(credential)
     }
 
     fun isUserLoggedIn(): Boolean {
@@ -67,11 +78,12 @@ class SignInViewModel @Inject constructor(
      *
      * @param value Current state value.
      */
-    fun setSignInInput(value: AuthenticationFormState): Unit =
-        signInComposerController.setSignInInput(value)
+    fun setSignInInput(value: AuthenticationFormState): Unit {
+        //     signInComposerController.setSignInInput(value)
+    }
 
     fun setIdleState() {
-        signInComposerController.setIdleState()
+        ///    signInComposerController.setIdleState()
     }
 
     fun onGoogleSignInActivityResult(data: Task<GoogleSignInAccount>) {
@@ -95,38 +107,30 @@ class SignInViewModel @Inject constructor(
     }
 
     /**
-     * UI Events to update [SignInScreen].
+     * UI Events to update [UpdatedSignInScreen].
      */
     override fun onUiEvent(event: SignInContract.UiEvents) {
         when (event) {
             is SignInContract.UiEvents.LoginButtonClicked -> {
                 viewModelScope.launch {
-
+                    _snackbarMessage.emit("Login Clicked")
                 }
             }
             SignInContract.UiEvents.FacebookButtonClicked -> {
                 viewModelScope.launch {
-
+                    _snackbarMessage.emit("Facebook Login Not Implemented Yet")
                 }
             }
             SignInContract.UiEvents.GoogleButtonClicked -> {
                 viewModelScope.launch {
-
+                    _snackbarMessage.emit("Google button clicked")
                 }
             }
             SignInContract.UiEvents.SignUpButtonClicked -> {
                 viewModelScope.launch {
-                  //  navHostController.navigate(Screens.SignUp.name)
+                    _screenDestinationName.emit(Screens.SignUp)
                 }
             }
         }
-    }
-
-    /**
-     * Disposes the inner [SignInComposerController].
-     */
-    override fun onCleared() {
-        super.onCleared()
-        signInComposerController.onCleared()
     }
 }

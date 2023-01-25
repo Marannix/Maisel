@@ -1,6 +1,6 @@
 package com.maisel.dashboard
 
-import com.maisel.common.BaseViewModel
+import com.maisel.common.base.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.domain.user.entity.User
 import dagger.hilt.android.lifecycle.HiltViewModel

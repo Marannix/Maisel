@@ -3,15 +3,11 @@ package com.maisel.message
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import com.maisel.common.BaseViewModel
+import com.maisel.common.base.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.domain.message.ChatDataModel
 import com.maisel.domain.message.usecase.SendMessageUseCase
-import com.maisel.domain.user.entity.User
-import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import java.util.*
 import javax.inject.Inject
 

@@ -5,7 +5,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.maisel.common.BaseViewModel
+import com.maisel.common.base.BaseViewModel
 import com.maisel.compose.state.user.compose.UserComposerController
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.domain.message.MessageRepository

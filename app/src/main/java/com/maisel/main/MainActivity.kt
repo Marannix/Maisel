@@ -21,7 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.maisel.chatdetail.ChatDetailScreen
-import com.maisel.common.BaseActivity
+import com.maisel.common.base.BaseActivity
 import com.maisel.compose.ui.theme.MaiselTheme
 import com.maisel.contacts.ContactScreen
 import com.maisel.dashboard.DashboardScreen
@@ -29,6 +29,7 @@ import com.maisel.navigation.Screens
 import com.maisel.placeholder.PlaceholderScreen
 import com.maisel.showcase.ShowcaseScreen
 import com.maisel.signin.SignInScreen
+import com.maisel.signin.UpdatedSignInScreen
 import com.maisel.signup.SignUpScreen
 
 class MainActivity : BaseActivity() {
@@ -52,7 +53,8 @@ class MainActivity : BaseActivity() {
             val mainViewModel = hiltViewModel<MainActivityViewModel>()
             val hasSeenShowcase by mainViewModel.hasSeenShowcase.collectAsState(initial = false)
 
-            val startDestination = getStartDestination(mainViewModel, hasSeenShowcase)
+           // val startDestination = getStartDestination(mainViewModel, hasSeenShowcase)
+            val startDestination = Screens.UpdatedSignIn.name
 
             val navController = rememberNavController()
 
@@ -71,6 +73,9 @@ class MainActivity : BaseActivity() {
                             }
                             composable(Screens.SignIn.name) {
                                 SignInScreen(navHostController = navController)
+                            }
+                            composable(Screens.UpdatedSignIn.name) {
+                                UpdatedSignInScreen(navHostController = navController)
                             }
                             composable(Screens.SignUp.name) {
                                 SignUpScreen(navHostController = navController)

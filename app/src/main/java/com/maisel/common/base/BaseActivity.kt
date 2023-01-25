@@ -1,4 +1,4 @@
-package com.maisel.common
+package com.maisel.common.base
 
 import android.os.Bundle
 import android.widget.Toast

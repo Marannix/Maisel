@@ -1,4 +1,4 @@
-package com.maisel.common
+package com.maisel.common.base
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
