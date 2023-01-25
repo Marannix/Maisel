@@ -47,7 +47,7 @@ object MaiselColours {
 
         override val primary = Primary10
         override val onPrimary = White
-        override val primaryContainer = Primary95
+        override val primaryContainer = White
         override val onPrimaryContainer = Primary10
 
         override val green = Green
@@ -78,7 +78,7 @@ object MaiselColours {
 
         override val primary = Primary90
         override val onPrimary = Primary10
-        override val primaryContainer = Primary20
+        override val primaryContainer = Primary10
         override val onPrimaryContainer = Primary95
 
         override val green = Green
@@ -99,7 +99,7 @@ object MaiselColours {
         override val inputBackground = Grey60
 
         override val barsBackground = Neutral10
-        override val bottomBarsBackground = Neutral10
+        override val bottomBarsBackground = Primary10
 
         override val lowEmphasis = Black
         override val highEmphasis = Grey10

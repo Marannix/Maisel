@@ -42,8 +42,7 @@ fun InputField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
-    border: BorderStroke = BorderStroke(1.dp, MaterialTheme.extendedColors.borders),
-    innerPadding: Dp = 8.dp,
+    innerPadding: Dp = 4.dp,
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
 ) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
@@ -62,10 +61,6 @@ fun InputField(
 
     BasicTextField(
         modifier = modifier
-            // .border(border = border, shape = ChatTheme.shapes.inputField)
-            .border(border = border, shape = RoundedCornerShape(24.dp))
-            .clip(shapes.medium.copy(CornerSize(24.dp)))
-            .background(MaterialTheme.colors.background)
             .padding(innerPadding),
         value = textFieldValue,
         onValueChange = {

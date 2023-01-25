@@ -1,5 +1,7 @@
 package com.maisel.compose.ui.components.composers
 
+import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -51,7 +53,7 @@ fun MessageComposer(
         MessageInput(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 4.dp)
                 .weight(1f),
             label = label,
             messageComposerState = it,
@@ -67,8 +69,8 @@ fun MessageComposer(
     val cooldownTimer = 0
 
     MessageComposer(
-        messageViewModel = messageViewModel,
         modifier = modifier,
+        messageViewModel = messageViewModel,
         onSendMessage = { text ->
             messageViewModel.sendMessage(text)
 //            val messageWithData = viewModel.buildNewMessage(text, attachments)
@@ -105,10 +107,10 @@ fun MessageComposer(
  */
 @Composable
 fun MessageComposer(
+    modifier: Modifier = Modifier,
     messageViewModel: MessageViewModel,
     messageComposerState: MessageComposerState,
     onSendMessage: (String) -> Unit = { messageViewModel.sendMessage(it) },
-    modifier: Modifier = Modifier,
     shouldShowIntegrations: Boolean = true,
     integrations: @Composable RowScope.(MessageComposerState) -> Unit,
     input: @Composable RowScope.(MessageComposerState) -> Unit,
@@ -116,14 +118,15 @@ fun MessageComposer(
     val (value, cooldownTimer) = messageComposerState
 
     Surface(
-        modifier = modifier,
+        // modifier = modifier,
         elevation = 4.dp,
-        color = MaterialTheme.colors.background,
+        color = MaterialTheme.extendedColors.bottomBarsBackground,
+        //  .background(color = MaterialTheme.extendedColors.bottomBarsBackground)
     ) {
-        Column(Modifier.padding(vertical = 4.dp)) {
+        Column {
             Row(
                 Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.CenterVertically,
             ) {
 
                 if (shouldShowIntegrations) {
@@ -141,22 +144,40 @@ fun MessageComposer(
                 } else {
                     val isInputValid = value.isNotEmpty()
 
-                    IconButton(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        enabled = isInputValid,
-                        content = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_send),
-                                contentDescription = stringResource(id = R.string.compose_message_label),
-                                tint = if (isInputValid) MaterialTheme.colors.primary else MaterialTheme.extendedColors.lowEmphasis
-                            )
-                        },
-                        onClick = {
-                            if (isInputValid) {
+                    if (isInputValid) {
+                        IconButton(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(end = 8.dp),
+                            enabled = true,
+                            content = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_send),
+                                    contentDescription = stringResource(id = R.string.compose_message_label),
+                                    tint = MaterialTheme.colors.primary
+                                )
+                            },
+                            onClick = {
                                 onSendMessage(value)
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        IconButton(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(end = 8.dp),
+                            content = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_microphone),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colors.primary
+                                )
+                            },
+                            onClick = { }
+                        )
+                    }
                 }
             }
         }
@@ -191,12 +212,13 @@ internal fun DefaultComposerIntegrations(
             enabled = !hasCommandInput,
             modifier = Modifier
                 .size(32.dp)
-                .padding(4.dp),
+                .padding(start = 4.dp, end = 4.dp),
             content = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_attachments),
                     contentDescription = "",
-                    tint = if (hasCommandInput) MaterialTheme.extendedColors.disabled else MaterialTheme.extendedColors.lowEmphasis,
+                    //  tint = if (hasCommandInput) MaterialTheme.extendedColors.disabled else MaterialTheme.extendedColors.lowEmphasis, prefer primary colour even if it cant be used
+                    tint = MaterialTheme.colors.primary
                 )
             },
             onClick = onAttachmentsClick
@@ -205,13 +227,13 @@ internal fun DefaultComposerIntegrations(
         IconButton(
             modifier = Modifier
                 .size(32.dp)
-                .padding(4.dp),
+                .padding(start = 4.dp, end = 4.dp),
             enabled = !hasTextInput,
             content = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_camera),
                     contentDescription = null,
-                    tint = MaterialTheme.extendedColors.disabled
+                    tint = MaterialTheme.colors.primary //MaterialTheme.extendedColors.disabled
                 )
             },
             onClick = onCameraClick
