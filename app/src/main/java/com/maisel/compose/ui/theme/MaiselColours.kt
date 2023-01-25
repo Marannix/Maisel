@@ -50,6 +50,9 @@ object MaiselColours {
         override val primaryContainer = White
         override val onPrimaryContainer = Primary10
 
+        override val secondary = Primary10
+        override val onSecondary = White
+
         override val green = Green
 
         override val disabled = Disabled2
@@ -81,6 +84,9 @@ object MaiselColours {
         override val primaryContainer = Primary10
         override val onPrimaryContainer = Primary95
 
+        override val secondary = Primary10
+        override val onSecondary = White
+
         override val green = Green
 
         override val disabled = Disabled1
@@ -111,6 +117,9 @@ internal interface Variant {
     val onPrimary: Color
     val primaryContainer: Color
     val onPrimaryContainer: Color
+
+    val secondary: Color
+    val onSecondary: Color
 
     val green: Color
 

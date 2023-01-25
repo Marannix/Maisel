@@ -25,6 +25,9 @@ private val LightColorPalette = lightColors(
     primary = MaiselColours.Light.primary,
     onPrimary = MaiselColours.Light.onPrimary,
 
+    secondary = MaiselColours.Light.primary,
+    onSecondary = MaiselColours.Light.onPrimary,
+
     error = MaiselColours.Light.error,
     onError = MaiselColours.Light.onError,
 
@@ -54,6 +57,9 @@ internal val ExtendedLightColorPalette = ExtendedColors(
 private val DarkColorPalette = darkColors(
     primary = MaiselColours.Dark.primary,
     onPrimary = MaiselColours.Dark.onPrimary,
+
+    secondary = MaiselColours.Dark.primary,
+    onSecondary = MaiselColours.Dark.onPrimary,
 
     error = MaiselColours.Dark.error,
     onError = MaiselColours.Dark.onError,

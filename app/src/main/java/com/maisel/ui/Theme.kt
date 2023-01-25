@@ -5,6 +5,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
+//TODO: Delete this file
 private val LightColorPalette = lightColors(
     primary = colorPrimary,
     secondary = colorSecondary,
