@@ -230,14 +230,10 @@ fun MessageColumn(messageItems: List<MessageItem>) {
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                     when (item) {
                         is MessageItem.SenderMessageItem -> SenderCard(
-                            state = item,
-                            modifier = Modifier.fillMaxWidth(.85f)
+                            state = item
                         )
                         is MessageItem.ReceiverMessageItem -> ReceiverCard(
                             state = item,
-                            modifier = Modifier
-                                .fillMaxWidth(.85f)
-                                .padding(horizontal = 0.8.dp)
                         )
                     }
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
@@ -248,12 +244,12 @@ fun MessageColumn(messageItems: List<MessageItem>) {
 }
 
 @Composable
-fun SenderCard(state: MessageItem.SenderMessageItem, modifier: Modifier) {
+fun SenderCard(state: MessageItem.SenderMessageItem) {
     SenderMessageBox(state)
 }
 
 @Composable
-fun ReceiverCard(state: MessageItem.ReceiverMessageItem, modifier: Modifier) {
+fun ReceiverCard(state: MessageItem.ReceiverMessageItem) {
     RecipientMessageBox(state)
 }
 
