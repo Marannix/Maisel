@@ -1,19 +1,15 @@
 package com.maisel.dashboard
 
-import android.graphics.Color
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Message
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.maisel.R
 import com.maisel.compose.ui.components.dashboard.DashboardAppBar
 import com.maisel.compose.ui.components.dashboard.DashboardDrawer
 import com.maisel.compose.ui.components.dashboard.RecentMessageList
