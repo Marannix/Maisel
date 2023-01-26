@@ -119,6 +119,9 @@ class SignInViewModel @Inject constructor(
                   //  navHostController.navigate(Screens.SignUp.name)
                 }
             }
+            SignInContract.UiEvents.OnForgotPasswordClicked -> {
+
+            }
         }
     }
 

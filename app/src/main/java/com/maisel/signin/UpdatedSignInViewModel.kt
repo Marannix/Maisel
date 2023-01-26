@@ -20,13 +20,11 @@ import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.navigation.Screens
+import com.maisel.state.AuthResultState
 import com.maisel.utils.ContextProvider
 import com.maisel.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -113,6 +111,7 @@ class UpdatedSignInViewModel @Inject constructor(
         when (event) {
             is SignInContract.UiEvents.LoginButtonClicked -> {
                 viewModelScope.launch {
+                //    makeLoginRequest()
                     _snackbarMessage.emit("Login Clicked")
                 }
             }
@@ -133,4 +132,25 @@ class UpdatedSignInViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * Makes a login request to sign in the current user
+     * @param value Current authentication state value.
+     */
+    fun makeLoginRequest(value: AuthenticationFormState) {
+//        handleValidationErrors()
+//        if (validationErrors.value.emailError) {
+//            return
+//        }
+//        viewModelScope.launch {
+//            val result = signInUseCase.invoke(value.email, value.password)
+//            if (result != null && result.user != null) {
+//                _stateFlow.update { it.copy(authResultState = AuthResultState.Success(result.user!!)) }
+//
+//            } else {
+//                _stateFlow.update { it.copy(authResultState = AuthResultState.Error) }
+//            }
+//        }
+    }
+
 }

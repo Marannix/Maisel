@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//TODO: Delete this class
 class SignInComposerController @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val signInWithCredentialUseCase: SignInWithCredentialUseCase

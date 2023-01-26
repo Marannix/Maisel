@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
@@ -39,8 +38,6 @@ import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFoo
 import com.maisel.compose.ui.components.onboarding.ForgotPassword
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.compose.ui.theme.typography
-import com.maisel.navigation.Screens
-import com.maisel.state.AuthResultState
 import com.maisel.ui.shapes
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -53,8 +50,6 @@ fun UpdatedSignInScreen(
     googleSignInClient: GoogleSignInClient = viewModel.getGoogleLoginAuth()
 ) {
 
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
 //    val viewState by viewModel.state.collectAsState()
 //    val authenticationState by viewModel.input.collectAsState()
@@ -78,13 +73,50 @@ fun UpdatedSignInScreen(
 //            }
 //        }
 //    }
-
     val authResultLauncher = UpdatedManagedActivityResultGoogleSignIn(viewModel)
+
+    SignInContent(
+        viewModel = viewModel,
+        navHostController = navHostController,
+        onGoogleClicked = {
+            authResultLauncher.launch(googleSignInClient.signInIntent)
+        },
+        onFacebookClicked = { viewModel.onUiEvent(SignInContract.UiEvents.FacebookButtonClicked) },
+        onForgotPasswordClicked = { viewModel.onUiEvent(SignInContract.UiEvents.OnForgotPasswordClicked) },
+        onSignUpClicked = { viewModel.onUiEvent(SignInContract.UiEvents.SignUpButtonClicked) },
+    )
+
+}
+
+@Composable
+private fun UpdatedManagedActivityResultGoogleSignIn(viewModel: UpdatedSignInViewModel) =
+    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            if (result.data != null) {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(intent)
+                viewModel.onGoogleSignInActivityResult(task)
+            }
+        }
+    }
+
+@Composable
+@ExperimentalComposeUiApi
+fun SignInContent(
+    viewModel: UpdatedSignInViewModel,
+    navHostController: NavHostController,
+    onGoogleClicked: () -> Unit,
+    onFacebookClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
+    onSignUpClicked: () -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        content = { innerPadding ->
-            val context = LocalContext.current
+        content = {
             LaunchedEffect(viewModel.snackbarMessage) {
                 viewModel
                     .snackbarMessage
@@ -115,29 +147,15 @@ fun UpdatedSignInScreen(
 //                        focusRequester,
 //                        localFocusRequester
 //                    ),
-                    onGoogleClicked = { authResultLauncher.launch(googleSignInClient.signInIntent) },
-                    onFacebookClicked = { viewModel.onUiEvent(SignInContract.UiEvents.FacebookButtonClicked) },
-                    onForgotPasswordClicked = { viewModel.onUiEvent(SignInContract.UiEvents.OnForgotPasswordClicked) },
-                    onSignUpClicked = { viewModel.onUiEvent(SignInContract.UiEvents.SignUpButtonClicked) },
+                    onGoogleClicked = { onGoogleClicked() },
+                    onFacebookClicked = { onFacebookClicked() },
+                    onForgotPasswordClicked = { onForgotPasswordClicked() },
+                    onSignUpClicked = { onSignUpClicked() },
                 )
             }
         }
     )
 }
-
-@Composable
-private fun UpdatedManagedActivityResultGoogleSignIn(viewModel: UpdatedSignInViewModel) =
-    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            if (result.data != null) {
-                val task: Task<GoogleSignInAccount> =
-                    GoogleSignIn.getSignedInAccountFromIntent(intent)
-                viewModel.onGoogleSignInActivityResult(task)
-            }
-        }
-    }
-
 
 @Composable
 @ExperimentalComposeUiApi
