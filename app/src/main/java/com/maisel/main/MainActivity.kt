@@ -81,11 +81,12 @@ class MainActivity : BaseActivity() {
                             }
                             composable(Screens.UpdatedSignIn.name) {
                                 val viewModel: UpdatedSignInViewModel = hiltViewModel()
-                                // val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                                 UpdatedSignInScreen(
                                     navHostController = navController,
                                     viewModel = viewModel,
+                                    uiState = uiState,
                                     onClick = viewModel::onUiEvent
                                 )
                             }

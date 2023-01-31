@@ -40,6 +40,10 @@ class UpdatedSignInViewModel @Inject constructor(
     private val _showGoogleSignIn = MutableSharedFlow<Unit>()
     val launchGoogleSignIn = _showGoogleSignIn.asSharedFlow()
 
+    override val _uiState: MutableStateFlow<SignInContract.SignInUiState> = MutableStateFlow(
+        SignInContract.SignInUiState.initial()
+    )
+
 //    val state: StateFlow<SignInViewState> = signInComposerController.state
 //
 //    val input: StateFlow<AuthenticationFormState> = signInComposerController.input

@@ -45,16 +45,15 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 fun UpdatedSignInScreen(
     navHostController: NavHostController,
     viewModel: UpdatedSignInViewModel,
-    uiState: SignInContract.SignInUiState = viewModel.uiState.collectAsStateWithLifecycle().value,
+    uiState: SignInContract.SignInUiState,
     onClick: (SignInContract.SignInUiEvents) -> Unit,
 ) {
 
 
-//    val viewState by viewModel.state.collectAsState()
 //    val authenticationState by viewModel.input.collectAsState()
 //    val validationErrors by viewModel.validationErrors.collectAsState()
 
