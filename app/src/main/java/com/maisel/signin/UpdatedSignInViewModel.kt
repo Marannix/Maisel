@@ -1,6 +1,5 @@
 package com.maisel.signin
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -11,16 +10,11 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
-import com.maisel.common.base.BaseViewModel
-import com.maisel.common.base.UpdatedBaseViewModel
-import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
-import com.maisel.compose.state.onboarding.compose.SignInComposerController
 import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.navigation.Screens
-import com.maisel.state.AuthResultState
 import com.maisel.utils.ContextProvider
 import com.maisel.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,6 +37,9 @@ class UpdatedSignInViewModel @Inject constructor(
     private val _screenDestinationName = MutableSharedFlow<Screens>()
     val screenDestinationName = _screenDestinationName.asSharedFlow()
 
+    private val _showGoogleSignIn = MutableSharedFlow<Unit>()
+    val launchGoogleSignIn = _showGoogleSignIn.asSharedFlow()
+
 //    val state: StateFlow<SignInViewState> = signInComposerController.state
 //
 //    val input: StateFlow<AuthenticationFormState> = signInComposerController.input
@@ -50,26 +47,28 @@ class UpdatedSignInViewModel @Inject constructor(
 //    val validationErrors: StateFlow<ValidationError.AuthenticationError> =
 //        signInComposerController.validationErrors
 
-    private fun signInWithEmailAndPassword(authenticationState: AuthenticationFormState) {
-        //      signInComposerController.makeLoginRequest(authenticationState)
+//    private fun signInWithEmailAndPassword(authenticationState: AuthenticationFormState) {
+//        //      signInComposerController.makeLoginRequest(authenticationState)
+//    }
+
+    private fun signInWithCredential(credential: AuthCredential) {
+        viewModelScope.launch {
+            signInWithCredentialUseCase.invoke(credential)
+        }
     }
 
-    fun signInWithCredential(credential: AuthCredential) {
-        //     signInComposerController.signInWithCredential(credential)
-    }
+//    fun isUserLoggedIn(): Boolean {
+//        return loggedInUser.getLoggedInUser() != null
+//    }
 
-    fun isUserLoggedIn(): Boolean {
-        return loggedInUser.getLoggedInUser() != null
-    }
-
-    fun onLoginClicked(authenticationFormState: AuthenticationFormState) {
-        signInWithEmailAndPassword(authenticationFormState)
-    }
+//    fun onLoginClicked(authenticationFormState: AuthenticationFormState) {
+//        signInWithEmailAndPassword(authenticationFormState)
+//    }
 
     //TODO: Doesn't work
-    fun onLongPressed() {
-        signInWithEmailAndPassword(AuthenticationFormState("laptop@admin.com", "Password2"))
-    }
+//    fun onLongPressed() {
+//        signInWithEmailAndPassword(AuthenticationFormState("laptop@admin.com", "Password2"))
+//    }
 
     /**
      * Called when the input changes and the internal state needs to be updated.
@@ -88,15 +87,16 @@ class UpdatedSignInViewModel @Inject constructor(
         try {
             // Google Sign In was successful, authenticate with Firebase
             val account = data.getResult(ApiException::class.java)
-            Log.d("TAG", "firebaseAuthWithGoogle:" + account.id)
             signInWithCredential(GoogleAuthProvider.getCredential(account.idToken, null))
-        } catch (e: ApiException) {
+        } catch (exception: ApiException) {
             // Google Sign In failed, update UI appropriately
-            Log.w("TAG", "Google sign in failed", e)
+            viewModelScope.launch {
+                _snackbarMessage.emit("Google sign in failed: $exception")
+            }
         }
     }
 
-    fun getGoogleLoginAuth(): GoogleSignInClient {
+    fun getGoogleSignInClient(): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(resourceProvider.getString(R.string.default_web_client_id))
             .requestEmail()
@@ -107,37 +107,73 @@ class UpdatedSignInViewModel @Inject constructor(
     /**
      * UI Events to update [UpdatedSignInScreen].
      */
-    override fun onUiEvent(event: SignInContract.UiEvents) {
+    override fun onUiEvent(event: SignInContract.SignInUiEvents) {
         when (event) {
-            is SignInContract.UiEvents.LoginButtonClicked -> {
+            is SignInContract.SignInUiEvents.EmailUpdated -> {
+                updateUiState { oldState -> oldState.copy(error = "", email = event.email) }
+            }
+            is SignInContract.SignInUiEvents.PasswordUpdated -> {
+                updateUiState { oldState -> oldState.copy(error = "", password = event.password) }
+            }
+            is SignInContract.SignInUiEvents.LoginButtonClicked -> {
                 viewModelScope.launch {
-                //    makeLoginRequest()
-                    _snackbarMessage.emit("Login Clicked")
+                    //    makeLoginRequest()
+                    _snackbarMessage.emit("Login clicked")
                 }
             }
-            SignInContract.UiEvents.FacebookButtonClicked -> {
+            SignInContract.SignInUiEvents.FacebookButtonClicked -> {
                 viewModelScope.launch {
-                    _snackbarMessage.emit("Facebook Login Not Implemented Yet")
+                    _snackbarMessage.emit("Facebook login not implemented")
                 }
             }
-            SignInContract.UiEvents.GoogleButtonClicked -> {
+            SignInContract.SignInUiEvents.GoogleButtonClicked -> {
                 viewModelScope.launch {
+                    _showGoogleSignIn.emit(Unit)
                     _snackbarMessage.emit("Google button clicked")
                 }
             }
-            SignInContract.UiEvents.SignUpButtonClicked -> {
+            SignInContract.SignInUiEvents.SignUpButtonClicked -> {
                 viewModelScope.launch {
                     _screenDestinationName.emit(Screens.SignUp)
+                }
+            }
+            SignInContract.SignInUiEvents.OnForgotPasswordClicked -> {
+                viewModelScope.launch {
+                    _snackbarMessage.emit("Forgot password not implemented")
                 }
             }
         }
     }
 
     /**
-     * Makes a login request to sign in the current user
      * @param value Current authentication state value.
+     * Makes a login request to sign in the current user
+     * If successful navigate user to Dashboard Screen
+     * If error occurs handle error [onSignInError]
      */
     fun makeLoginRequest(value: AuthenticationFormState) {
+        viewModelScope.launch {
+            try {
+                signInUseCase.invoke(value.email, value.password)
+                _screenDestinationName.emit(Screens.Dashboard)
+            } catch (throwable: Throwable) {
+                onSignInError(throwable)
+            } finally {
+
+            }
+        }
+    }
+
+    /**
+     * @param throwable Throwable of error that occurred during sign in
+     * Handle sign in error
+     */
+    private fun onSignInError(throwable: Throwable) {
+        viewModelScope.launch {
+            _snackbarMessage.emit("onSignInError: $throwable")
+        }
+    }
+
 //        handleValidationErrors()
 //        if (validationErrors.value.emailError) {
 //            return
@@ -151,6 +187,6 @@ class UpdatedSignInViewModel @Inject constructor(
 //                _stateFlow.update { it.copy(authResultState = AuthResultState.Error) }
 //            }
 //        }
-    }
+
 
 }

@@ -1,21 +1,39 @@
 package com.maisel.signin
 
-import com.maisel.common.base.BaseViewModel
+import androidx.compose.runtime.Immutable
 import com.maisel.common.base.UiEventBase
 import com.maisel.common.base.UiStateBase
 import com.maisel.common.base.UpdatedBaseViewModel
 
 interface SignInContract {
 
-    abstract class ViewModel : UpdatedBaseViewModel<UiEvents, SignInUiState>()
+    abstract class ViewModel : UpdatedBaseViewModel<SignInUiEvents, SignInUiState>()
 
-    object SignInUiState : UiStateBase
+    @Immutable
+    data class SignInUiState(
+        val email: String,
+        val password: String,
+        val error: String,
+        val isLoading: Boolean,
+    ) : UiStateBase {
 
-    sealed class UiEvents : UiEventBase {
-        data class LoginButtonClicked(val email: String, val password: String) : UiEvents()
-        object OnForgotPasswordClicked : UiEvents()
-        object FacebookButtonClicked : UiEvents()
-        object GoogleButtonClicked : UiEvents()
-        object SignUpButtonClicked : UiEvents()
+        companion object {
+            fun initial(email: String = "", password: String = "") = SignInUiState(
+                email = email,
+                password = password,
+                error = "",
+                isLoading = false
+            )
+        }
+    }
+
+    sealed class SignInUiEvents : UiEventBase {
+        data class EmailUpdated(val email: String) : SignInUiEvents()
+        data class PasswordUpdated(val password: String) : SignInUiEvents()
+        data class LoginButtonClicked(val email: String, val password: String) : SignInUiEvents()
+        object OnForgotPasswordClicked : SignInUiEvents()
+        object FacebookButtonClicked : SignInUiEvents()
+        object GoogleButtonClicked : SignInUiEvents()
+        object SignUpButtonClicked : SignInUiEvents()
     }
 }

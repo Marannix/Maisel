@@ -22,10 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.Task
 import com.maisel.R
 import com.maisel.common.composable.DefaultEmailContent
@@ -38,16 +39,18 @@ import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFoo
 import com.maisel.compose.ui.components.onboarding.ForgotPassword
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
 import com.maisel.compose.ui.theme.typography
+import com.maisel.navigation.Screens
 import com.maisel.ui.shapes
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalLifecycleComposeApi::class)
 fun UpdatedSignInScreen(
     navHostController: NavHostController,
-    viewModel: UpdatedSignInViewModel = hiltViewModel(),
-    googleSignInClient: GoogleSignInClient = viewModel.getGoogleLoginAuth()
+    viewModel: UpdatedSignInViewModel,
+    uiState: SignInContract.SignInUiState = viewModel.uiState.collectAsStateWithLifecycle().value,
+    onClick: (SignInContract.SignInUiEvents) -> Unit,
 ) {
 
 
@@ -60,46 +63,16 @@ fun UpdatedSignInScreen(
     val focusRequester = remember { FocusRequester() }
     val localFocusRequester = LocalFocusManager.current
 
-//    when (viewState.authResultState) {
-//        is AuthResultState.Success -> {
-//            viewModel.setIdleState()
-//            LaunchedEffect(Unit) {
-//                navHostController.navigate(Screens.Dashboard.name) {
-//                    popUpTo(Screens.Showcase.name) {
-//                        inclusive = true
-//                    }
-//                    launchSingleTop = true
-//                }
-//            }
-//        }
-//    }
-    val authResultLauncher = UpdatedManagedActivityResultGoogleSignIn(viewModel)
-
     SignInContent(
         viewModel = viewModel,
         navHostController = navHostController,
-        onGoogleClicked = {
-            authResultLauncher.launch(googleSignInClient.signInIntent)
-        },
-        onFacebookClicked = { viewModel.onUiEvent(SignInContract.UiEvents.FacebookButtonClicked) },
-        onForgotPasswordClicked = { viewModel.onUiEvent(SignInContract.UiEvents.OnForgotPasswordClicked) },
-        onSignUpClicked = { viewModel.onUiEvent(SignInContract.UiEvents.SignUpButtonClicked) },
+        onGoogleClicked = { onClick(SignInContract.SignInUiEvents.GoogleButtonClicked) },
+        onFacebookClicked = { onClick(SignInContract.SignInUiEvents.FacebookButtonClicked) },
+        onForgotPasswordClicked = { onClick(SignInContract.SignInUiEvents.OnForgotPasswordClicked) },
+        onSignUpClicked = { onClick(SignInContract.SignInUiEvents.SignUpButtonClicked) },
+        // onLoginButtonClicked = { viewModel.onUiEvent(SignInContract.UiEvents.LoginButtonClicked) },
     )
-
 }
-
-@Composable
-private fun UpdatedManagedActivityResultGoogleSignIn(viewModel: UpdatedSignInViewModel) =
-    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            if (result.data != null) {
-                val task: Task<GoogleSignInAccount> =
-                    GoogleSignIn.getSignedInAccountFromIntent(intent)
-                viewModel.onGoogleSignInActivityResult(task)
-            }
-        }
-    }
 
 @Composable
 @ExperimentalComposeUiApi
@@ -113,6 +86,7 @@ fun SignInContent(
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val authResultLauncher = updatedManagedActivityResultGoogleSignIn(viewModel)
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -132,7 +106,25 @@ fun SignInContent(
                     .screenDestinationName
                     .collectLatest { screen ->
                         scope.launch {
-                            navHostController.navigate(screen.name)
+                            when (screen.name == Screens.Dashboard.name) {
+                                true -> navHostController.navigate(Screens.Dashboard.name) {
+                                    popUpTo(Screens.Showcase.name) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                                false -> navHostController.navigate(screen.name)
+                            }
+                        }
+                    }
+            }
+
+            LaunchedEffect(viewModel.launchGoogleSignIn) {
+                viewModel
+                    .launchGoogleSignIn
+                    .collectLatest {
+                        scope.launch {
+                            authResultLauncher.launch(viewModel.getGoogleSignInClient().signInIntent)
                         }
                     }
             }
@@ -169,7 +161,7 @@ fun UpdatedSignInMainCard(
     onSignIn: () -> Unit = {
         //   viewModel.onLoginClicked(authenticationState.authenticationFormState)
     },
-    onLongPressed: () -> Unit = { viewModel.onLongPressed() },
+    onLongPressed: () -> Unit = { },
     onSignUpClicked: () -> Unit,
     emailContent: @Composable (AuthenticationState) -> Unit = {
         DefaultEmailContent(
@@ -302,6 +294,20 @@ fun UpdatedSignInErrorBanner(
         }
     }
 }
+
+@Composable
+private fun updatedManagedActivityResultGoogleSignIn(viewModel: UpdatedSignInViewModel) =
+    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            if (result.data != null) {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(intent)
+                viewModel.onGoogleSignInActivityResult(task)
+            }
+        }
+    }
+
 
 @Preview
 @Composable

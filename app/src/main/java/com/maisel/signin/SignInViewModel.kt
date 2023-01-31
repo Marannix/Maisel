@@ -2,7 +2,6 @@ package com.maisel.signin
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.test.core.app.ActivityScenario.launch
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -12,13 +11,10 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
-import com.maisel.common.base.BaseViewModel
-import com.maisel.common.base.UpdatedBaseViewModel
 import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.compose.state.onboarding.compose.SignInComposerController
 import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
-import com.maisel.navigation.Screens
 import com.maisel.utils.ContextProvider
 import com.maisel.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -97,29 +93,29 @@ class SignInViewModel @Inject constructor(
     /**
      * UI Events to update [SignInScreen].
      */
-    override fun onUiEvent(event: SignInContract.UiEvents) {
+    override fun onUiEvent(event: SignInContract.SignInUiEvents) {
         when (event) {
-            is SignInContract.UiEvents.LoginButtonClicked -> {
+            is SignInContract.SignInUiEvents.LoginButtonClicked -> {
                 viewModelScope.launch {
 
                 }
             }
-            SignInContract.UiEvents.FacebookButtonClicked -> {
+            SignInContract.SignInUiEvents.FacebookButtonClicked -> {
                 viewModelScope.launch {
 
                 }
             }
-            SignInContract.UiEvents.GoogleButtonClicked -> {
+            SignInContract.SignInUiEvents.GoogleButtonClicked -> {
                 viewModelScope.launch {
 
                 }
             }
-            SignInContract.UiEvents.SignUpButtonClicked -> {
+            SignInContract.SignInUiEvents.SignUpButtonClicked -> {
                 viewModelScope.launch {
                   //  navHostController.navigate(Screens.SignUp.name)
                 }
             }
-            SignInContract.UiEvents.OnForgotPasswordClicked -> {
+            SignInContract.SignInUiEvents.OnForgotPasswordClicked -> {
 
             }
         }
