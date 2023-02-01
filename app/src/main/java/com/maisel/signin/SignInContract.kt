@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.maisel.common.base.UiEventBase
 import com.maisel.common.base.UiStateBase
 import com.maisel.common.base.UpdatedBaseViewModel
+import com.maisel.common.composable.TextFieldState
 
 interface SignInContract {
 
@@ -11,16 +12,16 @@ interface SignInContract {
 
     @Immutable
     data class SignInUiState(
-        val email: String,
-        val password: String,
+        val email: TextFieldState,
+        val password: TextFieldState,
         val error: String,
         val isLoading: Boolean,
     ) : UiStateBase {
 
         companion object {
             fun initial(email: String = "", password: String = "") = SignInUiState(
-                email = email,
-                password = password,
+                email = if (email.isNotEmpty()) TextFieldState.Valid(email) else TextFieldState.Empty,
+                password = if (password.isNotEmpty()) TextFieldState.Valid(password) else TextFieldState.Empty,
                 error = "",
                 isLoading = false
             )

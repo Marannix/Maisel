@@ -10,13 +10,13 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
+import com.maisel.common.composable.TextFieldState
 import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.navigation.Screens
-import com.maisel.utils.ContextProvider
-import com.maisel.utils.ResourceProvider
+import com.maisel.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -27,6 +27,7 @@ class UpdatedSignInViewModel @Inject constructor(
     private val loggedInUser: GetLoggedInUserUseCase,
     private val signInUseCase: SignInUseCase,
     private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
+    private val textFieldValidator: TextFieldValidator,
     private val resourceProvider: ResourceProvider,
     private val contextProvider: ContextProvider
 ) : SignInContract.ViewModel() {
@@ -114,10 +115,12 @@ class UpdatedSignInViewModel @Inject constructor(
     override fun onUiEvent(event: SignInContract.SignInUiEvents) {
         when (event) {
             is SignInContract.SignInUiEvents.EmailUpdated -> {
-                updateUiState { oldState -> oldState.copy(error = "", email = event.email) }
+                val email = getEmailState(event.email)
+                updateUiState { oldState -> oldState.copy(error = "", email = email) }
             }
             is SignInContract.SignInUiEvents.PasswordUpdated -> {
-                updateUiState { oldState -> oldState.copy(error = "", password = event.password) }
+                val password = getPasswordState(event.password)
+                updateUiState { oldState -> oldState.copy(error = "", password = password) }
             }
             is SignInContract.SignInUiEvents.LoginButtonClicked -> {
                 viewModelScope.launch {
@@ -176,6 +179,38 @@ class UpdatedSignInViewModel @Inject constructor(
         viewModelScope.launch {
             _snackbarMessage.emit("onSignInError: $throwable")
         }
+    }
+
+    private fun getEmailState(email: String): TextFieldState {
+        val emailState = when (textFieldValidator.validateEmail(email)) {
+            FieldValidationResult.EMPTY -> TextFieldState.Invalid(
+                email,
+                "Yikes! No email address provided."
+            )
+            FieldValidationResult.INVALID -> TextFieldState.Invalid(
+                email,
+                "Oops! Please enter a valid email address."
+            )
+            FieldValidationResult.VALID -> TextFieldState.Valid(email)
+        }
+
+        return emailState
+    }
+
+    private fun getPasswordState(password: String): TextFieldState {
+        val passwordState = when (textFieldValidator.validatePassword(password)) {
+            FieldValidationResult.EMPTY -> TextFieldState.Invalid(
+                password,
+                "Oops! I think you forgot to enter a password"
+            )
+            FieldValidationResult.INVALID -> TextFieldState.Invalid(
+                password,
+                "Oops! Please enter a valid password"
+            )
+            FieldValidationResult.VALID -> TextFieldState.Valid(password)
+        }
+
+        return passwordState
     }
 
 //        handleValidationErrors()
