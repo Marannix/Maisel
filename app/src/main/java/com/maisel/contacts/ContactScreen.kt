@@ -30,7 +30,8 @@ fun ContactScreen(
     viewModel: ContactsViewModel = hiltViewModel()
 ) {
     val users by viewModel.users.collectAsState()
-    val result = remember { mutableStateOf("") }
+    val result =
+        remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(

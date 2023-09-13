@@ -1,6 +1,6 @@
 package com.maisel.signup
 
-import com.maisel.common.BaseViewModel
+import com.maisel.common.base.BaseViewModel
 import com.maisel.common.state.ValidationError
 import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
 import com.maisel.compose.state.onboarding.compose.SignUpComposerController

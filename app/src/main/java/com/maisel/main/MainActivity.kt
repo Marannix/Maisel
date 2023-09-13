@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.maisel.chatdetail.ChatDetailScreen
-import com.maisel.common.BaseActivity
+import com.maisel.common.base.BaseActivity
 import com.maisel.compose.ui.theme.MaiselTheme
 import com.maisel.contacts.ContactScreen
 import com.maisel.dashboard.DashboardScreen
@@ -134,14 +135,6 @@ class MainActivity : BaseActivity() {
             }
         }
         return startDestination
-    }
-
-    private fun signInWithFacebook() {
-        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun forgotPassword() {
-        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
     }
 
 //    private fun handleSplashScreen() {

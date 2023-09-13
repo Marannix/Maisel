@@ -15,9 +15,6 @@ import com.maisel.data.user.mapper.toDomain
 import com.maisel.data.user.mapper.toEntity
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
-import durdinapps.rxfirebase2.RxFirebaseAuth
-import io.reactivex.Maybe
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -62,22 +59,40 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun makeLoginRequest(email: String, password: String): AuthResult? {
+    override suspend fun makeLoginRequest(email: String, password: String): Result<AuthResult> {
         Log.d("joshua", "log in request")
 
         return withContext(DispatcherProvider.IO) {
             try {
-                firebaseAuth
-                    .signInWithEmailAndPassword(email, password)
-                    .await().also {
+                Result.success(firebaseAuth
+                    .signInWithEmailAndPassword(email, password).await().also {
                         Log.d("joshua", " trying to log in")
-                    }
-            } catch (e: Exception) {
-                Log.d("joshua exception", e.toString())
-                null
+                    })
+            } catch (exception: Exception) {
+                Log.d("joshua exception", exception.toString())
+                //    Result.failure(exception)
+                Result.failure(exception)
             }
         }
     }
+
+//    override suspend fun makeLoginRequestTwo() = callbackFlow<Result<Unit>> {
+//        val listener = FirebaseAuth.AuthStateListener {
+//            localPersistenceManager.setLoggedInUser(null)
+//            if (it.currentUser != null) {
+//                it.signOut()
+//                this@callbackFlow.trySendBlocking(Result.success(Unit))
+//            } else {
+//                this@callbackFlow.trySendBlocking(Result.failure(Exception("Already logged out")))
+//            }
+//        }
+//
+//        firebaseAuth.addAuthStateListener(listener)
+//
+//        awaitClose {
+//            firebaseAuth.removeAuthStateListener(listener)
+//        }
+//    }
 
     override suspend fun signInWithCredential(
         credential: AuthCredential
@@ -109,13 +124,13 @@ class UserRepositoryImpl(
     override fun listenToLoggedInUser() = callbackFlow<Result<User>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                this@callbackFlow.sendBlocking(Result.failure(error.toException()))
+                this@callbackFlow.trySendBlocking(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java) ?: throw UserNotFoundException
                 localPersistenceManager.setLoggedInUser(user)
-                this@callbackFlow.sendBlocking(Result.success(user))
+                this@callbackFlow.trySendBlocking(Result.success(user))
             }
         }
 

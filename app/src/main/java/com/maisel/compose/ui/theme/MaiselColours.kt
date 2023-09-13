@@ -1,6 +1,7 @@
 package com.maisel.compose.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import com.maisel.ui.theme.Alpha
 
 /**
  * Replace MaiselColour with this class
@@ -42,6 +43,7 @@ object MaiselColours {
     val Disabled1 = Color(0xFF3A3C3F)
     val Disabled2 = Color(0xFFDFE2E6)
 
+    val Overlay = Neutral10.copy(alpha = Alpha.Medium)
 
     internal val Light = object : Variant {
 

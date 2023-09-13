@@ -1,6 +1,6 @@
 package com.maisel.main
 
-import com.maisel.common.BaseViewModel
+import com.maisel.common.base.BaseViewModel
 import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

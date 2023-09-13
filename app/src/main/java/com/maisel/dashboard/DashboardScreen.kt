@@ -83,13 +83,18 @@ private fun DashboardScaffold(
             val viewState by remember(viewModel) { viewModel.viewState }.collectAsState()
             when (viewState.userAuthState) {
                 UserAuthState.LOGGED_OUT -> {
+
                     navHostController.navigate(Screens.SignIn.name) {
-                        popUpTo(Screens.SignIn.name) {
-                            inclusive = true
-                        }
-                        // launchSingleTop = true
+//                        navHostController.popBackStack(
+//                            route = Screens.UpdatedSignIn.name,
+//                            inclusive = false
+//                        )
+                        launchSingleTop = true
+                        //     }
                     }
+              //      navHostController.popBackStack()
                 }
+
                 else -> {
                     // DO NOTHING
                 }
