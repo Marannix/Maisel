@@ -10,6 +10,5 @@ enum class Screens {
     Showcase,
     Settings,
     SignIn,
-    UpdatedSignIn,
     SignUp
 }

@@ -10,7 +10,7 @@ import com.maisel.compose.ui.theme.typography
 fun OnboardingUserHeader(label: String, modifier: Modifier) {
     Text(
         text = label,
-        style = typography.h5,
+        style = typography.h6,
         fontWeight = FontWeight.SemiBold,
         modifier = modifier
     )

@@ -3,7 +3,6 @@ package com.maisel.domain.user.repository
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.maisel.domain.user.entity.User
-import io.reactivex.Maybe
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
@@ -18,7 +17,7 @@ interface UserRepository {
      * Sign in using email and password.
      * @return an AuthResult which is either a success or failure.
      */
-    suspend fun makeLoginRequest(email: String, password: String): AuthResult?
+    suspend fun makeLoginRequest(email: String, password: String): Result<AuthResult>
 
     suspend fun signInWithCredential(credential: AuthCredential): AuthResult?
 

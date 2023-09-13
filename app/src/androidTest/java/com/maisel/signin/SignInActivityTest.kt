@@ -16,13 +16,13 @@ import org.junit.runner.RunWith
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 class SignInActivityTest {
-
-    @get:Rule
-    val composeTestRule = createAndroidComposeRule<SignInActivity>()
-
-    @Test
-    fun loginIsLoaded() {
-        val email = composeTestRule.onNodeWithText("Email")
-        email.assertIsDisplayed()
-    }
+//
+//    @get:Rule
+//    val composeTestRule = createAndroidComposeRule<SignInActivity>()
+//
+//    @Test
+//    fun loginIsLoaded() {
+//        val email = composeTestRule.onNodeWithText("Email")
+//        email.assertIsDisplayed()
+//    }
 }

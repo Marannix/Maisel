@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-abstract class UpdatedBaseViewModel<E : UiEventBase, S : UiStateBase>() : ViewModel() {
+abstract class UpdatedBaseViewModel<E : UiEventBase, S : UiStateBase> : ViewModel() {
 
     abstract fun onUiEvent(event: E)
 

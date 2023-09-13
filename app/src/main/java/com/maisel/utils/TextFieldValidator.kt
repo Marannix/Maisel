@@ -1,8 +1,9 @@
 package com.maisel.utils
 
 import java.util.regex.Pattern
+import javax.inject.Inject
 
-class TextFieldValidator {
+class TextFieldValidator @Inject constructor() {
 
     /**
      *  @param name Name to be validated

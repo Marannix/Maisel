@@ -3,6 +3,7 @@ package com.maisel.compose.ui.components.onboarding
 import androidx.compose.foundation.clickable
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -11,13 +12,14 @@ import androidx.compose.ui.text.style.TextAlign
 import com.maisel.compose.ui.theme.typography
 
 @Composable
-fun ForgotPassword(label: String, onForgotPasswordClicked: () -> Unit, modifier: Modifier) {
+fun ForgotPassword(label: String, onForgotPasswordClicked: () -> Unit, modifier: Modifier = Modifier) {
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
         Text(
             text = label,
             textAlign = TextAlign.End,
             modifier = modifier.clickable { onForgotPasswordClicked() },
-            style = typography.subtitle2
+            style = typography.subtitle2,
+            color = MaterialTheme.colors.onBackground,
         )
     }
 }

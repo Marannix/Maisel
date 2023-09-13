@@ -14,7 +14,7 @@ interface SignInContract {
     data class SignInUiState(
         val email: TextFieldState,
         val password: TextFieldState,
-        val error: String,
+        val errorMessage: String?,
         val isLoading: Boolean,
     ) : UiStateBase {
 
@@ -22,7 +22,7 @@ interface SignInContract {
             fun initial(email: String = "", password: String = "") = SignInUiState(
                 email = if (email.isNotEmpty()) TextFieldState.Valid(email) else TextFieldState.Empty,
                 password = if (password.isNotEmpty()) TextFieldState.Valid(password) else TextFieldState.Empty,
-                error = "",
+                errorMessage = null,
                 isLoading = false
             )
         }

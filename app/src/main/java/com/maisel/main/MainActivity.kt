@@ -15,8 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,15 +30,12 @@ import com.maisel.navigation.Screens
 import com.maisel.placeholder.PlaceholderScreen
 import com.maisel.showcase.ShowcaseScreen
 import com.maisel.signin.SignInScreen
-import com.maisel.signin.UpdatedSignInScreen
-import com.maisel.signin.UpdatedSignInViewModel
 import com.maisel.signup.SignUpScreen
 
 class MainActivity : BaseActivity() {
 
     private var isSplashScreen = mutableStateOf(true)
 
-    @OptIn(ExperimentalLifecycleComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,8 +53,7 @@ class MainActivity : BaseActivity() {
             val mainViewModel = hiltViewModel<MainActivityViewModel>()
             val hasSeenShowcase by mainViewModel.hasSeenShowcase.collectAsState(initial = false)
 
-            // val startDestination = getStartDestination(mainViewModel, hasSeenShowcase)
-            val startDestination = Screens.UpdatedSignIn.name
+            val startDestination = getStartDestination(mainViewModel, hasSeenShowcase)
 
             val navController = rememberNavController()
 
@@ -78,17 +72,6 @@ class MainActivity : BaseActivity() {
                             }
                             composable(Screens.SignIn.name) {
                                 SignInScreen(navHostController = navController)
-                            }
-                            composable(Screens.UpdatedSignIn.name) {
-                                val viewModel: UpdatedSignInViewModel = hiltViewModel()
-                                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-                                UpdatedSignInScreen(
-                                    navHostController = navController,
-                                    viewModel = viewModel,
-                                    uiState = uiState,
-                                    onClick = viewModel::onUiEvent
-                                )
                             }
                             composable(Screens.SignUp.name) {
                                 SignUpScreen(navHostController = navController)
@@ -152,14 +135,6 @@ class MainActivity : BaseActivity() {
             }
         }
         return startDestination
-    }
-
-    private fun signInWithFacebook() {
-        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun forgotPassword() {
-        Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show()
     }
 
 //    private fun handleSplashScreen() {

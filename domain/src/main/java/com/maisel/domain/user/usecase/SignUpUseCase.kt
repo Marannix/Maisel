@@ -2,7 +2,6 @@ package com.maisel.domain.user.usecase
 
 import com.google.firebase.auth.AuthResult
 import com.maisel.domain.user.repository.UserRepository
-import io.reactivex.Maybe
 import javax.inject.Inject
 
 class SignUpUseCase @Inject constructor(private val userRepository: UserRepository) {
