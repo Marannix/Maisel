@@ -55,8 +55,7 @@ fun ChatDetailScreen(
         messageViewModel.init()
     }
 
-    val user: User? =
-        chatDetailViewModel.viewState.observeAsState().value?.recipient
+    val user: User? = chatDetailViewModel.viewState.observeAsState().value?.recipient
     //   ?: throw Exception() //TODO: Handle this better
 
     user?.let { it ->

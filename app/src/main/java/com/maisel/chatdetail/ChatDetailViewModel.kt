@@ -15,6 +15,7 @@ import com.maisel.domain.user.usecase.GetRecipientUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -63,7 +64,7 @@ class ChatDetailViewModel @Inject constructor(
             viewState.value =
                 currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Loading)
             messagesUseCase.invoke(senderId, receiverId)
-                .collect { result ->
+                .collectLatest { result ->
                     result.onSuccess { listOfMessages ->
                         Log.d("joshua message", listOfMessages.toString())
                         messageRepository.insertMessages(listOfMessages.toMutableStateList())
@@ -78,7 +79,7 @@ class ChatDetailViewModel @Inject constructor(
 
     private fun getMessageItem(senderId: String, receiverId: String) {
         viewModelScope.launch(DispatcherProvider.Main) {
-            messageRepository.getListOfChatMessages(senderId, receiverId).collect {
+            messageRepository.getListOfChatMessages(senderId, receiverId).collectLatest {
                 if (it.isEmpty()) {
                     viewState.value =
                         currentViewState().copy(messageItemState = GetMessagesUseCase.MessageDataState.Empty)

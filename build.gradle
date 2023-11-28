@@ -1,7 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        kotlin_version = '1.5.10'
+        kotlin_version = '1.8.10'
+        agp_version = '8.1.0'
     }
     repositories {
         google()
@@ -9,11 +10,10 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.4"
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10'
+        classpath "com.android.tools.build:gradle:$agp_version"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
         classpath 'com.google.gms:google-services:4.3.10'
-        classpath "com.google.dagger:hilt-android-gradle-plugin:2.38.1"
-        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.4.2'
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.40.1'
         classpath 'com.google.gms:google-services:4.3.13'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -21,11 +21,14 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }}
+plugins {
+    id 'com.android.application' version '8.0.2' apply false
+    id 'com.android.library' version '8.0.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.10' apply false
+    id 'org.jetbrains.kotlin.kapt' version '1.8.20' apply false
+    id 'com.google.dagger.hilt.android' version '2.45' apply false
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.0' apply false
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.8.0" apply false
 }
 
 task clean(type: Delete) {

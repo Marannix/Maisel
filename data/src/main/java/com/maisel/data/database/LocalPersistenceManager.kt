@@ -7,6 +7,4 @@ interface LocalPersistenceManager {
     fun setLoggedInUser(user: User?)
     fun getLoggedInUser() : User?
     fun removeUser()
-    fun setViewedShowcase(value: Boolean)
-    fun hasViewedShowcase() : Boolean
 }
