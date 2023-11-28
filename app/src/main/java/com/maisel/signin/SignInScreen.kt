@@ -261,7 +261,6 @@ private fun ManagedActivityResultGoogleSignIn(viewModel: SignInViewModel) =
         }
     }
 
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable

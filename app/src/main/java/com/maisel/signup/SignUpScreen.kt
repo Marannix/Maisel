@@ -32,12 +32,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
+import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
@@ -50,8 +53,12 @@ import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
+import com.maisel.compose.ui.theme.MaiselTheme
 import com.maisel.compose.ui.theme.typography
 import com.maisel.navigation.Screens
+import com.maisel.signin.SignInContent
+import com.maisel.signin.SignInContract
+import com.maisel.signin.SignInPreviewParameterProvider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -289,3 +296,19 @@ private fun ManagedActivityResultGoogleSignUp(viewModel: SignUpViewModel) =
             }
         }
     }
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Preview
+@Composable
+fun SignUpContentPreview(
+    @PreviewParameter(SignUpPreviewParameterProvider::class) uiState: SignUpContract.UiState
+) {
+    MaiselTheme {
+        SignUpContent(
+            navHostController = rememberNavController(),
+            uiState = uiState,
+            uiEvents = { },
+            viewModel = hiltViewModel()
+        )
+    }
+}
