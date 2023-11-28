@@ -20,6 +20,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -34,6 +37,14 @@ class UserRepositoryImpl(
     private val localPersistenceManager: LocalPersistenceManager,
     private val userDao: UserDao
 ) : UserRepository {
+
+    private val _isUserLoggedIn: MutableStateFlow<Boolean> by lazy {
+        MutableStateFlow(localPersistenceManager.getLoggedInUser() != null)
+    }
+
+    override val isUserLoggedIn: StateFlow<Boolean> by lazy {
+        _isUserLoggedIn.asStateFlow()
+    }
 
     override suspend fun createAccount(
         name: String,

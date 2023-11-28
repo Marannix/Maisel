@@ -9,7 +9,7 @@ class TextFieldValidator @Inject constructor() {
      *  @param name Name to be validated
      *  Return [FieldValidationResult] based on validation
      */
-    fun isNameValid(name: String): FieldValidationResult {
+    fun validateName(name: String): FieldValidationResult {
         return when {
             name.isEmpty() -> FieldValidationResult.EMPTY
             else -> FieldValidationResult.VALID

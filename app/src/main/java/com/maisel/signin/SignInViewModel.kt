@@ -11,6 +11,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
 import com.maisel.common.composable.TextFieldState
+import com.maisel.common.mapper.TextFieldStateMapper
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.navigation.Screens
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
-    private val textFieldValidator: TextFieldValidator,
+    private val textFieldStateMapper: TextFieldStateMapper,
     private val resourceProvider: ResourceProvider,
     private val contextProvider: ContextProvider
 ) : SignInContract.ViewModel() {
@@ -70,19 +71,22 @@ class SignInViewModel @Inject constructor(
     }
 
     /**
-     * UI Events to update [UpdatedSignInScreen].
+     * UI Events to update [SignInScreen].
      */
     override fun onUiEvent(event: SignInContract.SignInUiEvents) {
         when (event) {
             is SignInContract.SignInUiEvents.EmailUpdated -> {
-                val email = getEmailState(event.email)
+                val email = textFieldStateMapper.getEmailState(event.email)
                 updateUiState { oldState -> oldState.copy(errorMessage = "", email = email) }
             }
             is SignInContract.SignInUiEvents.PasswordUpdated -> {
-                val password = getPasswordState(event.password)
+                val password = textFieldStateMapper.getPasswordState(event.password)
                 updateUiState { oldState -> oldState.copy(errorMessage = "", password = password) }
             }
             is SignInContract.SignInUiEvents.LoginButtonClicked -> {
+                /**
+                 * TODO: Check if I am validating
+                 */
                 viewModelScope.launch {
                     makeLoginRequest(event.email, event.password)
                 }
@@ -146,35 +150,4 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private fun getEmailState(email: String): TextFieldState {
-        val emailState = when (textFieldValidator.validateEmail(email)) {
-            FieldValidationResult.EMPTY -> TextFieldState.Invalid(
-                email,
-                "Yikes! No email address provided."
-            )
-            FieldValidationResult.INVALID -> TextFieldState.Invalid(
-                email,
-                "Oops! Please enter a valid email address."
-            )
-            FieldValidationResult.VALID -> TextFieldState.Valid(email)
-        }
-
-        return emailState
-    }
-
-    private fun getPasswordState(password: String): TextFieldState {
-        val passwordState = when (textFieldValidator.validatePassword(password)) {
-            FieldValidationResult.EMPTY -> TextFieldState.Invalid(
-                password,
-                "Oops! I think you forgot to enter a password"
-            )
-            FieldValidationResult.INVALID -> TextFieldState.Invalid(
-                password,
-                "Oops! Please enter a valid password"
-            )
-            FieldValidationResult.VALID -> TextFieldState.Valid(password)
-        }
-
-        return passwordState
-    }
 }

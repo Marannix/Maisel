@@ -1,5 +1,6 @@
 package com.maisel.common.composable
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -11,39 +12,33 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.maisel.R
-import com.maisel.common.state.ValidationError
-import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
+import com.maisel.common.composable.UiComponentTestTag.EmailTag
+import com.maisel.common.composable.UiComponentTestTag.NameTag
+import com.maisel.common.composable.UiComponentTestTag.PasswordTag
 import com.maisel.compose.ui.theme.typography
 
 @ExperimentalComposeUiApi
 @Composable
-fun DefaultPasswordContent(
-    state: ValidationError.AuthenticationError,
-    value: AuthenticationFormState,
-    onValueChange: (AuthenticationFormState) -> Unit,
-    modifier: Modifier,
-    onImeAction: () -> Unit
+fun PasswordContent(
+    modifier: Modifier = Modifier,
+    passwordState: TextFieldState,
+    onValueChange: (String) -> Unit
 ) {
-    var passwordFieldValueState by remember { mutableStateOf(TextFieldValue(text = value.password)) }
 
+    val isError = passwordState.isInvalid()
+    val errorMessage = passwordState.errorMessageOrNull()
     val showPassword = remember { mutableStateOf(false) }
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
-        modifier = modifier.testTag("password"),
-        value = passwordFieldValueState, onValueChange = {
-            passwordFieldValueState = it
-            if (value.password != it.text) {
-                onValueChange(AuthenticationFormState(value.name, value.email, it.text))
-            }
-        },
+        modifier = modifier.testTag(PasswordTag),
+        value = passwordState.text,
+        onValueChange = onValueChange,
         label = {
             Text(text = stringResource(id = R.string.password), style = typography.body2)
         },
@@ -51,27 +46,20 @@ fun DefaultPasswordContent(
             Text(text = stringResource(id = R.string.password), style = typography.body2)
         },
         visualTransformation = setPasswordVisualTransformation(showPassword),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                keyboardController?.hide()
-                onImeAction()
-            }
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Password,
         ),
+        keyboardActions = KeyboardActions.Default,
         trailingIcon = { SetPasswordTrailingIcon(showPassword) },
-        singleLine = true
+        singleLine = true,
+        maxLines = 1
     )
 
-    if (state.passwordError) {
-        Text(
-            text = "Password must be 8 characters long",
-            textAlign = TextAlign.Start,
-            color = MaterialTheme.colors.error,
-            style = typography.caption,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .fillMaxWidth()
-        )
+    AnimatedVisibility(visible = isError) {
+        if (isError && errorMessage != null) {
+            TextFieldErrorText(errorMessage)
+        }
     }
 }
 
@@ -103,67 +91,54 @@ private fun setPasswordVisualTransformation(showPassword: MutableState<Boolean>)
     }
 
 @Composable
-fun DefaultEmailContent(
-    state: ValidationError.AuthenticationError,
-    value: AuthenticationFormState,
-    onValueChange: (AuthenticationFormState) -> Unit,
-    modifier: Modifier,
-    onImeAction: () -> Unit,
+fun EmailContent(
+    modifier: Modifier = Modifier,
+    emailState: TextFieldState,
+    onValueChange: (String) -> Unit
 ) {
-    var emailFieldValueState by remember { mutableStateOf(TextFieldValue(text = value.email)) }
+
+    val isError = emailState.isInvalid()
+    val errorMessage = emailState.errorMessageOrNull()
 
     OutlinedTextField(
-        modifier = modifier.testTag("email"),
-        value = emailFieldValueState, onValueChange = {
-            emailFieldValueState = it
-            if (value.email != it.text) {
-                onValueChange(AuthenticationFormState(value.name, it.text.trim(), value.password))
-            }
-        },
+        modifier = modifier.testTag(EmailTag),
+        value = emailState.text,
+        onValueChange = onValueChange,
         label = {
             Text(text = "Email", style = typography.body2)
         },
         placeholder = {
             Text(text = "Email", style = typography.body2)
         },
-        isError = state.emailError,
+        isError = emailState.isInvalid(),
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-        keyboardActions = KeyboardActions(
-            onNext = { onImeAction() }
-        )
+        keyboardOptions = KeyboardOptions.Default,
+        keyboardActions = KeyboardActions.Default,
+        maxLines = 1,
     )
-    if (state.emailError) {
-        Text(
-            text = "Please enter a valid email",
-            textAlign = TextAlign.Start,
-            color = MaterialTheme.colors.error,
-            style = typography.caption,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .fillMaxWidth()
-        )
+
+    AnimatedVisibility(visible = isError) {
+        if (isError && errorMessage != null) {
+            TextFieldErrorText(errorMessage)
+        }
     }
 }
 
 @Composable
-fun DefaultNameContent(
-    modifier: Modifier,
-    state: ValidationError.AuthenticationError,
-    value: AuthenticationFormState,
-    onValueChange: (AuthenticationFormState) -> Unit,
-    onImeAction: () -> Unit,
+fun NameContent(
+    modifier: Modifier = Modifier,
+    nameState: TextFieldState,
+    onValueChange: (String) -> Unit
 ) {
 
-    var nameFieldValueState by remember { mutableStateOf(TextFieldValue(text = value.name)) }
+    val isError = nameState.isInvalid()
+    val errorMessage = nameState.errorMessageOrNull()
 
     OutlinedTextField(
-        modifier = modifier.testTag("name"),
-        value = nameFieldValueState, onValueChange = {
-            nameFieldValueState = it
-            if (value.password != it.text) {
-                onValueChange(AuthenticationFormState(it.text, value.email, value.password))
-            }
+        modifier = modifier.testTag(NameTag),
+        value = nameState.text,
+        onValueChange = {
+            onValueChange(it)
         },
         label = {
             Text(text = "Name", style = typography.body2)
@@ -171,22 +146,35 @@ fun DefaultNameContent(
         placeholder = {
             Text(text = "Name", style = typography.body2)
         },
-        isError = state.nameError,
+        isError = isError,
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-        keyboardActions = KeyboardActions(
-            onNext = { onImeAction() }
-        )
+        keyboardOptions = KeyboardOptions.Default,
+        keyboardActions = KeyboardActions.Default,
+        maxLines = 1
     )
-    if (state.nameError) {
-        Text(
-            text = "Please enter a valid name",
-            textAlign = TextAlign.Start,
-            color = MaterialTheme.colors.error,
-            style = typography.caption,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .fillMaxWidth()
-        )
+
+    AnimatedVisibility(visible = isError) {
+        if (isError && errorMessage != null) {
+            TextFieldErrorText(errorMessage)
+        }
     }
+}
+
+@Composable
+private fun TextFieldErrorText(errorMessage: String, modifier: Modifier = Modifier) {
+    Text(
+        text = errorMessage,
+        textAlign = TextAlign.Start,
+        color = MaterialTheme.colors.error,
+        style = typography.caption,
+        modifier = modifier
+            .padding(start = 16.dp)
+            .fillMaxWidth()
+    )
+}
+
+object UiComponentTestTag {
+    const val EmailTag = "EmailAddress"
+    const val NameTag = "Name"
+    const val PasswordTag = "Password"
 }

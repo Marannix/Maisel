@@ -50,10 +50,6 @@ fun SignInScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    //  val showErrorDialog: Boolean = viewState.authResultState is AuthResultState.Error
-
-    val focusRequester = remember { FocusRequester() }
-    val localFocusRequester = LocalFocusManager.current
 
     SignInContent(
         navHostController = navHostController,
@@ -173,7 +169,8 @@ fun SignInMainCard(
             passwordState = uiState.password,
             onValueChange = { uiEvents(SignInContract.SignInUiEvents.PasswordUpdated(it)) }
         )
-    }, errorBanner: @Composable () -> Unit = {
+    },
+    errorBanner: @Composable () -> Unit = {
         if (!uiState.errorMessage.isNullOrBlank()) {
             Text(
                 modifier = Modifier

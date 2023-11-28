@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
+//TODO: Rename to BaseViewModel after removing existing one
 abstract class UpdatedBaseViewModel<E : UiEventBase, S : UiStateBase> : ViewModel() {
 
     abstract fun onUiEvent(event: E)

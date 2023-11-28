@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @Module
 class RepositoryModule {
     @Provides
-    @Singleton
+    //@Singleton
     fun provideUserRepository(
         firebaseAuth: FirebaseAuth,
         databaseReference: DatabaseReference,
@@ -33,7 +33,7 @@ class RepositoryModule {
     }
 
     @Provides
-    @Singleton
+  //  @Singleton
     fun provideMessageRepository(
         firebaseAuth: FirebaseAuth,
         databaseReference: DatabaseReference,

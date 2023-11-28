@@ -1,126 +1,215 @@
 package com.maisel.signup
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
 import com.maisel.R
-import com.maisel.common.composable.DefaultEmailContent
-import com.maisel.common.composable.DefaultNameContent
-import com.maisel.common.composable.DefaultPasswordContent
-import com.maisel.compose.state.onboarding.compose.AuthenticationFormState
-import com.maisel.compose.state.onboarding.compose.AuthenticationState
+import com.maisel.common.composable.EmailContent
+import com.maisel.common.composable.LoadingIndicator
+import com.maisel.common.composable.NameContent
+import com.maisel.common.composable.PasswordContent
 import com.maisel.compose.ui.components.DefaultCallToActionButton
 import com.maisel.compose.ui.components.OnboardingUserHeader
 import com.maisel.compose.ui.components.onboarding.OnboardingAlternativeLoginFooter
 import com.maisel.compose.ui.components.onboarding.OnboardingUserFooter
+import com.maisel.compose.ui.theme.typography
 import com.maisel.navigation.Screens
-import com.maisel.state.AuthResultState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalLifecycleComposeApi::class)
 fun SignUpScreen(
     navHostController: NavHostController,
     viewModel: SignUpViewModel = hiltViewModel(),
-    onGoogleClicked: () -> Unit = { },
-    onFacebookClicked: () -> Unit = { }
 ) {
 
-    val viewState by viewModel.state.collectAsState()
-    val authenticationState by viewModel.input.collectAsState()
-    val validationErrors by viewModel.validationErrors.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val focusRequester = remember { FocusRequester() }
-    val localFocusRequester = LocalFocusManager.current
+    SignUpContent(
+        navHostController = navHostController,
+        viewModel = viewModel,
+        uiState = uiState,
+        uiEvents = viewModel::onUiEvent,
+    )
+}
 
-    val showErrorDialog: Boolean = viewState.authResultState is AuthResultState.Error
+@Composable
+@ExperimentalComposeUiApi
+fun SignUpContent(
+    navHostController: NavHostController,
+    viewModel: SignUpViewModel,
+    uiState: SignUpContract.UiState,
+    uiEvents: (SignUpContract.UiEvents) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val authResultLauncher = ManagedActivityResultGoogleSignUp(viewModel)
 
-    when (viewState.authResultState) {
-        is AuthResultState.Success -> {
-            navHostController.navigate(Screens.Dashboard.name) {
-                popUpTo(Screens.Showcase.name) {
-                    inclusive = true
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+    ) {
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            content = {
+                LaunchedEffect(viewModel.snackbarMessage) {
+                    viewModel
+                        .snackbarMessage
+                        .collectLatest { message ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(message)
+                            }
+                        }
                 }
-                launchSingleTop = true
+
+                LaunchedEffect(key1 = uiState.navigateToSignIn) {
+                    if (uiState.navigateToSignIn) {
+                        navHostController.navigateUp()
+                    }
+                }
+
+                LaunchedEffect(key1 = Unit) {
+                    viewModel
+                        .screenDestinationName
+                        .collectLatest { screen ->
+                            scope.launch {
+                                when (screen.name == Screens.Dashboard.name) {
+                                    true -> navHostController.navigate(Screens.Dashboard.name) {
+//                                        popUpTo(Screens.SignIn.name) {
+//                                            inclusive = true
+//                                        }
+                                        launchSingleTop = true
+                                    }
+
+                                    false -> navHostController.navigate(screen.name)
+                                }
+                            }
+                        }
+                }
+
+                LaunchedEffect(viewModel.launchGoogleSignIn) {
+                    viewModel
+                        .launchGoogleSignIn
+                        .collectLatest {
+                            scope.launch {
+                                authResultLauncher.launch(viewModel.getGoogleSignInClient().signInIntent)
+                            }
+                        }
+                }
+
+                Column(Modifier.fillMaxSize()) {
+                    SignUpMainCard(
+                        uiState = uiState,
+                        uiEvents = uiEvents
+                    )
+                }
             }
+        )
+        if (uiState.isLoading) {
+            LoadingIndicator.FullScreenLoadingIndicator(
+                currentStatusBarColor = MaterialTheme.colors.background
+            )
         }
     }
-
-    Column(Modifier.fillMaxSize()) {
-        SignUpMainCard(
-            viewModel = viewModel,
-            authenticationState = AuthenticationState(
-                validationErrors,
-                showErrorDialog,
-                authenticationState,
-                focusRequester,
-                localFocusRequester
-            ),
-            onGoogleClicked = onGoogleClicked,
-            onFacebookClicked = onFacebookClicked
-        )
-    }
 }
+
 
 @ExperimentalComposeUiApi
 @Composable
 fun SignUpMainCard(
-    viewModel: SignUpViewModel,
-    authenticationState: AuthenticationState,
-    onSignUp: () -> Unit = { viewModel.onSignUpClicked(authenticationState.authenticationFormState) },
-    onSignUpFormValueChange: (AuthenticationFormState) -> Unit = { viewModel.setSignUpInput(it) },
-    onSignIn: () -> Unit = { },
-    onGoogleClicked: () -> Unit,
-    onFacebookClicked: () -> Unit,
-    nameContent: @Composable (AuthenticationState) -> Unit = {
-        DefaultNameContent(
-            state = it.validationState,
-            value = it.authenticationFormState,
-            onValueChange = onSignUpFormValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            it.localFocusRequester.moveFocus(FocusDirection.Down)
-        }
+    uiState: SignUpContract.UiState,
+    uiEvents: (SignUpContract.UiEvents) -> Unit,
+    onGoogleClicked: () -> Unit = { uiEvents(SignUpContract.UiEvents.GoogleButtonClicked) },
+    onFacebookClicked: () -> Unit = { uiEvents(SignUpContract.UiEvents.FacebookButtonClicked) },
+    onSignUp: () -> Unit = {
+        uiEvents(
+            SignUpContract.UiEvents.SignUpButtonClicked(
+                uiState.name.text,
+                uiState.email.text,
+                uiState.password.text,
+            )
+        )
     },
-    emailContent: @Composable (AuthenticationState) -> Unit = {
-        DefaultEmailContent(
-            state = it.validationState,
-            value = it.authenticationFormState,
-            onValueChange = onSignUpFormValueChange,
+//    onSignIn: () -> Unit = { navHostController.navigateUp() },
+    onSignIn: () -> Unit = { uiEvents(SignUpContract.UiEvents.SignInButtonClicked) },
+    nameContent: @Composable () -> Unit = {
+        NameContent(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            it.localFocusRequester.moveFocus(FocusDirection.Down)
-        }
+                .padding(horizontal = 16.dp),
+            nameState = uiState.name,
+            onValueChange = { uiEvents(SignUpContract.UiEvents.NameUpdated(it)) }
+        )
     },
-    passwordContent: @Composable (AuthenticationState) -> Unit = {
-        DefaultPasswordContent(
-            state = it.validationState,
-            value = it.authenticationFormState,
-            onValueChange = onSignUpFormValueChange,
+    emailContent: @Composable () -> Unit = {
+        EmailContent(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            it.localFocusRequester.moveFocus(FocusDirection.Down)
+                .padding(horizontal = 16.dp),
+            emailState = uiState.email,
+            onValueChange = { uiEvents(SignUpContract.UiEvents.EmailUpdated(it)) }
+        )
+    },
+    passwordContent: @Composable () -> Unit = {
+        PasswordContent(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            passwordState = uiState.password,
+            onValueChange = { uiEvents(SignUpContract.UiEvents.PasswordUpdated(it)) }
+        )
+    },
+    errorBanner: @Composable () -> Unit = {
+        if (!uiState.errorMessage.isNullOrBlank()) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                text = uiState.errorMessage,
+                color = MaterialTheme.colors.onBackground,
+                style = typography.subtitle2,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 ) {
@@ -151,10 +240,10 @@ fun SignUpMainCard(
         OnboardingUserHeader("Create your Account", modifier.padding(bottom = 12.dp))
 
         SignUpValidationUI(
-            authenticationState,
             nameContent,
             emailContent,
             passwordContent,
+            errorBanner,
             onSignUp
         )
 
@@ -171,17 +260,32 @@ fun SignUpMainCard(
 @ExperimentalComposeUiApi
 @Composable
 private fun SignUpValidationUI(
-    signUpState: AuthenticationState,
-    nameContent: @Composable (AuthenticationState) -> Unit,
-    emailContent: @Composable (AuthenticationState) -> Unit,
-    passwordContent: @Composable (AuthenticationState) -> Unit,
+    nameContent: @Composable () -> Unit,
+    emailContent: @Composable () -> Unit,
+    passwordContent: @Composable () -> Unit,
+    errorBanner: @Composable () -> Unit,
     onSignUp: () -> Unit
 ) {
-    nameContent(signUpState)
+    errorBanner()
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    emailContent(signUpState)
+    nameContent()
     Spacer(modifier = Modifier.padding(vertical = 4.dp))
-    passwordContent(signUpState)
+    emailContent()
+    Spacer(modifier = Modifier.padding(vertical = 4.dp))
+    passwordContent()
     Spacer(modifier = Modifier.padding(vertical = 12.dp))
     DefaultCallToActionButton(onSignUp, "Sign up")
 }
+
+@Composable
+private fun ManagedActivityResultGoogleSignUp(viewModel: SignUpViewModel) =
+    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            if (result.data != null) {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(intent)
+                viewModel.onGoogleSignInActivityResult(task)
+            }
+        }
+    }

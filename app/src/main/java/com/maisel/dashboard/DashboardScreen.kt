@@ -1,5 +1,7 @@
 package com.maisel.dashboard
 
+import android.graphics.drawable.Icon
+import androidx.compose.compiler.plugins.kotlin.ComposeFqNames.remember
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -9,6 +11,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.maisel.compose.ui.components.dashboard.DashboardAppBar
 import com.maisel.compose.ui.components.dashboard.DashboardDrawer
@@ -81,23 +84,32 @@ private fun DashboardScaffold(
         },
         content = {
             val viewState by remember(viewModel) { viewModel.viewState }.collectAsState()
-            when (viewState.userAuthState) {
-                UserAuthState.LOGGED_OUT -> {
 
-                    navHostController.navigate(Screens.SignIn.name) {
-//                        navHostController.popBackStack(
-//                            route = Screens.UpdatedSignIn.name,
-//                            inclusive = false
-//                        )
-                        launchSingleTop = true
-                        //     }
+                when (viewState.userAuthState) {
+                    UserAuthState.LOGGED_OUT -> {
+                        LaunchedEffect(key1 = viewState.userAuthState) {
+                            navHostController.navigate(
+                                route = Screens.SignIn.name,
+                                navOptions = NavOptions
+                                    .Builder()
+                                    .setPopUpTo(Screens.Dashboard.name, true)
+                                    .build()
+                            )
+                        }
+//                    navHostController.navigate(Screens.SignIn.name) {
+////                        navHostController.popBackStack(
+////                            route = Screens.UpdatedSignIn.name,
+////                            inclusive = false
+////                        )
+//                        launchSingleTop = true
+//                        //     }
+//                    }
+                        //      navHostController.popBackStack()
                     }
-              //      navHostController.popBackStack()
-                }
 
-                else -> {
-                    // DO NOTHING
-                }
+                    else -> {
+                        // DO NOTHING
+                    }
             }
 
             RecentMessageList(navHostController)

@@ -4,8 +4,14 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.maisel.domain.user.entity.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface UserRepository {
+
+    /**
+     * Flow that contains if the user is logged in or not
+     */
+    val isUserLoggedIn: StateFlow<Boolean>
 
     /**
      * Creates an account to firebase using name, email and password.
