@@ -31,7 +31,7 @@ class UserComposerController @Inject constructor(
     private val messageRepository: MessageRepository,
     private val logOutUseCase: LogOutUseCase,
     private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase
-    ) {
+) {
 
     /**
      * Creates a [CoroutineScope] that allows us to cancel the ongoing work when the parent
@@ -61,103 +61,103 @@ class UserComposerController @Inject constructor(
     /**
      * Set logged in user
      */
-    fun setLoggedInUser() {
-        scope.launch {
-            getLoggedInUser.invoke().collect { result ->
-                result.onSuccess {
-                    currentUser.value = it
-                }
-                result.onFailure {
-                    getStoredLoggedInUser()
-                }
-            }
-        }
-    }
+//    fun setLoggedInUser() {
+//        scope.launch {
+//            getLoggedInUser.invoke().collect { result ->
+//                result.onSuccess {
+//                    currentUser.value = it
+//                }
+//                result.onFailure {
+//                    getStoredLoggedInUser()
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Retrieve offline logged in user
      */
-    private fun getStoredLoggedInUser() {
-        scope.launch {
-            getLoggedInUser.getLoggedInUser()?.let { user ->
-                currentUser.value = user
-            }
-        }
-    }
+//    private fun getStoredLoggedInUser() {
+//        scope.launch {
+//            getLoggedInUser.getLoggedInUser()?.let { user ->
+//                currentUser.value = user
+//            }
+//        }
+//    }
 
     /**
      * Retrieve and set last message for a specific user based on their userId
      */
-    fun listenToRecentMessages() {
-        scope.launch {
-            lastMessageUseCase.invoke().collect { result ->
-                result.onSuccess { listOfLatestMessages ->
-                    messageRepository.insertRecentMessages(listOfLatestMessages.toMutableStateList())
-                }
-                result.onFailure { throwable ->
-                    //TODO: Update UI and show error?
-                }
-            }
-        }
-    }
+//    fun listenToRecentMessages() {
+//        scope.launch {
+//            lastMessageUseCase.invoke().collect { result ->
+//                result.onSuccess { listOfLatestMessages ->
+//                    messageRepository.insertRecentMessages(listOfLatestMessages.toMutableStateList())
+//                }
+//                result.onFailure { throwable ->
+//                    //TODO: Update UI and show error?
+//                }
+//            }
+//        }
+//    }
 
-    fun getRecentMessages() {
-        scope.launch {
-            _stateFlow.update { it.copy(recentMessageState = RecentMessageState.Loading) }
-            messageRepository.getRecentMessages()
-                .collect { listOfMessages ->
-                    _stateFlow.value = _stateFlow.value.copy(
-                        recentMessageState = RecentMessageState.Success(listOfMessages)
-                    )
-                }
-        }
-    }
+//    fun getRecentMessages() {
+//        scope.launch {
+//            _stateFlow.update { it.copy(recentMessageState = RecentMessageState.Loading) }
+//            messageRepository.getRecentMessages()
+//                .collect { listOfMessages ->
+//                    _stateFlow.value = _stateFlow.value.copy(
+//                        recentMessageState = RecentMessageState.Success(listOfMessages)
+//                    )
+//                }
+//        }
+//    }
 
     /**
      * Retrieve list of users from Firebase Realtime Database
      */
-    fun listOfUsers() {
-        scope.launch {
-            //TODO: Create Usecase
-            userRepository.fetchListOfUsers().collect { result ->
-                result.onSuccess { listOfUsers ->
-                    userRepository.insertUsers(listOfUsers)
-                }
-                result.onFailure { throwable ->
-                    //TODO: Update UI and show error
-                    Log.d("Maisel: ", throwable.toString())
+//    fun listOfUsers() {
+//        scope.launch {
+//            //TODO: Create Usecase
+//            userRepository.fetchListOfUsers().collect { result ->
+//                result.onSuccess { listOfUsers ->
+//                    userRepository.insertUsers(listOfUsers)
+//                }
+//                result.onFailure { throwable ->
+//                    //TODO: Update UI and show error
+//                    Log.d("Maisel: ", throwable.toString())
+//
+//                }
+//            }
+//        }
+//    }
 
-                }
-            }
-        }
-    }
+//    fun getUsers() {
+//        scope.launch {
+//            userRepository.getUsers().collect { listOfUsers ->
+//                users.emit(listOfUsers)
+//            }
+//        }
+//    }
 
-    fun getUsers() {
-        scope.launch {
-            userRepository.getUsers().collect { listOfUsers ->
-                users.emit(listOfUsers)
-            }
-        }
-    }
-
-    fun logoutUser() {
-        scope.launch {
-            userRepository.logoutUser().collect { result ->
-                clearRoomDatabaseUseCase.invoke()
-                result.onSuccess {
-                    _stateFlow.update { it.copy(userAuthState = UserAuthState.LOGGED_OUT) }
-                }
-                result.onFailure { throwable ->
-                    _stateFlow.update { it.copy(userAuthState = UserAuthState.LOGGED_OUT) }
-                }
-            }
-        }
-    }
+//    fun logoutUser() {
+//        scope.launch {
+//            userRepository.logoutUser().collect { result ->
+//                clearRoomDatabaseUseCase.invoke()
+//                result.onSuccess {
+//                    _stateFlow.update { it.copy(userAuthState = UserAuthState.LOGGED_OUT) }
+//                }
+//                result.onFailure { throwable ->
+//                    _stateFlow.update { it.copy(userAuthState = UserAuthState.LOGGED_OUT) }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Cancels any pending work when the parent ViewModel is about to be destroyed.
      */
-    fun onCleared() {
-        scope.cancel()
-    }
+//    fun onCleared() {
+//        scope.cancel()
+//    }
 }

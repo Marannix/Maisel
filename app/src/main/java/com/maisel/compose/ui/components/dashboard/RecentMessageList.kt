@@ -7,9 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -18,13 +15,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.maisel.R
 import com.maisel.compose.ui.theme.typography
-import com.maisel.dashboard.DashboardViewModel
+import com.maisel.dashboard.DashboardContract
 import com.maisel.dashboard.RecentMessageState
 import com.maisel.domain.message.ChatModel
 import com.maisel.domain.user.entity.User
@@ -33,31 +29,35 @@ import com.maisel.navigation.Screens
 @Composable
 @ExperimentalComposeUiApi
 fun RecentMessageList(
-    navHostController: NavHostController,
-    viewModel: DashboardViewModel = hiltViewModel()
+    users: List<User>,
+    currentUser: User,
+    recentMessageState: RecentMessageState,
+    uiEvents: (DashboardContract.UiEvents) -> Unit,
 ) {
-    val viewState by remember(viewModel) { viewModel.viewState }.collectAsState()
-    val users by viewModel.users.collectAsState()
-    val currentUser by viewModel.currentUser.collectAsState()
+//    val viewState by remember(viewModel) { viewModel.viewState }.collectAsState()
+//    val users by viewModel.users.collectAsState()
+//    val currentUser by viewModel.currentUser.collectAsState()
 
-    when (val state = viewState.recentMessageState) {
+    when (recentMessageState) {
         RecentMessageState.Loading -> {
-
+            //TODO: Add fullscreen loading
         }
+
         is RecentMessageState.Success -> {
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(Modifier.fillMaxSize()) {
-                    items(items = state.listOfMessages) { latestMessages ->
+                    items(items = recentMessageState.listOfMessages) { latestMessages ->
                         RecentMessageItem(
-                            navHostController,
-                            currentUser,
-                            users,
-                            latestMessages
+                            currentUser = currentUser,
+                            users = users,
+                            messageModel = latestMessages,
+                            uiEvents = uiEvents
                         )
                     }
                 }
             }
         }
+
         is RecentMessageState.Error -> {
 
         }
@@ -67,19 +67,17 @@ fun RecentMessageList(
 @ExperimentalComposeUiApi
 @Composable
 fun RecentMessageItem(
-    navHostController: NavHostController,
     currentUser: User,
     users: List<User>,
-    messageModel: ChatModel
+    messageModel: ChatModel,
+    uiEvents: (DashboardContract.UiEvents) -> Unit,
 ) {
     users.firstOrNull { it.userId == messageModel.userId }?.let { receiverUser ->
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    navHostController.navigate(
-                        "${Screens.ChatDetail.name}/${receiverUser.userId}"
-                    )
+                    uiEvents(DashboardContract.UiEvents.RecentMessageClicked(receiverUser.userId))
                 }
                 .padding(4.dp)
         ) {

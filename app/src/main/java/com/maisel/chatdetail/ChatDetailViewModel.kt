@@ -32,14 +32,11 @@ class ChatDetailViewModel @Inject constructor(
     val viewState = MutableLiveData<ChatDetailViewState>()
 
     private val receiverId: String = checkNotNull(savedStateHandle["receiverId"])
-
     private val senderId = userComposerController.currentUser.value.userId ?: throw Exception()
-
     private val recipientUser: Flow<User> =
         getRecipientUser.invoke(receiverId).distinctUntilChanged()
 
     private fun currentViewState(): ChatDetailViewState = viewState.value!!
-
 
     fun init() {
         viewState.value = ChatDetailViewState(senderUid = senderId)

@@ -33,9 +33,9 @@ fun DashboardDrawer(
     navHostController: NavHostController,
     viewModel: DashboardViewModel,
     header: @Composable () -> Unit = {
-        DefaultComposerDrawerHeader(
-            viewModel.currentUser.collectAsState()
-        )
+//        DefaultComposerDrawerHeader(
+//            viewModel.currentUser.collectAsState()
+//        )
     },
     body: @Composable () -> Unit = {
         DefaultComposerDrawerBody(

@@ -56,7 +56,7 @@ fun DashboardAppBar(
                     DropdownMenuItem(onClick = {
                         expanded.value = false
                         result.value = "Logout clicked"
-                        dashboardViewModel.logOutUser()
+               //         dashboardViewModel.logOutUser()
                     }) {
                         Text("Logout")
                     }
