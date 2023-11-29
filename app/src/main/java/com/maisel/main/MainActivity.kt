@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -15,6 +16,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,42 +31,27 @@ import com.maisel.common.base.BaseActivity
 import com.maisel.compose.ui.theme.MaiselTheme
 import com.maisel.contacts.ContactScreen
 import com.maisel.dashboard.DashboardScreen
+import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.navigation.Screens
 import com.maisel.placeholder.PlaceholderScreen
 import com.maisel.showcase.ShowcaseScreen
 import com.maisel.signin.SignInScreen
 import com.maisel.signup.SignUpScreen
+import com.maisel.splash.ui.SplashScreenViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity() {
-
-    private var isSplashScreen = mutableStateOf(true)
-    private val keepSplashScreenOn = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Enable support for Splash Screen API for
-        // proper Android 12+ support
-        //   handleSplashScreen()
-//        installSplashScreen().setKeepOnScreenCondition {
-//            keepSplashScreenOn
-//        }
-//            .apply {
-//            setKeepOnScreenCondition {
-//                isSplashScreen.value
-//            }
-//        }
         //Added to fix keyboard backdrop issue in screen.
         window.decorView.setBackgroundResource(R.color.keyboard_background)
 
         val startDestination = requireNotNull(intent.getStringExtra(START_DESTINATIONS_KEY))
 
         setContent {
-            val mainViewModel = hiltViewModel<MainActivityViewModel>()
-          //  val hasSeenShowcase by mainViewModel.hasSeenShowcase.collectAsState(initial = false)
-
-           // val startDestination = getStartDestination(mainViewModel, hasSeenShowcase)
-
             val navController = rememberNavController()
 
             MaiselTheme {
@@ -124,25 +113,6 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
-    }
-
-    @Composable
-    private fun getStartDestination(
-        mainViewModel: MainActivityViewModel,
-        hasSeenShowcase: Boolean
-    ): String {
-        val startDestination = when {
-            mainViewModel.isUserLoggedIn() -> {
-                Screens.Dashboard.name
-            }
-            hasSeenShowcase -> {
-                Screens.SignIn.name
-            }
-            else -> {
-                Screens.Showcase.name
-            }
-        }
-        return startDestination
     }
 
     companion object {

@@ -1,6 +1,8 @@
 package com.maisel.splash.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityOptions
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +12,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.maisel.R
 import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.main.MainActivity
 import com.maisel.navigation.Screens
