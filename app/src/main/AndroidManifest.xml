@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Maisel">
         <activity
-            android:name=".main.MainActivity"
+            android:name=".splash.ui.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppSplash"
             android:windowSoftInputMode="adjustResize">
@@ -22,6 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".main.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

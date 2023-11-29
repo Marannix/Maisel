@@ -1,5 +1,7 @@
 package com.maisel.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.maisel.R
 import com.maisel.chatdetail.ChatDetailScreen
 import com.maisel.common.base.BaseActivity
 import com.maisel.compose.ui.theme.MaiselTheme
@@ -33,6 +36,7 @@ import com.maisel.signup.SignUpScreen
 class MainActivity : BaseActivity() {
 
     private var isSplashScreen = mutableStateOf(true)
+    private val keepSplashScreenOn = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +44,24 @@ class MainActivity : BaseActivity() {
         // Enable support for Splash Screen API for
         // proper Android 12+ support
         //   handleSplashScreen()
-        installSplashScreen()
+//        installSplashScreen().setKeepOnScreenCondition {
+//            keepSplashScreenOn
+//        }
 //            .apply {
 //            setKeepOnScreenCondition {
 //                isSplashScreen.value
 //            }
 //        }
+        //Added to fix keyboard backdrop issue in screen.
+        window.decorView.setBackgroundResource(R.color.keyboard_background)
+
+        val startDestination = requireNotNull(intent.getStringExtra(START_DESTINATIONS_KEY))
 
         setContent {
             val mainViewModel = hiltViewModel<MainActivityViewModel>()
-            val hasSeenShowcase by mainViewModel.hasSeenShowcase.collectAsState(initial = false)
+          //  val hasSeenShowcase by mainViewModel.hasSeenShowcase.collectAsState(initial = false)
 
-            val startDestination = getStartDestination(mainViewModel, hasSeenShowcase)
+           // val startDestination = getStartDestination(mainViewModel, hasSeenShowcase)
 
             val navController = rememberNavController()
 
@@ -135,10 +145,13 @@ class MainActivity : BaseActivity() {
         return startDestination
     }
 
-//    private fun handleSplashScreen() {
-//        lifecycleScope.launch(Dispatchers.Default) {
-//            delay(3000)
-//            isSplashScreen.value = false
-//        }
-//    }
+    companion object {
+        const val START_DESTINATIONS_KEY = "START_DESTINATIONS"
+
+        fun getCallingIntent(context: Context, screen: Screens): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(START_DESTINATIONS_KEY, screen.name)
+            return intent
+        }
+    }
 }

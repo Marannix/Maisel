@@ -75,7 +75,7 @@ private fun CarouselScreen(
                     state.scrollToPage(state.currentPage + 1)
                 }
             } else {
-                viewModel.setShowcase(true)
+                viewModel.setShowcase()
                 navHostController.navigate(Screens.SignIn.name)
                 //    launchLoginActivity()
             }
@@ -134,7 +134,7 @@ fun ShowcaseTopSection(
         //skip button
         TextButton(
             onClick = {
-                viewModel.setShowcase(true)
+                viewModel.setShowcase()
                 navHostController.navigate(Screens.SignIn.name)
             },
             modifier = Modifier.align(Alignment.CenterEnd)

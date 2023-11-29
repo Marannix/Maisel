@@ -5,11 +5,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ApplicationSetting(
     val hasSeenShowcase: Boolean,
+    val isLoggedIn: Boolean,
 ) {
 
     companion object {
         val default = ApplicationSetting(
-            hasSeenShowcase = false
+            hasSeenShowcase = false,
+            isLoggedIn = false,
         )
     }
 }

@@ -75,4 +75,6 @@
 
     <color name="maisel_splash_screen_background_dark">#FF191D24</color>
 
+    <color name="keyboard_background">#000000</color>
+
 </resources>
