@@ -74,11 +74,15 @@ private fun DashboardContent(
                 DashboardDrawer(navHostController, viewModel)
             },
             topBar = {
-                DashboardAppBar(result = result, expanded = expanded, onNavigationItemClick = {
-                    scope.launch {
-                        scaffoldState.drawerState.open()
-                    }
-                })
+                DashboardAppBar(
+                    uiEvents = uiEvents,
+                    result = result,
+                    expanded = expanded,
+                    onNavigationItemClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                    })
             },
             floatingActionButton = {
                 FloatingActionButton(

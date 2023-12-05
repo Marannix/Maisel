@@ -64,6 +64,12 @@ class ApplicationCacheRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun clearUser() {
+        dataStore.updateData { actualSettings: ApplicationSetting ->
+            actualSettings.copy(user = null)
+        }
+    }
+
     override fun getCacheState(): Flow<ApplicationCacheState> {
         return state
     }

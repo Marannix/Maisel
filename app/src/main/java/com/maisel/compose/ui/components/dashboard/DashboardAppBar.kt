@@ -1,7 +1,6 @@
 package com.maisel.compose.ui.components.dashboard
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -12,17 +11,16 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.statusBarsPadding
-import com.maisel.dashboard.DashboardViewModel
+import com.maisel.dashboard.DashboardContract
 
 @ExperimentalComposeUiApi
 @Composable
 fun DashboardAppBar(
-    dashboardViewModel: DashboardViewModel = hiltViewModel(),
+    uiEvents: (DashboardContract.UiEvents) -> Unit,
     result: MutableState<String>,
     expanded: MutableState<Boolean>,
-    onNavigationItemClick: () -> Unit
+    onNavigationItemClick: () -> Unit,
 ) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
@@ -56,7 +54,7 @@ fun DashboardAppBar(
                     DropdownMenuItem(onClick = {
                         expanded.value = false
                         result.value = "Logout clicked"
-               //         dashboardViewModel.logOutUser()
+                        uiEvents(DashboardContract.UiEvents.LogoutClicked)
                     }) {
                         Text("Logout")
                     }

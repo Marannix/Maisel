@@ -6,18 +6,17 @@ import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.domain.database.usecase.GetApplicationCacheStateUseCase
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
+import com.maisel.domain.room.ClearRoomDatabaseUseCase
 import com.maisel.domain.user.repository.UserRepository
+import com.maisel.domain.user.usecase.ClearLocalUserUseCase
 import com.maisel.domain.user.usecase.FetchListOfUsersUseCase
 import com.maisel.domain.user.usecase.GetLoggedInUserFromFirebaseUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
 import com.maisel.domain.user.usecase.StoreAuthUserInLocalDbUseCase
 import com.maisel.state.UserAuthState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -33,7 +32,8 @@ class DashboardViewModel @Inject constructor(
     private val getApplicationCacheStateUseCase: GetApplicationCacheStateUseCase,
     private val getLoggedInUserFromFirebaseUseCase: GetLoggedInUserFromFirebaseUseCase,
     private val storeAuthUserInLocalDbUseCase: StoreAuthUserInLocalDbUseCase,
-//    private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase,
+    private val clearLocalUserUseCase: ClearLocalUserUseCase,
+    private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase,
 //    private val getUsersUseCase: GetUsersUseCase
 ) : DashboardContract.ViewModel() {
 
@@ -92,6 +92,7 @@ class DashboardViewModel @Inject constructor(
                 // Failed to log in user
                 // TODO: Log user out
                 Log.d("Joshua logged in: ", throwable.toString())
+                logOutUser()
             }
         }
     }
@@ -148,7 +149,9 @@ class DashboardViewModel @Inject constructor(
     private fun logOutUser() {
         viewModelScope.launch {
             logOutUseCase.invoke().collectLatest {
-
+                clearLocalUserUseCase.invoke()
+                clearRoomDatabaseUseCase.invoke()
+                updateUiState { oldState -> oldState.copy(userAuthState = UserAuthState.LOGGED_OUT) }
             }
         }
     }
@@ -171,6 +174,10 @@ class DashboardViewModel @Inject constructor(
                         //TODO: Error screen
                     }
                 }
+            }
+
+            DashboardContract.UiEvents.LogoutClicked -> {
+                logOutUser()
             }
         }
     }
