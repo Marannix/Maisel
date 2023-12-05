@@ -119,9 +119,10 @@ class MainActivity : BaseActivity() {
         const val START_DESTINATIONS_KEY = "START_DESTINATIONS"
 
         fun getCallingIntent(context: Context, screen: Screens): Intent {
-            val intent = Intent(context, MainActivity::class.java)
-            intent.putExtra(START_DESTINATIONS_KEY, screen.name)
-            return intent
+            return Intent(context, MainActivity::class.java).apply {
+                putExtra(START_DESTINATIONS_KEY, screen.name)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
         }
     }
 }

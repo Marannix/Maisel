@@ -93,9 +93,7 @@ fun SignInContent(
                             scope.launch {
                                 when (screen.name == Screens.Dashboard.name) {
                                     true -> navHostController.navigate(Screens.Dashboard.name) {
-//                                        popUpTo(Screens.SignIn.name) {
-//                                            inclusive = true
-//                                        }
+                                        navHostController.popBackStack(Screens.SignIn.name, true)
                                         launchSingleTop = true
                                     }
 

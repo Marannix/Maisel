@@ -76,8 +76,10 @@ private fun CarouselScreen(
                 }
             } else {
                 viewModel.setShowcase()
-                navHostController.navigate(Screens.SignIn.name)
-                //    launchLoginActivity()
+                navHostController.navigate(Screens.SignIn.name) {
+                    popUpTo(Screens.Showcase.name) { inclusive = true }
+                    launchSingleTop = true
+                }
             }
         }
     }
@@ -135,7 +137,10 @@ fun ShowcaseTopSection(
         TextButton(
             onClick = {
                 viewModel.setShowcase()
-                navHostController.navigate(Screens.SignIn.name)
+                navHostController.navigate(Screens.SignIn.name) {
+                    popUpTo(Screens.Showcase.name) { inclusive = true }
+                    launchSingleTop = true
+                }
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {

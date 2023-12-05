@@ -1,18 +1,14 @@
 package com.maisel.splash.ui
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.ActivityOptions
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.maisel.R
 import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.main.MainActivity
 import com.maisel.navigation.Screens
@@ -72,8 +68,7 @@ class SplashActivity : ComponentActivity() {
     }
 
     private fun navigateToMainActivity(screen: Screens) {
-        val intent = MainActivity.getCallingIntent(applicationContext, screen)
-        startActivity(intent)
+        startActivity(MainActivity.getCallingIntent(applicationContext, screen))
         finish()
     }
 }
