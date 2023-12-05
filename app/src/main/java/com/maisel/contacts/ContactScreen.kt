@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.maisel.contacts
 
 import androidx.compose.foundation.Image
@@ -14,6 +16,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
@@ -22,17 +25,46 @@ import com.maisel.R
 import com.maisel.compose.ui.theme.typography
 import com.maisel.domain.user.entity.User
 import com.maisel.navigation.Screens
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
-@OptIn(ExperimentalComposeUiApi::class)
 fun ContactScreen(
     navHostController: NavHostController,
     viewModel: ContactsViewModel = hiltViewModel()
 ) {
-    val users by viewModel.users.collectAsState()
-    val result =
-        remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
+    LaunchedEffect(viewModel.destination) {
+        viewModel
+            .destination
+            .collectLatest { destination ->
+                scope.launch {
+                    when (destination) {
+                        is ContactsDestination.ChatDetail -> {
+                            navHostController.navigate(
+                                "${Screens.ChatDetail.name}/${destination.contactId}"
+                            )
+                        }
+                    }
+                }
+            }
+    }
+
+    ContactContent(
+        navHostController = navHostController,
+        uiState = uiState,
+        uiEvents = viewModel::onUiEvent,
+    )
+}
+
+@Composable
+private fun ContactContent(
+    navHostController: NavHostController,
+    uiState: ContactsContract.UiState,
+    uiEvents: (ContactsContract.UiEvents) -> Unit,
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -45,7 +77,6 @@ fun ContactScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                result.value = "Back Arrow icon clicked"
                                 navHostController.navigateUp()
                             }
                         ) {
@@ -58,22 +89,28 @@ fun ContactScreen(
                 )
             },
             content = {
-                ContactList(users, navHostController)
+                ContactList(
+                    users = uiState.contacts,
+                    uiEvents = uiEvents
+                )
             }
         )
     }
+
 }
 
 @Composable
 @ExperimentalComposeUiApi
 private fun ContactList(
     users: List<User>,
-    navHostController: NavHostController
+    uiEvents: (ContactsContract.UiEvents) -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize()) {
-            items(users) { user ->
-                ChatListItem(navHostController, user)
+            items(users) { contact ->
+                ChatListItem(
+                    contact = contact,
+                    uiEvents = uiEvents)
             }
         }
     }
@@ -82,22 +119,20 @@ private fun ContactList(
 @ExperimentalComposeUiApi
 @Composable
 fun ChatListItem(
-    navHostController: NavHostController,
-    user: User,
+    contact: User,
+    uiEvents: (ContactsContract.UiEvents) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navHostController.navigate(
-                    "${Screens.ChatDetail.name}/${user.userId}"
-                )
+                uiEvents(ContactsContract.UiEvents.OnContactClicked(contact.userId))
             }
             .padding(4.dp)
     ) {
         Image(
             painter = rememberImagePainter(
-                data = user.profilePicture ?: R.drawable.ic_son_goku,
+                data = contact.profilePicture ?: R.drawable.ic_son_goku,
                 builder = {
                     crossfade(true)
                     //placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
@@ -113,7 +148,7 @@ fun ChatListItem(
         )
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
-                user.username.toString(),
+                contact.username.toString(),
                 style = typography.body1,
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )

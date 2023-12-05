@@ -11,6 +11,7 @@ import com.maisel.domain.user.repository.UserRepository
 import com.maisel.domain.user.usecase.ClearLocalUserUseCase
 import com.maisel.domain.user.usecase.FetchListOfUsersUseCase
 import com.maisel.domain.user.usecase.GetLoggedInUserFromFirebaseUseCase
+import com.maisel.domain.user.usecase.GetUsersUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
 import com.maisel.domain.user.usecase.StoreAuthUserInLocalDbUseCase
 import com.maisel.state.UserAuthState
@@ -24,7 +25,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val userRepository: UserRepository,
     private val lastMessageUseCase: GetLastMessageUseCase,
     private val fetchListOfUsersUseCase: FetchListOfUsersUseCase,
     private val messageRepository: MessageRepository,
@@ -32,6 +32,7 @@ class DashboardViewModel @Inject constructor(
     private val getApplicationCacheStateUseCase: GetApplicationCacheStateUseCase,
     private val getLoggedInUserFromFirebaseUseCase: GetLoggedInUserFromFirebaseUseCase,
     private val storeAuthUserInLocalDbUseCase: StoreAuthUserInLocalDbUseCase,
+    private val getUsersUseCase: GetUsersUseCase,
 ) : DashboardContract.ViewModel() {
 
     private val _destination = MutableSharedFlow<DashboardDestination>()
@@ -103,7 +104,7 @@ class DashboardViewModel @Inject constructor(
 
     private fun getUsersFromLocalStorage() {
         viewModelScope.launch {
-            userRepository.getUsers().collectLatest { contacts ->
+            getUsersUseCase.invoke().collectLatest { contacts ->
                 updateUiState { oldState -> oldState.copy(contacts = contacts) }
             }
         }
