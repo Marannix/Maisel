@@ -34,7 +34,6 @@ class DashboardViewModel @Inject constructor(
     private val storeAuthUserInLocalDbUseCase: StoreAuthUserInLocalDbUseCase,
     private val clearLocalUserUseCase: ClearLocalUserUseCase,
     private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase,
-//    private val getUsersUseCase: GetUsersUseCase
 ) : DashboardContract.ViewModel() {
 
     private val _destination = MutableSharedFlow<DashboardDestination>()
@@ -53,13 +52,10 @@ class DashboardViewModel @Inject constructor(
             getApplicationCacheStateUseCase.invoke().collectLatest { cache ->
                 when (cache) {
                     ApplicationCacheState.Error -> {
-                        Log.d("joshua cache: ", "error")
-                        // Log user out
+                        logOutUser()
                     }
 
                     is ApplicationCacheState.Loaded -> {
-                        Log.d("joshua cache: ", cache.settings.toString())
-
                         updateUiState { oldState -> oldState.copy(currentUser = cache.settings.user) }
                         getUsersFromFirebase()
                         getUsersFromLocalStorage()
@@ -68,7 +64,6 @@ class DashboardViewModel @Inject constructor(
                     }
 
                     ApplicationCacheState.Loading -> {
-                        Log.d("joshua cache: ", "loading")
                         // Create loading screen
                     }
                 }
@@ -90,8 +85,6 @@ class DashboardViewModel @Inject constructor(
                     }
             } catch (throwable: Throwable) {
                 // Failed to log in user
-                // TODO: Log user out
-                Log.d("Joshua logged in: ", throwable.toString())
                 logOutUser()
             }
         }
