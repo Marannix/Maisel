@@ -32,8 +32,6 @@ class DashboardViewModel @Inject constructor(
     private val getApplicationCacheStateUseCase: GetApplicationCacheStateUseCase,
     private val getLoggedInUserFromFirebaseUseCase: GetLoggedInUserFromFirebaseUseCase,
     private val storeAuthUserInLocalDbUseCase: StoreAuthUserInLocalDbUseCase,
-    private val clearLocalUserUseCase: ClearLocalUserUseCase,
-    private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase,
 ) : DashboardContract.ViewModel() {
 
     private val _destination = MutableSharedFlow<DashboardDestination>()
@@ -119,6 +117,7 @@ class DashboardViewModel @Inject constructor(
             try {
                 lastMessageUseCase.invoke()
             } catch (throwable: Throwable) {
+                //TODO: Create an error screen
                 Log.d("Recent Message: ", throwable.toString())
             }
         }
@@ -130,9 +129,7 @@ class DashboardViewModel @Inject constructor(
                 .collectLatest { listOfMessages ->
                     updateUiState { oldState ->
                         oldState.copy(
-                            recentMessageState = RecentMessageState.Success(
-                                listOfMessages
-                            )
+                            recentMessageState = RecentMessageState.Success(listOfMessages)
                         )
                     }
                 }
@@ -142,8 +139,6 @@ class DashboardViewModel @Inject constructor(
     private fun logOutUser() {
         viewModelScope.launch {
             logOutUseCase.invoke().collectLatest {
-                clearLocalUserUseCase.invoke()
-                clearRoomDatabaseUseCase.invoke()
                 updateUiState { oldState -> oldState.copy(userAuthState = UserAuthState.LOGGED_OUT) }
             }
         }
