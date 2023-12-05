@@ -20,22 +20,25 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Locale
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class UserRepositoryImpl(
+class UserRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val database: DatabaseReference,
     private val localPersistenceManager: LocalPersistenceManager,
-    private val userDao: UserDao
+    private val userDao: UserDao,
 ) : UserRepository {
 
     private val _isUserLoggedIn: MutableStateFlow<Boolean> by lazy {
@@ -135,13 +138,13 @@ class UserRepositoryImpl(
     override fun listenToLoggedInUser() = callbackFlow<Result<User>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                this@callbackFlow.trySendBlocking(Result.failure(error.toException()))
+                trySendBlocking(Result.failure(error.toException()))
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java) ?: throw UserNotFoundException
-                localPersistenceManager.setLoggedInUser(user)
-                this@callbackFlow.trySendBlocking(Result.success(user))
+               // localPersistenceManager.setLoggedInUser(user)
+                trySendBlocking(Result.success(user))
             }
         }
 

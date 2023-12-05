@@ -1,5 +1,6 @@
 package com.maisel.signin
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -10,8 +11,8 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
-import com.maisel.common.composable.TextFieldState
 import com.maisel.common.mapper.TextFieldStateMapper
+import com.maisel.domain.user.usecase.GetLoggedInUserFromFirebaseUseCase
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.navigation.Screens
@@ -26,6 +27,7 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
     private val textFieldStateMapper: TextFieldStateMapper,
+    private val getLoggedInUserFromFirebaseUseCase: GetLoggedInUserFromFirebaseUseCase,
     private val resourceProvider: ResourceProvider,
     private val contextProvider: ContextProvider
 ) : SignInContract.ViewModel() {
@@ -79,34 +81,40 @@ class SignInViewModel @Inject constructor(
                 val email = textFieldStateMapper.getEmailState(event.email)
                 updateUiState { oldState -> oldState.copy(errorMessage = "", email = email) }
             }
+
             is SignInContract.SignInUiEvents.PasswordUpdated -> {
                 val password = textFieldStateMapper.getPasswordState(event.password)
                 updateUiState { oldState -> oldState.copy(errorMessage = "", password = password) }
             }
+
             is SignInContract.SignInUiEvents.LoginButtonClicked -> {
                 /**
                  * TODO: Check if I am validating
                  */
-                viewModelScope.launch {
+             //   viewModelScope.launch {
                     makeLoginRequest(event.email, event.password)
-                }
+            //    }
             }
+
             SignInContract.SignInUiEvents.FacebookButtonClicked -> {
                 viewModelScope.launch {
                     _snackbarMessage.emit("Facebook login not implemented")
                 }
             }
+
             SignInContract.SignInUiEvents.GoogleButtonClicked -> {
                 viewModelScope.launch {
                     _showGoogleSignIn.emit(Unit)
                     _snackbarMessage.emit("Google button clicked")
                 }
             }
+
             SignInContract.SignInUiEvents.SignUpButtonClicked -> {
                 viewModelScope.launch {
                     _screenDestinationName.emit(Screens.SignUp)
                 }
             }
+
             SignInContract.SignInUiEvents.OnForgotPasswordClicked -> {
                 viewModelScope.launch {
                     _snackbarMessage.emit("Forgot password not implemented")
@@ -126,19 +134,38 @@ class SignInViewModel @Inject constructor(
             updateUiState { oldState -> oldState.copy(isLoading = true, errorMessage = null) }
 
             try {
-                val result = signInUseCase.invoke(email, password)
-                if (result.isSuccess) {
-                    _screenDestinationName.emit(Screens.Dashboard)
-                } else {
-                    updateUiState { oldState -> oldState.copy(isLoading = false, errorMessage = resourceProvider.getString(R.string.sign_in_error_message)) }
-                }
+                signInUseCase.invoke(email, password)
+             //   getLoggedInUserFromFirebaseUseCase.invoke()
+                _screenDestinationName.emit(Screens.Dashboard)
+
             } catch (throwable: Throwable) {
+                updateUiState { oldState ->
+                    oldState.copy(
+                        isLoading = false,
+                        errorMessage = resourceProvider.getString(R.string.sign_in_error_message)
+                    )
+                }
                 onSignInError(throwable)
-            } finally {
-                updateUiState { oldState -> oldState.copy(isLoading = false) }
             }
         }
     }
+
+//    private fun logInUser() {
+//        viewModelScope.launch {
+//            try {
+//                getLoggedInUserFromFirebaseUseCase.invoke()
+//                _screenDestinationName.emit(Screens.Dashboard)
+//            } catch (throwable: Throwable) {
+//                updateUiState { oldState ->
+//                    oldState.copy(
+//                        isLoading = false,
+//                        errorMessage = resourceProvider.getString(R.string.sign_in_firebase_error_message)
+//                    )
+//                }
+//                Log.d("Login failed: ", throwable.toString())
+//            }
+//        }
+//    }
 
     /**
      * @param throwable Throwable of error that occurred during sign in

@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(private val userRepository: UserRepository) {
 
-    suspend operator fun invoke(email: String, password: String): Result<AuthResult> {
-        return userRepository.makeLoginRequest(email, password)
+    suspend operator fun invoke(email: String, password: String): AuthResult {
+        return userRepository.makeLoginRequest(email, password).getOrThrow()
     }
 }

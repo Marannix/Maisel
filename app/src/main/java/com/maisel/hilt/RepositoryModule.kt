@@ -19,6 +19,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
@@ -26,31 +27,27 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 class RepositoryModule {
+
     @Provides
-    //@Singleton
     fun provideUserRepository(
-        firebaseAuth: FirebaseAuth,
-        databaseReference: DatabaseReference,
-        localPersistenceManager: LocalPersistenceManager,
-        userDao: UserDao
+        userRepository: UserRepositoryImpl
     ): UserRepository {
-        return UserRepositoryImpl(firebaseAuth, databaseReference, localPersistenceManager, userDao)
+        return userRepository
     }
 
     @Provides
-  //  @Singleton
     fun provideMessageRepository(
-        firebaseAuth: FirebaseAuth,
-        databaseReference: DatabaseReference,
-        messageDao: MessageDao,
-        recentMessageDao: RecentMessageDao
+        messageRepository: MessageRepositoryImpl
     ): MessageRepository {
-        return MessageRepositoryImpl(firebaseAuth, databaseReference, messageDao, recentMessageDao)
+        return messageRepository
     }
 
     @Provides
     @Singleton
-    fun provideApplicationCacheRepository(@ApplicationContext context: Context) : ApplicationCacheRepository {
-        return ApplicationCacheRepositoryImpl(context.settingsDataStore)
+    fun provideApplicationCacheRepository(
+        @ApplicationContext context: Context,
+        @Singleton applicationCoroutineScope: CoroutineScope
+    ): ApplicationCacheRepository {
+        return ApplicationCacheRepositoryImpl(context.settingsDataStore, applicationCoroutineScope)
     }
 }

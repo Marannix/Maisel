@@ -2,17 +2,22 @@ package com.maisel.dashboard
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.maisel.domain.database.ApplicationCacheState
+import com.maisel.domain.database.usecase.GetApplicationCacheStateUseCase
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.user.repository.UserRepository
 import com.maisel.domain.user.usecase.FetchListOfUsersUseCase
-import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
+import com.maisel.domain.user.usecase.GetLoggedInUserFromFirebaseUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
-import com.maisel.navigation.Screens
+import com.maisel.domain.user.usecase.StoreAuthUserInLocalDbUseCase
 import com.maisel.state.UserAuthState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -24,9 +29,13 @@ class DashboardViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val lastMessageUseCase: GetLastMessageUseCase,
     private val fetchListOfUsersUseCase: FetchListOfUsersUseCase,
-    private val getLoggedInUser: GetLoggedInUserUseCase,
     private val messageRepository: MessageRepository,
     private val logOutUseCase: LogOutUseCase,
+    private val getApplicationCacheStateUseCase: GetApplicationCacheStateUseCase,
+    private val getLoggedInUserFromFirebaseUseCase: GetLoggedInUserFromFirebaseUseCase,
+    private val storeAuthUserInLocalDbUseCase: StoreAuthUserInLocalDbUseCase,
+
+
 //    private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase,
 //    private val getUsersUseCase: GetUsersUseCase
 ) : DashboardContract.ViewModel() {
@@ -47,44 +56,96 @@ class DashboardViewModel @Inject constructor(
     )
 
     init {
+        //  viewModelScope.launch {
+        //TODO: AS OF THURSDAY 30th getLoggedInUser() doesn't work!!!!!
+        // runBlocking {
+        getLoggedInUser()
+        //  loadCache()
+
+        // }
+
+        //   }
+    }
+
+    private fun loadCache() {
         viewModelScope.launch {
-            setLoggedInUser()
-            getUsersFromFirebase()
-            getUsersFromLocalStorage()
-            listenToRecentMessages()
-            getRecentMessages()
+            getApplicationCacheStateUseCase.invoke().collectLatest { cache ->
+                when (cache) {
+                    ApplicationCacheState.Error -> {
+                        Log.d("joshua cache: ", "error")
+                        // Log user out
+                    }
+
+                    is ApplicationCacheState.Loaded -> {
+                        Log.d("joshua cache: ", cache.settings.toString())
+
+                        updateUiState { oldState -> oldState.copy(currentUser = cache.settings.user) }
+                        getUsersFromFirebase()
+                        getUsersFromLocalStorage()
+                        listenToRecentMessages()
+                        getRecentMessages()
+                    }
+
+                    ApplicationCacheState.Loading -> {
+                        Log.d("joshua cache: ", "loading")
+                        // Create loading screen
+                    }
+                }
+            }
         }
     }
 
     /**
      * Set logged in user
      */
-    private fun setLoggedInUser() {
+    private fun getLoggedInUser() {
         viewModelScope.launch {
-            getLoggedInUser.invoke().collectLatest { result ->
-                result.onSuccess { user ->
-                    updateUiState { oldState -> oldState.copy(currentUser = user) }
+            try {
+                Log.d("Joshua login: ", "log in")
+
+                getLoggedInUserFromFirebaseUseCase.invoke().collectLatest { result ->
+                    val user = result.getOrNull()
+                    if (user != null) {
+                        Log.d("Joshua result: ", "user")
+
+                        storeAuthUserInLocalDbUseCase.invoke(user)
+                        Log.d("Joshua result: ", "load cache")
+                        loadCache()
+                    } else {
+                        Log.d("Joshua getLoggedInUser", "user error")
+                    }
+
+
                 }
-                result.onFailure {
-                    getStoredLoggedInUser()
-                }
+            } catch (throwable: Throwable) {
+                Log.d("User Firebase: ", throwable.toString())
             }
+//            getLoggedInUser.invoke().collectLatest { result ->
+//                result.onSuccess { user ->
+//                    updateUiState { oldState -> oldState.copy(currentUser = user) }
+//                }
+//                result.onFailure {
+//                    getStoredLoggedInUser()
+//                }
+//            }
         }
+
+
     }
 
-    /**
-     * Retrieve offline logged in user
-     */
-    private fun getStoredLoggedInUser() {
-        getLoggedInUser.getLoggedInUser().let { user ->
-            if (user != null) {
-                updateUiState { oldState -> oldState.copy(currentUser = user) }
-            } else {
-                //TODO: Maybe log out?
-            }
-        }
-    }
-
+//    /**
+//     * Retrieve offline logged in user
+//     */
+//    private fun getStoredLoggedInUser() {
+//        getLoggedInUser.getLoggedInUser().let { user ->
+//            if (user != null) {
+//                updateUiState { oldState -> oldState.copy(currentUser = user) }
+//            } else {
+//                //TODO: Maybe log out?
+//            }
+//        }
+//    }
+//
 
     /**
      * Retrieve list of users from Firebase Realtime Database
@@ -125,7 +186,11 @@ class DashboardViewModel @Inject constructor(
             messageRepository.getRecentMessages()
                 .collectLatest { listOfMessages ->
                     updateUiState { oldState ->
-                        oldState.copy(recentMessageState = RecentMessageState.Success(listOfMessages))
+                        oldState.copy(
+                            recentMessageState = RecentMessageState.Success(
+                                listOfMessages
+                            )
+                        )
                     }
                 }
         }

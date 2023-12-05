@@ -10,6 +10,7 @@
 
     <!-- Sign In -->
     <string name="sign_in_error_message">Sorry, your email address or password doesn\'t look quite right. Please check you have entered them correctly</string>
+    <string name="sign_in_firebase_error_message">Oops! Something has gone wrong, please try again later</string>
 
     <!-- Sign Up -->
     <string name="sign_up_error_message">Sorry, your name, email address or password doesn\'t look quite right. Please check you have entered them correctly</string>

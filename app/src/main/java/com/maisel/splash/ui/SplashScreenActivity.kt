@@ -46,7 +46,7 @@ class SplashActivity : ComponentActivity() {
 
                         is ApplicationCacheState.Loaded -> {
                             screen = when {
-                                cache.settings.isLoggedIn -> {
+                                cache.settings.user != null -> {
                                     Screens.Dashboard
                                 }
 

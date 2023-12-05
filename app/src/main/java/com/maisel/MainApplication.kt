@@ -1,6 +1,7 @@
 package com.maisel
 
 import android.app.Application
+import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
@@ -15,6 +16,11 @@ class MainApplication : Application() {
         FirebaseApp.initializeApp(this.applicationContext)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.valueOf("DEBUG"));
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.enableDefaults();
+        }
+
         //   //     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 }

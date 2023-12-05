@@ -25,9 +25,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.*
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class MessageRepositoryImpl(
+class MessageRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val database: DatabaseReference,
     private val messageDao: MessageDao,

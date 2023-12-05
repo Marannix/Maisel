@@ -2,9 +2,10 @@ package com.maisel.domain.user.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-//TODO: Rename to User
 @Parcelize
+@Serializable
 data class User(var userId: String?,
                 var username: String?,
                 var emailAddress: String?,

@@ -1,32 +1,24 @@
 package com.maisel.compose.state.user.compose
 
-import android.util.Log
-import androidx.compose.runtime.toMutableStateList
 import com.maisel.coroutine.DispatcherProvider
 import com.maisel.dashboard.DashboardViewState
-import com.maisel.dashboard.RecentMessageState
 import com.maisel.domain.message.MessageRepository
 import com.maisel.domain.message.usecase.GetLastMessageUseCase
 import com.maisel.domain.room.ClearRoomDatabaseUseCase
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.repository.UserRepository
-import com.maisel.domain.user.usecase.GetLoggedInUserUseCase
+import com.maisel.domain.user.usecase.GetLoggedInUserFromFirebaseUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
-import com.maisel.state.UserAuthState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserComposerController @Inject constructor(
     private val lastMessageUseCase: GetLastMessageUseCase,
-    private val getLoggedInUser: GetLoggedInUserUseCase,
+    private val getLoggedInUser: GetLoggedInUserFromFirebaseUseCase,
     private val userRepository: UserRepository,
     private val messageRepository: MessageRepository,
     private val logOutUseCase: LogOutUseCase,
