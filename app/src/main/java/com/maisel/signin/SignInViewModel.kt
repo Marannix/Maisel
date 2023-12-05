@@ -8,6 +8,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
@@ -91,9 +92,9 @@ class SignInViewModel @Inject constructor(
                 /**
                  * TODO: Check if I am validating
                  */
-             //   viewModelScope.launch {
-                    makeLoginRequest(event.email, event.password)
-            //    }
+                //   viewModelScope.launch {
+                makeLoginRequest(event.email, event.password)
+                //    }
             }
 
             SignInContract.SignInUiEvents.FacebookButtonClicked -> {
@@ -135,9 +136,17 @@ class SignInViewModel @Inject constructor(
 
             try {
                 signInUseCase.invoke(email, password)
-             //   getLoggedInUserFromFirebaseUseCase.invoke()
+                //   getLoggedInUserFromFirebaseUseCase.invoke()
                 _screenDestinationName.emit(Screens.Dashboard)
 
+            } catch (firebaseTooManyRequestsException: FirebaseTooManyRequestsException) {
+                updateUiState { oldState ->
+                    oldState.copy(
+                        isLoading = false,
+                        errorMessage = resourceProvider.getString(R.string.sign_in_too_many_attempts)
+                    )
+                }
+                onSignInError(firebaseTooManyRequestsException)
             } catch (throwable: Throwable) {
                 updateUiState { oldState ->
                     oldState.copy(

@@ -15,10 +15,10 @@ class SplashScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     val applicationCache = getApplicationCacheStateUseCase.invoke()
-
-    init {
-        viewModelScope.launch {
-            loadApplicationCacheUseCase.invoke()
-        }
-    }
+//
+//    init {
+//        viewModelScope.launch {
+//            loadApplicationCacheUseCase.invoke()
+//        }
+//    }
 }

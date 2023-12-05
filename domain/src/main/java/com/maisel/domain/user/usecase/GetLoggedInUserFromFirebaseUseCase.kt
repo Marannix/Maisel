@@ -14,6 +14,7 @@ class GetLoggedInUserFromFirebaseUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(): Flow<Result<User>> {
         return userRepository.listenToLoggedInUser()
+
             //.collectLatest { result ->
           //  Log.d("joshua logged in: ", result.getOrThrow().toString())
             //return user

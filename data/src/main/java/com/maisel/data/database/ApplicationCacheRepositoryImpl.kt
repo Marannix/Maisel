@@ -34,11 +34,9 @@ class ApplicationCacheRepositoryImpl @Inject constructor(
         applicationCoroutineScope.launch {
             try {
                 dataStore.data.collectLatest {
-                    Log.d("joshua appcache:", it.toString())
                     _cacheState.value = ApplicationCacheState.Loaded(it)
                 }
             } catch (error: SerializationException) {
-                Log.d("joshua appcacheError:", error.toString())
                 _cacheState.value = ApplicationCacheState.Error
             }
         }
@@ -61,11 +59,9 @@ class ApplicationCacheRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUser(user: User) {
-        val x = dataStore.updateData { actualSettings: ApplicationSetting ->
+        dataStore.updateData { actualSettings: ApplicationSetting ->
             actualSettings.copy(user = user)
         }
-
-
     }
 
     override fun getCacheState(): Flow<ApplicationCacheState> {

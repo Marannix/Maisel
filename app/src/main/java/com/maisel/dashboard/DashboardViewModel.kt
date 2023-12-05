@@ -25,7 +25,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    //private val userComposerController: UserComposerController,
     private val userRepository: UserRepository,
     private val lastMessageUseCase: GetLastMessageUseCase,
     private val fetchListOfUsersUseCase: FetchListOfUsersUseCase,
@@ -34,19 +33,9 @@ class DashboardViewModel @Inject constructor(
     private val getApplicationCacheStateUseCase: GetApplicationCacheStateUseCase,
     private val getLoggedInUserFromFirebaseUseCase: GetLoggedInUserFromFirebaseUseCase,
     private val storeAuthUserInLocalDbUseCase: StoreAuthUserInLocalDbUseCase,
-
-
 //    private val clearRoomDatabaseUseCase: ClearRoomDatabaseUseCase,
 //    private val getUsersUseCase: GetUsersUseCase
 ) : DashboardContract.ViewModel() {
-
-//    val currentUser: StateFlow<User> = userComposerController.currentUser
-//
-//    val users: StateFlow<List<User>> = userComposerController.users
-//
-//    val viewState: StateFlow<DashboardViewState> = userComposerController.state
-
-    // val isLoggedIn = userRepository.isUserLoggedIn
 
     private val _destination = MutableSharedFlow<DashboardDestination>()
     val destination = _destination.asSharedFlow()
@@ -56,15 +45,7 @@ class DashboardViewModel @Inject constructor(
     )
 
     init {
-        //  viewModelScope.launch {
-        //TODO: AS OF THURSDAY 30th getLoggedInUser() doesn't work!!!!!
-        // runBlocking {
         getLoggedInUser()
-        //  loadCache()
-
-        // }
-
-        //   }
     }
 
     private fun loadCache() {
@@ -101,51 +82,19 @@ class DashboardViewModel @Inject constructor(
     private fun getLoggedInUser() {
         viewModelScope.launch {
             try {
-                Log.d("Joshua login: ", "log in")
-
-                getLoggedInUserFromFirebaseUseCase.invoke().collectLatest { result ->
-                    val user = result.getOrNull()
-                    if (user != null) {
-                        Log.d("Joshua result: ", "user")
-
+                getLoggedInUserFromFirebaseUseCase.invoke()
+                    .collectLatest { result ->
+                        val user = result.getOrThrow()
                         storeAuthUserInLocalDbUseCase.invoke(user)
-                        Log.d("Joshua result: ", "load cache")
                         loadCache()
-                    } else {
-                        Log.d("Joshua getLoggedInUser", "user error")
                     }
-
-
-                }
             } catch (throwable: Throwable) {
-                Log.d("User Firebase: ", throwable.toString())
+                // Failed to log in user
+                // TODO: Log user out
+                Log.d("Joshua logged in: ", throwable.toString())
             }
-//            getLoggedInUser.invoke().collectLatest { result ->
-//                result.onSuccess { user ->
-//                    updateUiState { oldState -> oldState.copy(currentUser = user) }
-//                }
-//                result.onFailure {
-//                    getStoredLoggedInUser()
-//                }
-//            }
         }
-
-
     }
-
-//    /**
-//     * Retrieve offline logged in user
-//     */
-//    private fun getStoredLoggedInUser() {
-//        getLoggedInUser.getLoggedInUser().let { user ->
-//            if (user != null) {
-//                updateUiState { oldState -> oldState.copy(currentUser = user) }
-//            } else {
-//                //TODO: Maybe log out?
-//            }
-//        }
-//    }
-//
 
     /**
      * Retrieve list of users from Firebase Realtime Database
@@ -233,13 +182,4 @@ class DashboardViewModel @Inject constructor(
         recentMessageState = RecentMessageState.Loading,
         userAuthState = UserAuthState.EMPTY
     )
-
-//
-//    /**
-//     * Disposes the inner [DashboardViewModel].
-//     */
-//    override fun onCleared() {
-//        super.onCleared()
-//        userComposerController.onCleared()
-//    }
 }
