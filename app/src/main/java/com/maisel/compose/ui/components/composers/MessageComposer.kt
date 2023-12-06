@@ -1,26 +1,28 @@
 package com.maisel.compose.ui.components.composers
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maisel.R
 import com.maisel.compose.state.messages.compose.MessageComposerState
 import com.maisel.compose.ui.theme.extendedColors
+import com.maisel.message.MessageContract
 import com.maisel.message.MessageViewModel
 
 /**
- * Default MessageComposer component that relies on [MessageComposerViewModel] to handle data and
+ * Default MessageComposer component that relies on [MessageViewModel] to handle data and
  * communicate various events.
  *
- * @param viewModel The ViewModel that provides pieces of data to show in the composer, like the
+ * @param messageViewModel The ViewModel that provides pieces of data to show in the composer, like the
  * currently selected integration data or the user input. It also handles sending messages.
  * @param modifier Modifier for styling.
  * @param onSendMessage Handler when the user sends a message. By default it delegates this to the
@@ -36,17 +38,17 @@ import com.maisel.message.MessageViewModel
  */
 @Composable
 fun MessageComposer(
-    messageViewModel: MessageViewModel,
+    messageViewModel: MessageViewModel = hiltViewModel(),
+    uiEvents: (MessageContract.UiEvents) -> Unit = messageViewModel::onUiEvent,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit = { DefaultComposerLabel() },
-    onValueChange: (String) -> Unit = { messageViewModel.setMessageInput(it) },
-    onAttachmentsClick: () -> Unit = { },
-    onCameraClick: () -> Unit = { },
+    onValueChange: (String) -> Unit = { message ->
+        uiEvents(MessageContract.UiEvents.MessageUpdated(message))
+    },
     integrations: @Composable RowScope.(MessageComposerState) -> Unit = {
         DefaultComposerIntegrations(
             messageInputState = it,
-            onAttachmentsClick = onAttachmentsClick,
-            onCameraClick = onCameraClick
+            uiEvents = uiEvents
         )
     },
     input: @Composable RowScope.(MessageComposerState) -> Unit = {
@@ -61,26 +63,16 @@ fun MessageComposer(
         )
     },
 ) {
+    val uiState by messageViewModel.uiState.collectAsStateWithLifecycle()
 
-    //  val value by viewModel.input.collectAsState()
-    val value: String =
-        messageViewModel.state.observeAsState().value?.input ?: ""
-    //    val cooldownTimer by viewModel.cooldownTimer.collectAsState()
     val cooldownTimer = 0
 
     MessageComposer(
-        modifier = modifier,
-        messageViewModel = messageViewModel,
-        onSendMessage = { text ->
-            messageViewModel.sendMessage(text)
-//            val messageWithData = viewModel.buildNewMessage(text, attachments)
-//
-//            onSendMessage(messageWithData)
-        },
+        uiEvents = uiEvents,
         integrations = integrations,
         input = input,
         messageComposerState = MessageComposerState(
-            inputValue = value,
+            inputValue = uiState.input,
             cooldownTimer = cooldownTimer
         )
     )
@@ -107,10 +99,8 @@ fun MessageComposer(
  */
 @Composable
 fun MessageComposer(
-    modifier: Modifier = Modifier,
-    messageViewModel: MessageViewModel,
+    uiEvents: (MessageContract.UiEvents) -> Unit,
     messageComposerState: MessageComposerState,
-    onSendMessage: (String) -> Unit = { messageViewModel.sendMessage(it) },
     shouldShowIntegrations: Boolean = true,
     integrations: @Composable RowScope.(MessageComposerState) -> Unit,
     input: @Composable RowScope.(MessageComposerState) -> Unit,
@@ -118,10 +108,8 @@ fun MessageComposer(
     val (value, cooldownTimer) = messageComposerState
 
     Surface(
-        // modifier = modifier,
         elevation = 4.dp,
         color = MaterialTheme.extendedColors.bottomBarsBackground,
-        //  .background(color = MaterialTheme.extendedColors.bottomBarsBackground)
     ) {
         Column {
             Row(
@@ -159,7 +147,7 @@ fun MessageComposer(
                                 )
                             },
                             onClick = {
-                                onSendMessage(value)
+                                uiEvents(MessageContract.UiEvents.SendMessage(value))
                             }
                         )
                     } else {
@@ -190,14 +178,11 @@ fun MessageComposer(
  * Currently just shows the Attachment picker action.
  *
  * @param messageInputState The state of the input.
- * @param onAttachmentsClick Handler when the user selects attachments.
- * @param onCameraClick Handler when the user selects camera.
  */
 @Composable
 internal fun DefaultComposerIntegrations(
     messageInputState: MessageComposerState,
-    onAttachmentsClick: () -> Unit,
-    onCameraClick: () -> Unit,
+    uiEvents: (MessageContract.UiEvents) -> Unit,
 ) {
     val hasTextInput = messageInputState.inputValue.isNotEmpty()
     val hasCommandInput = messageInputState.inputValue.startsWith("/")
@@ -221,7 +206,9 @@ internal fun DefaultComposerIntegrations(
                     tint = MaterialTheme.colors.primary
                 )
             },
-            onClick = onAttachmentsClick
+            onClick = {
+                uiEvents(MessageContract.UiEvents.AttachmentsClicked)
+            }
         )
 
         IconButton(
@@ -236,7 +223,9 @@ internal fun DefaultComposerIntegrations(
                     tint = MaterialTheme.colors.primary //MaterialTheme.extendedColors.disabled
                 )
             },
-            onClick = onCameraClick
+            onClick = {
+                uiEvents(MessageContract.UiEvents.CameraClicked)
+            }
         )
     }
 }

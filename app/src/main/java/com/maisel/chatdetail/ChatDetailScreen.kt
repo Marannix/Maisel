@@ -80,16 +80,15 @@ fun ChatDetailScreen(
         messageViewModel.init()
     }
 
-    val chatDetailUiState by chatDetailViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by chatDetailViewModel.uiState.collectAsStateWithLifecycle()
 
 
     //val user: User? = chatDetailViewModel.viewState.observeAsState().value?.recipient
     //   ?: throw Exception() //TODO: Handle this better
 
     ChatDetailContent(
-        messageViewModel = messageViewModel,
-        chatDetailUiState = chatDetailUiState,
-        chatDetailUiEvents = chatDetailViewModel::onUiEvent,
+        uiState = uiState,
+        uiEvents = chatDetailViewModel::onUiEvent,
     )
 
 }
@@ -99,9 +98,8 @@ fun ChatDetailScreen(
 @ExperimentalFoundationApi
 fun ChatDetailContent(
     //  chatDetailViewModel: ChatDetailViewModel,
-    messageViewModel: MessageViewModel,
-    chatDetailUiState: ChatDetailsContract.UiState,
-    chatDetailUiEvents: (ChatDetailsContract.UiEvents) -> Unit,
+    uiState: ChatDetailsContract.UiState,
+    uiEvents: (ChatDetailsContract.UiEvents) -> Unit,
     // user: User
 ) {
 
@@ -120,9 +118,9 @@ fun ChatDetailContent(
                         // show drawer icon
                         IconButton(
                             onClick = {
-                                chatDetailUiEvents(ChatDetailsContract.UiEvents.BackPressed)
+                                uiEvents(ChatDetailsContract.UiEvents.BackPressed)
 
-                             //   navHostController.navigateUp()
+                                //   navHostController.navigateUp()
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
@@ -131,7 +129,7 @@ fun ChatDetailContent(
                     title = {
                         Image(
                             painter = rememberImagePainter(
-                                data = chatDetailUiState.recipient?.profilePicture
+                                data = uiState.recipient?.profilePicture
                                     ?: R.drawable.ic_son_goku,
                                 builder = {
                                     crossfade(true)
@@ -148,19 +146,19 @@ fun ChatDetailContent(
                         )
 
                         Text(
-                            chatDetailUiState.recipient?.username ?: "",
+                            uiState.recipient?.username ?: "",
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
                     },
                     actions = {
                         IconButton(onClick = {
-                            chatDetailUiEvents(ChatDetailsContract.UiEvents.CallClicked)
+                            uiEvents(ChatDetailsContract.UiEvents.CallClicked)
 
                         }) {
                             Icon(Icons.Filled.Phone, contentDescription = "") //TODO: Update asset
                         }
                         IconButton(onClick = {
-                            chatDetailUiEvents(ChatDetailsContract.UiEvents.VideoClicked)
+                            uiEvents(ChatDetailsContract.UiEvents.VideoClicked)
 
                         }) {
                             Icon(
@@ -203,20 +201,19 @@ fun ChatDetailContent(
                     contentColor = MaterialTheme.colors.primary
                 )
             },
-            content = { padding -> ChatContent(padding, chatDetailUiState.messages) },
-            bottomBar = { MessageBox(messageViewModel) }
+            content = { padding -> ChatContent(padding, uiState.messages) },
+            bottomBar = { MessageBox() }
         )
     }
 }
 
 @Composable
-fun MessageBox(messageViewModel: MessageViewModel) {
+fun MessageBox() {
     MessageComposer(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .navigationBarsWithImePadding(),
-        messageViewModel = messageViewModel
+            .navigationBarsWithImePadding()
     )
 }
 
