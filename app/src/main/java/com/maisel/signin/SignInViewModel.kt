@@ -1,6 +1,5 @@
 package com.maisel.signin
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -13,7 +12,6 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.GoogleAuthProvider
 import com.maisel.R
 import com.maisel.common.mapper.TextFieldStateMapper
-import com.maisel.domain.user.usecase.GetLoggedInUserFromFirebaseUseCase
 import com.maisel.domain.user.usecase.SignInUseCase
 import com.maisel.domain.user.usecase.SignInWithCredentialUseCase
 import com.maisel.navigation.Screens
@@ -28,7 +26,6 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
     private val textFieldStateMapper: TextFieldStateMapper,
-    private val getLoggedInUserFromFirebaseUseCase: GetLoggedInUserFromFirebaseUseCase,
     private val resourceProvider: ResourceProvider,
     private val contextProvider: ContextProvider
 ) : SignInContract.ViewModel() {

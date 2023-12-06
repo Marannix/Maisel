@@ -43,7 +43,7 @@ class UserComposerController @Inject constructor(
     /**
      * Represents the user Logged In
      */
-    val currentUser: MutableStateFlow<User> = MutableStateFlow(User())
+ //   val currentUser: MutableStateFlow<User> = MutableStateFlow(User())
 
     /**
      * Represents the list of users from Firebase Realtime Database

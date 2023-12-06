@@ -1,13 +1,37 @@
 package com.maisel.chatdetail
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.AppBarDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -15,7 +39,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,6 +50,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
@@ -35,12 +60,12 @@ import com.maisel.R
 import com.maisel.compose.ui.components.composers.MessageComposer
 import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.components.shape.SenderMessageBox
-import com.maisel.compose.ui.theme.*
+import com.maisel.compose.ui.theme.extendedColors
+import com.maisel.compose.ui.theme.typography
 import com.maisel.data.utils.DateFormatter
-import com.maisel.domain.user.entity.User
 import com.maisel.message.MessageViewModel
 import com.maisel.ui.shapes
-import java.util.*
+import java.util.Date
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
@@ -55,28 +80,34 @@ fun ChatDetailScreen(
         messageViewModel.init()
     }
 
-    val user: User? = chatDetailViewModel.viewState.observeAsState().value?.recipient
+    val chatDetailUiState by chatDetailViewModel.uiState.collectAsStateWithLifecycle()
+
+
+    //val user: User? = chatDetailViewModel.viewState.observeAsState().value?.recipient
     //   ?: throw Exception() //TODO: Handle this better
 
-    user?.let { it ->
-        Screen(navHostController, chatDetailViewModel, messageViewModel, it)
-    }
+    ChatDetailContent(
+        messageViewModel = messageViewModel,
+        chatDetailUiState = chatDetailUiState,
+        chatDetailUiEvents = chatDetailViewModel::onUiEvent,
+    )
+
 }
 
 @Composable
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
-fun Screen(
-    navHostController: NavHostController,
-    chatDetailViewModel: ChatDetailViewModel,
+fun ChatDetailContent(
+    //  chatDetailViewModel: ChatDetailViewModel,
     messageViewModel: MessageViewModel,
-    user: User
+    chatDetailUiState: ChatDetailsContract.UiState,
+    chatDetailUiEvents: (ChatDetailsContract.UiEvents) -> Unit,
+    // user: User
 ) {
 
-    val messageItems: List<MessageItem> =
-        chatDetailViewModel.viewState.observeAsState().value?.getMessagesItem() ?: emptyList()
+//    val messageItems: List<MessageItem> =
+//        chatDetailViewModel.viewState.observeAsState().value?.getMessagesItem() ?: emptyList()
 
-    val result = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -89,8 +120,9 @@ fun Screen(
                         // show drawer icon
                         IconButton(
                             onClick = {
-                                result.value = "Back Arrow icon clicked"
-                                navHostController.navigateUp()
+                                chatDetailUiEvents(ChatDetailsContract.UiEvents.BackPressed)
+
+                             //   navHostController.navigateUp()
                             }
                         ) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
@@ -99,7 +131,8 @@ fun Screen(
                     title = {
                         Image(
                             painter = rememberImagePainter(
-                                data = user.profilePicture ?: R.drawable.ic_son_goku,
+                                data = chatDetailUiState.recipient?.profilePicture
+                                    ?: R.drawable.ic_son_goku,
                                 builder = {
                                     crossfade(true)
                                     //placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
@@ -115,18 +148,20 @@ fun Screen(
                         )
 
                         Text(
-                            user.username ?: "User",
+                            chatDetailUiState.recipient?.username ?: "",
                             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
                     },
                     actions = {
                         IconButton(onClick = {
-                            result.value = " Call icon clicked"
+                            chatDetailUiEvents(ChatDetailsContract.UiEvents.CallClicked)
+
                         }) {
                             Icon(Icons.Filled.Phone, contentDescription = "") //TODO: Update asset
                         }
                         IconButton(onClick = {
-                            result.value = " Video icon clicked"
+                            chatDetailUiEvents(ChatDetailsContract.UiEvents.VideoClicked)
+
                         }) {
                             Icon(
                                 Icons.Rounded.Videocam,
@@ -139,7 +174,6 @@ fun Screen(
                         ) {
                             IconButton(onClick = {
                                 expanded.value = true
-                                result.value = "More icon clicked"
                             }) {
                                 Icon(
                                     Icons.Filled.MoreVert,
@@ -152,14 +186,12 @@ fun Screen(
                             ) {
                                 DropdownMenuItem(onClick = {
                                     expanded.value = false
-                                    result.value = "First item clicked"
                                 }) {
                                     Text("First Item")
                                 }
 
                                 DropdownMenuItem(onClick = {
                                     expanded.value = false
-                                    result.value = "Second item clicked"
                                 }) {
                                     Text("Second item")
                                 }
@@ -171,7 +203,7 @@ fun Screen(
                     contentColor = MaterialTheme.colors.primary
                 )
             },
-            content = { padding -> Content(padding, messageItems) },
+            content = { padding -> ChatContent(padding, chatDetailUiState.messages) },
             bottomBar = { MessageBox(messageViewModel) }
         )
     }
@@ -190,7 +222,7 @@ fun MessageBox(messageViewModel: MessageViewModel) {
 
 @Composable
 @ExperimentalFoundationApi
-fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
+fun ChatContent(padding: PaddingValues, messageItems: List<MessageItem>) {
     Column(
         Modifier
             .fillMaxSize()
@@ -198,14 +230,14 @@ fun Content(padding: PaddingValues, messageItems: List<MessageItem>) {
             .padding(padding)
             .padding(horizontal = 8.dp)
     ) {
-        MessageColumn(messageItems)
+        MessagesContent(messageItems)
     }
 }
 
 //https://medium.com/nerd-for-tech/creating-a-heterogeneous-list-with-jetpack-compose-138d3698c4cc
 @ExperimentalFoundationApi
 @Composable
-fun MessageColumn(messageItems: List<MessageItem>) {
+fun MessagesContent(messageItems: List<MessageItem>) {
     val listState = rememberLazyListState()
 
     LaunchedEffect(messageItems.size) {
@@ -222,7 +254,7 @@ fun MessageColumn(messageItems: List<MessageItem>) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             grouped.forEach { (section, message) ->
-                stickyHeader {
+                item {
                     DayHeader(section)
                 }
                 items(message) { item ->
@@ -231,6 +263,7 @@ fun MessageColumn(messageItems: List<MessageItem>) {
                         is MessageItem.SenderMessageItem -> SenderCard(
                             state = item
                         )
+
                         is MessageItem.ReceiverMessageItem -> ReceiverCard(
                             state = item,
                         )

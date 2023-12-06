@@ -10,11 +10,4 @@ class GetMessagesUseCase @Inject constructor(private val messageRepository: Mess
     operator fun invoke(senderId: String, receiverId: String): Flow<Result<List<ChatModel>>> {
         return messageRepository.listenToChatMessages(senderId, receiverId)
     }
-
-    sealed class MessageDataState {
-        object Loading: MessageDataState()
-        object Empty: MessageDataState()
-        data class Success(val messages: List<ChatModel>): MessageDataState()
-        object Error : MessageDataState()
-    }
 }
