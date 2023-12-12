@@ -23,6 +23,7 @@ interface DashboardContract {
     sealed class UiEvents : UiEventBase {
         data class EmailUpdated(val email: String) : UiEvents()
         data class RecentMessageClicked(val receiverUserId: String?) : UiEvents()
+        object SettingsClicked : UiEvents()
         object LogoutClicked : UiEvents()
     }
 }

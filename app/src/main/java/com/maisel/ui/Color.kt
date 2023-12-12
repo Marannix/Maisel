@@ -46,3 +46,11 @@ val colorOnPrimaryDark = Color.White
 
 val colorSecondaryDark = concrete
 val colorSurfaceDark = lightGreyAlpha
+
+//Extended Light
+val settingLightCardBackgroundColor = Color(0xFF1E1F26)
+val settingLightCardOnBackgroundColor = Color(0xFFFFFFFF)
+
+//Extended Dark
+val settingDarkCardBackgroundColor = Color(0xFF1E1F26)
+val settingDarkCardOnBackgroundColor = Color(0xFFFFFFFF)

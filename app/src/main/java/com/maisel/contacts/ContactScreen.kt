@@ -72,7 +72,12 @@ private fun ContactContent(
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
                     title = {
-                        Text("Select contact")
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.body1,
+                            text = "Select contact",
+                            color = MaterialTheme.colors.onBackground,
+                        )
                     },
                     navigationIcon = {
                         IconButton(

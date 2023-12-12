@@ -97,7 +97,7 @@ object MaiselColours {
         override val onError = Red10
 
         override val background = BVlack
-        override val onBackground = Neutral90
+        override val onBackground = White
 
         override val surface = Neutral10
         override val onSurface = Neutral90

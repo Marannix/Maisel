@@ -8,6 +8,10 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.maisel.ui.settingDarkCardBackgroundColor
+import com.maisel.ui.settingDarkCardOnBackgroundColor
+import com.maisel.ui.settingLightCardBackgroundColor
+import com.maisel.ui.settingLightCardOnBackgroundColor
 import com.maisel.ui.typography
 
 @Immutable
@@ -19,6 +23,8 @@ data class ExtendedColors(
     val lowEmphasis: Color,
     val highEmphasis: Color,
     val inputBackground: Color,
+    val cardBackgroundColor: Color,
+    val cardOnBackgroundColor: Color,
 )
 
 private val LightColorPalette = lightColors(
@@ -49,6 +55,8 @@ internal val ExtendedLightColorPalette = ExtendedColors(
     lowEmphasis = MaiselColours.Light.lowEmphasis,
     highEmphasis = MaiselColours.Light.highEmphasis,
     inputBackground = MaiselColours.Light.inputBackground,
+    cardBackgroundColor = settingLightCardBackgroundColor,
+    cardOnBackgroundColor = settingLightCardOnBackgroundColor
 )
 
 /**
@@ -82,6 +90,8 @@ val ExtendedDarkColorPalette = ExtendedColors(
     lowEmphasis = MaiselColours.Dark.lowEmphasis,
     highEmphasis = MaiselColours.Dark.highEmphasis,
     inputBackground = MaiselColours.Dark.inputBackground,
+    cardBackgroundColor = settingDarkCardBackgroundColor,
+    cardOnBackgroundColor = settingDarkCardOnBackgroundColor
 )
 
 internal val LocalExtendedColors = staticCompositionLocalOf<ExtendedColors> {

@@ -168,6 +168,12 @@ class DashboardViewModel @Inject constructor(
             DashboardContract.UiEvents.LogoutClicked -> {
                 logOutUser()
             }
+
+            DashboardContract.UiEvents.SettingsClicked -> {
+                viewModelScope.launch {
+                    _destination.emit(DashboardDestination.Settings)
+                }
+            }
         }
     }
 

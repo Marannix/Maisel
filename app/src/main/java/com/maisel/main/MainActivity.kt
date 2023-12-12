@@ -34,6 +34,7 @@ import com.maisel.dashboard.DashboardScreen
 import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.navigation.Screens
 import com.maisel.placeholder.PlaceholderScreen
+import com.maisel.setting.SettingsScreen
 import com.maisel.showcase.ShowcaseScreen
 import com.maisel.signin.SignInScreen
 import com.maisel.signup.SignUpScreen
@@ -107,6 +108,9 @@ class MainActivity : BaseActivity() {
                             }
                             composable(Screens.Placeholder.name) {
                                 PlaceholderScreen(navHostController = navController)
+                            }
+                            composable(Screens.Settings.name) {
+                                SettingsScreen(navHostController = navController)
                             }
                         }
                     }

@@ -40,6 +40,10 @@ fun DashboardScreen(
                                 route = "${Screens.ChatDetail.name}/${destination.receiverUserId}"
                             )
                         }
+
+                        DashboardDestination.Settings -> {
+                            navHostController.navigate(route = Screens.Settings.name)
+                        }
                     }
                 }
             }
@@ -62,9 +66,7 @@ private fun DashboardContent(
     uiEvents: (DashboardContract.UiEvents) -> Unit,
 ) {
     val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
-    val result = remember { mutableStateOf("") }
-    val expanded = remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         Scaffold(
@@ -76,13 +78,7 @@ private fun DashboardContent(
             topBar = {
                 DashboardAppBar(
                     uiEvents = uiEvents,
-                    result = result,
-                    expanded = expanded,
-                    onNavigationItemClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    })
+                )
             },
             floatingActionButton = {
                 FloatingActionButton(

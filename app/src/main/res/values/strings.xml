@@ -15,4 +15,19 @@
 
     <!-- Sign Up -->
     <string name="sign_up_error_message">Sorry, your name, email address or password doesn\'t look quite right. Please check you have entered them correctly</string>
+
+    <!-- Setting -->
+    <string name="account">Account</string>
+    <string name="general">General</string>
+    <string name="notification">Notifications</string>
+    <string name="notification_subtitle">Control how the app alerts you</string>
+    <string name="privacy">Privacy</string>
+    <string name="privacy_subtitle">Manage how your data is handled and shared</string>
+    <string name="help">Help</string>
+    <string name="help_subtitle">Help  centre, contact us, privacy policy</string>
+    <string name="feedback">Feedback</string>
+    <string name="light_mode">Share app</string>
+    <string name="build_information">Build information</string>
+    <string name="app_version">App version: %s</string>
+
 </resources>

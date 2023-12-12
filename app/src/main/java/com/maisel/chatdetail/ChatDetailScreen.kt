@@ -146,8 +146,12 @@ fun ChatDetailContent(
                         )
 
                         Text(
-                            uiState.recipient?.username ?: "",
-                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp, bottom = 4.dp),
+                            style = MaterialTheme.typography.body1,
+                            text = uiState.recipient?.username ?: "",
+                            color = MaterialTheme.colors.onBackground,
                         )
                     },
                     actions = {
