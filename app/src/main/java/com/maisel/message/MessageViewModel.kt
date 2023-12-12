@@ -1,25 +1,18 @@
 package com.maisel.message
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.maisel.common.base.BaseViewModel
-import com.maisel.compose.state.user.compose.UserComposerController
-import com.maisel.dashboard.DashboardContract
-import com.maisel.dashboard.RecentMessageState
 import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.domain.database.usecase.GetApplicationCacheStateUseCase
 import com.maisel.domain.message.ChatDataModel
-import com.maisel.domain.message.ChatModel
 import com.maisel.domain.message.usecase.SendMessageUseCase
 import com.maisel.domain.user.entity.User
-import com.maisel.state.UserAuthState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
