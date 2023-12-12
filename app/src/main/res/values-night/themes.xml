@@ -25,7 +25,7 @@
         <item name="postSplashScreenTheme">@style/Theme.Maisel</item>
 
         <!-- Status bar and Nav bar configs -->
-        <item name="android:statusBarColor">@color/white</item>
-        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:statusBarColor">@color/maisel_splash_screen_background_dark</item>
+        <item name="android:navigationBarColor">@color/maisel_splash_screen_background_dark</item>
     </style>
 </resources>
