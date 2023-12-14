@@ -8,6 +8,7 @@ data class ApplicationSetting(
     val hasSeenShowcase: Boolean,
     val isLoggedIn: Boolean,
     val user: User?,
+    val appTheme: AppTheme?
 ) {
 
     companion object {
@@ -15,6 +16,7 @@ data class ApplicationSetting(
             hasSeenShowcase = false,
             isLoggedIn = false,
             user = null,
+            appTheme = null
         )
     }
 }

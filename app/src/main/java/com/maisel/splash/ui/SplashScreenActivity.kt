@@ -1,7 +1,6 @@
 package com.maisel.splash.ui
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -36,8 +35,7 @@ class SplashActivity : ComponentActivity() {
                     when (cache) {
                         ApplicationCacheState.Error -> {
                             screen = Screens.Showcase
-                            navigateToMainActivity(screen)
-
+                            navigateToMainActivity(screen, null)
                         }
 
                         is ApplicationCacheState.Loaded -> {
@@ -54,7 +52,10 @@ class SplashActivity : ComponentActivity() {
                                     Screens.Showcase
                                 }
                             }
-                            navigateToMainActivity(screen)
+                            navigateToMainActivity(
+                                screen,
+                                viewModel.mapThemeToString(cache.settings.appTheme)
+                            )
                         }
 
                         ApplicationCacheState.Loading -> {
@@ -67,8 +68,8 @@ class SplashActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    private fun navigateToMainActivity(screen: Screens) {
-        startActivity(MainActivity.getCallingIntent(applicationContext, screen))
+    private fun navigateToMainActivity(screen: Screens, darkMode: String?) {
+        startActivity(MainActivity.getCallingIntent(applicationContext, screen, darkMode))
         finish()
     }
 }

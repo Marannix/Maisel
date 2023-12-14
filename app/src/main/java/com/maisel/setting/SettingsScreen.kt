@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,11 +34,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
+import com.maisel.compose.ui.components.dialog.Dialogs.ThemeAlertDialog
 import com.maisel.compose.ui.theme.extendedColors
 
 @Composable
@@ -45,7 +48,6 @@ fun SettingsScreen(
     navHostController: NavHostController,
     viewModel: SettingViewModel = hiltViewModel(),
 ) {
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     SettingsContent(
@@ -61,7 +63,6 @@ fun SettingsContent(
     uiState: SettingContract.UiState,
     uiEvents: (SettingContract.UiEvents) -> Unit,
 ) {
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -84,9 +85,6 @@ fun SettingsContent(
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
                     }
                 },
-//                colors = TopAppBarDefaults.mediumTopAppBarColors(
-//                    containerColor = MaterialTheme.colors.background
-//                ),
             )
         },
         content = { contentPadding ->
@@ -98,9 +96,15 @@ fun SettingsContent(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 8.dp)
             ) {
+                if (uiState.isThemeDialogShown) {
+                    ThemeDialog(
+                        navHostController = navHostController,
+                        uiAction = uiEvents
+                    )
+                }
                 AccountSection()
                 GeneralSection()
-                ThemeSection()
+                ThemeSection(uiEvents)
                 BuildInformationSection()
             }
         }
@@ -135,8 +139,6 @@ private fun GeneralSection() {
                 //  drawableRes = R.drawable.ic_notifications,
                 title = stringResource(id = R.string.notification),
                 subTitle = stringResource(id = R.string.notification_subtitle),
-                showDivider = true,
-
                 onClick = {
 
                 }
@@ -146,8 +148,6 @@ private fun GeneralSection() {
                 imageColor = null,
                 title = stringResource(id = R.string.help),
                 subTitle = stringResource(id = R.string.help_subtitle),
-                showDivider = true,
-
                 onClick = {
 
                 }
@@ -166,10 +166,32 @@ private fun GeneralSection() {
 }
 
 @Composable
-private fun ThemeSection() {
+private fun ThemeSection(
+    uiAction: (SettingContract.UiEvents) -> Unit,
+) {
     SectionCard(
         item = {
-
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        uiAction(SettingContract.UiEvents.ThemeClicked)
+                    }
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    style = MaterialTheme.typography.body1,
+                    text = "Theme",
+                    color = MaterialTheme.colors.onBackground
+                )
+                Text(
+                    style = MaterialTheme.typography.subtitle2,
+                    text = "System default",
+                    color = MaterialTheme.colors.onBackground
+                )
+            }
         }
     )
 
@@ -205,8 +227,6 @@ private fun SectionItem(
     title: String,
     subTitle: String,
     imageColor: Color? = MaterialTheme.colors.onBackground,
-    textColor: Color = MaterialTheme.colors.onBackground,
-    showDivider: Boolean = false,
     onClick: () -> Unit?,
 ) {
     Row(
@@ -253,29 +273,40 @@ private fun SectionItem(
         }
 
         Column {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        start = 16.dp,
-                        top = 16.dp,
-                    ),
-                style = MaterialTheme.typography.body1,
-                text = title,
-                color = textColor
-            )
-            Text(
-                modifier = Modifier
-                    .padding(
-                        start = 16.dp,
-                        top = 8.dp,
-                        bottom = 16.dp
-                    ),
-                style = MaterialTheme.typography.subtitle2,
-                text = subTitle,
-                color = textColor
+            SectionText(
+                title = title,
+                subTitle = subTitle
             )
         }
     }
+}
+
+@Composable
+private fun SectionText(
+    title: String,
+    subTitle: String
+) {
+    Text(
+        modifier = Modifier
+            .padding(
+                start = 16.dp,
+                top = 16.dp,
+            ),
+        style = MaterialTheme.typography.body1,
+        text = title,
+        color = MaterialTheme.colors.onBackground
+    )
+    Text(
+        modifier = Modifier
+            .padding(
+                start = 16.dp,
+                top = 8.dp,
+                bottom = 16.dp
+            ),
+        style = MaterialTheme.typography.subtitle2,
+        text = subTitle,
+        color = MaterialTheme.colors.onBackground
+    )
 }
 
 @Composable
@@ -297,6 +328,25 @@ private fun BuildInformationSectionItem(
             textAlign = TextAlign.End
         )
     }
+}
+
+@Composable
+private fun ThemeDialog(
+    navHostController: NavHostController,
+    uiAction: (SettingContract.UiEvents) -> Unit,
+) {
+    ThemeAlertDialog(
+        dismissText = stringResource(id = R.string.dialog_back_primary),
+        confirmText = stringResource(id = R.string.dialog_back_secondary),
+        onConfirmClick = { navHostController.navigateUp() },
+        onDismissRequest = { uiAction(SettingContract.UiEvents.OnDialogDismissed) },
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+        radioOptions = listOf(
+            stringResource(id = R.string.system_default),
+            stringResource(id = R.string.light),
+            stringResource(id = R.string.dark)
+        ) //TODO: Extract this to ui-state
+    )
 }
 
 @Composable

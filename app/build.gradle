@@ -134,6 +134,8 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2 '
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.5.2 '
+
+    implementation 'androidx.compose.foundation:foundation:1.5.4'
 }
 
 // Allow references to generated code

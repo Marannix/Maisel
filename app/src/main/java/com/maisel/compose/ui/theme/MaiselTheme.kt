@@ -8,6 +8,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.maisel.domain.database.AppTheme
 import com.maisel.ui.settingDarkCardBackgroundColor
 import com.maisel.ui.settingDarkCardOnBackgroundColor
 import com.maisel.ui.settingLightCardBackgroundColor
@@ -113,16 +114,25 @@ val MaterialTheme.extendedColors: ExtendedColors
  */
 @Composable
 fun MaiselTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    appTheme: AppTheme = AppTheme.SYSTEM_DEFAULT,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
+
+    val isDarkMode: Boolean = when (appTheme) {
+        AppTheme.LIGHT_MODE -> false
+        AppTheme.DARK_MODE -> true
+        AppTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+        else -> isSystemInDarkTheme()
+    }
+
+    val colors = if (isDarkMode) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
 
-    val extendedColors = if (darkTheme) ExtendedDarkColorPalette else ExtendedLightColorPalette
+    val extendedColors =
+        if (isDarkMode) ExtendedDarkColorPalette else ExtendedLightColorPalette
 
     LocalContentAlpha
 
@@ -133,7 +143,7 @@ fun MaiselTheme(
         val systemUiController = rememberSystemUiController()
         systemUiController.setSystemBarsColor(
             color = MaterialTheme.colors.background,
-            darkIcons = !darkTheme
+            darkIcons = isDarkMode
         )
 
         CompositionLocalProvider(

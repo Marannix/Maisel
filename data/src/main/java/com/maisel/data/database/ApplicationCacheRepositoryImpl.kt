@@ -2,6 +2,7 @@ package com.maisel.data.database
 
 import android.util.Log
 import androidx.datastore.core.DataStore
+import com.maisel.domain.database.AppTheme
 import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.domain.database.ApplicationSetting
 import com.maisel.domain.database.repository.ApplicationCacheRepository
@@ -49,6 +50,12 @@ class ApplicationCacheRepositoryImpl @Inject constructor(
     override suspend fun updateShowcase(hasSeenShowcase: Boolean) {
         dataStore.updateData { actualSettings: ApplicationSetting ->
             actualSettings.copy(hasSeenShowcase = hasSeenShowcase)
+        }
+    }
+
+    override suspend fun updateTheme(appTheme: AppTheme) {
+        dataStore.updateData { actualSettings: ApplicationSetting ->
+            actualSettings.copy(appTheme = appTheme)
         }
     }
 
