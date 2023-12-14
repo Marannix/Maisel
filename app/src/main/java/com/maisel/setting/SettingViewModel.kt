@@ -6,6 +6,7 @@ import com.maisel.R
 import com.maisel.domain.database.AppTheme
 import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.domain.database.usecase.GetApplicationCacheStateUseCase
+import com.maisel.domain.database.usecase.UpdateThemeUseCase
 import com.maisel.utils.ResourceProvider
 import com.maisel.utils.ThemeMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val getApplicationCacheStateUseCase: GetApplicationCacheStateUseCase,
     private val resourceProvider: ResourceProvider,
+    private val updateThemeUseCase: UpdateThemeUseCase
 ) : SettingContract.ViewModel() {
 
     override val _uiState = MutableStateFlow(
@@ -76,13 +78,20 @@ class SettingViewModel @Inject constructor(
             SettingContract.UiEvents.OnDialogDismissed -> {
                 updateUiState { oldState -> oldState.copy(isThemeDialogShown = false) }
             }
+
+            is SettingContract.UiEvents.OnDialogConfirmed -> {
+                updateUiState { oldState -> oldState.copy(isThemeDialogShown = false) }
+                viewModelScope.launch {
+                    updateThemeUseCase.invoke(appTheme = event.appTheme)
+                }
+            }
         }
     }
 
     private fun initialUiState() = SettingContract.UiState(
         isLoading = false,
         appThemes = emptyList(),
-        currentAppTheme = null,
+//        currentAppTheme = null,
         isThemeDialogShown = false
     )
 }

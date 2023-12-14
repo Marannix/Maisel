@@ -25,6 +25,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +44,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.components.dialog.Dialogs.ThemeAlertDialog
 import com.maisel.compose.ui.theme.extendedColors
+import com.maisel.domain.database.AppTheme
 
 @Composable
 fun SettingsScreen(
@@ -98,7 +101,7 @@ fun SettingsContent(
             ) {
                 if (uiState.isThemeDialogShown) {
                     ThemeDialog(
-                        navHostController = navHostController,
+                        uiState = uiState,
                         uiAction = uiEvents
                     )
                 }
@@ -332,20 +335,36 @@ private fun BuildInformationSectionItem(
 
 @Composable
 private fun ThemeDialog(
-    navHostController: NavHostController,
+    uiState: SettingContract.UiState,
     uiAction: (SettingContract.UiEvents) -> Unit,
 ) {
+    val radioOptions = listOf(
+        Pair(stringResource(id = R.string.system_default), AppTheme.SYSTEM_DEFAULT),
+        Pair(stringResource(id = R.string.light), AppTheme.LIGHT_MODE),
+        Pair(stringResource(id = R.string.dark), AppTheme.DARK_MODE)
+    )
+
+    val (selectedOption, onOptionSelected) = remember {
+        mutableStateOf(
+            try {
+                radioOptions.first { it.second == uiState.currentAppTheme }
+            } catch (exception: NoSuchElementException) {
+                radioOptions.first()
+            })
+    }
+
     ThemeAlertDialog(
+        currentTheme = uiState.currentAppTheme,
+        title = "Choose theme",
         dismissText = stringResource(id = R.string.dialog_back_primary),
         confirmText = stringResource(id = R.string.dialog_back_secondary),
-        onConfirmClick = { navHostController.navigateUp() },
+        onConfirmClick = { uiAction(SettingContract.UiEvents.OnDialogConfirmed(selectedOption.second)) },
         onDismissRequest = { uiAction(SettingContract.UiEvents.OnDialogDismissed) },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
-        radioOptions = listOf(
-            stringResource(id = R.string.system_default),
-            stringResource(id = R.string.light),
-            stringResource(id = R.string.dark)
-        ) //TODO: Extract this to ui-state
+        selectedOption = selectedOption.first,
+        onOptionSelected = onOptionSelected,
+        radioOptions = radioOptions
+        //TODO: Extract this to ui-state
     )
 }
 

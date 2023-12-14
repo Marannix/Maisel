@@ -14,20 +14,17 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.maisel.R
+import com.maisel.compose.ui.theme.typography
+import com.maisel.domain.database.AppTheme
 
 object Dialogs {
 
@@ -122,18 +119,27 @@ object Dialogs {
     @Composable
     fun ThemeAlertDialog(
         modifier: Modifier = Modifier,
+        currentTheme: AppTheme,
+        title: String,
         dismissText: String,
         onDismissRequest: () -> Unit,
         confirmText: String? = null,
         onConfirmClick: (() -> Unit)? = null,
-        radioOptions: List<String>,
+        radioOptions: List<Pair<String, AppTheme>>,
         properties: DialogProperties = DialogProperties(),
+        selectedOption: String,
+        onOptionSelected: (Pair<String, AppTheme>) -> Unit
     ) {
+       // val themeSelected = remember { mutableStateOf(currentTheme) }
+
+
         Dialog(
             onDismissRequest = onDismissRequest,
             properties = properties
         ) {
             ThemeAlertContent(
+                currentTheme = currentTheme,
+                title = title,
                 modifier = Modifier
                     .widthIn(280.dp, 560.dp)
                     .then(modifier),
@@ -143,7 +149,9 @@ object Dialogs {
                     }
                 },
                 dismissButton = { DismissButton(dismissText, onDismissRequest) },
-                radioOptions = radioOptions
+                radioOptions = radioOptions,
+                selectedOption = selectedOption,
+                onOptionSelected = onOptionSelected
             )
         }
     }
@@ -151,58 +159,71 @@ object Dialogs {
     @Composable
     private fun ThemeAlertContent(
         modifier: Modifier = Modifier,
+        title: String,
         confirmButton: @Composable () -> Unit,
-        dismissButton: @Composable (() -> Unit)? = null,
-        radioOptions: List<String>,
+        dismissButton: @Composable() (() -> Unit)? = null,
+        radioOptions: List<Pair<String, AppTheme>>,
+        currentTheme: AppTheme,
+        selectedOption: String,
+        onOptionSelected: (Pair<String, AppTheme>) -> Unit,
     ) {
 //        val radioOptions = listOf(
 //            stringResource(id = R.string.system_default),
 //            stringResource(id = R.string.light),
 //            stringResource(id = R.string.dark)
 //        )
-        val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[2]) }
+
+
         Surface(
             modifier = modifier,
         ) {
             Column(
                 Modifier.fillMaxWidth()
             ) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = title,
+                    style = typography.h5,
+                )
                 radioOptions.forEach { text ->
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .selectable(
-                                selected = (text == selectedOption),
+                                selected = (text.first == selectedOption),
                                 onClick = {
                                     onOptionSelected(text)
                                 }
                             )
-                            .padding(vertical = 5.dp),
+                            .padding(vertical = 8.dp, horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = (text == selectedOption),
+                            selected = (text.first == selectedOption),
                             onClick = { onOptionSelected(text) }
                         )
                         Text(
-                            text = text
+                            modifier = modifier.padding(horizontal = 16.dp),
+                            text = text.first
                         )
                     }
                 }
-            }
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(all = 8.dp)
-            ) {
-                FlowRow(
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(all = 8.dp)
+                ) {
+                    FlowRow(
+                        modifier = Modifier.align(Alignment.CenterEnd)
 //                        mainAxisSpacing = 8.dp,
 //                        crossAxisSpacing = 12.dp
-                ) {
-                    dismissButton?.invoke()
-                    confirmButton()
+                    ) {
+                        dismissButton?.invoke()
+                        confirmButton()
+                    }
                 }
             }
+
         }
     }
 }

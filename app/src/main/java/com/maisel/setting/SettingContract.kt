@@ -14,12 +14,13 @@ interface SettingContract {
     data class UiState(
         val isLoading: Boolean,
         val appThemes: List<SettingThemeModel>,
-        val currentAppTheme: AppTheme?,
+        val currentAppTheme: AppTheme = AppTheme.SYSTEM_DEFAULT,
         val isThemeDialogShown: Boolean,
     ) : UiStateBase
 
     sealed class UiEvents : UiEventBase {
         object ThemeClicked : UiEvents()
+        data class OnDialogConfirmed(val appTheme: AppTheme): UiEvents()
         object OnDialogDismissed : UiEvents()
     }
 }

@@ -15,8 +15,8 @@ class ThemeMapper @Inject constructor() {
         }
     }
 
-    fun mapStringToEnum(isDarkMode: String): AppTheme {
-        return when (isDarkMode) {
+    fun mapStringToEnum(theme: String): AppTheme {
+        return when (theme) {
             AppTheme.LIGHT_MODE.name-> AppTheme.LIGHT_MODE
             AppTheme.DARK_MODE.name -> AppTheme.DARK_MODE
             AppTheme.SYSTEM_DEFAULT.name -> AppTheme.SYSTEM_DEFAULT
