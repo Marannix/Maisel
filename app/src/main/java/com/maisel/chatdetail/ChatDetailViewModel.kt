@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.maisel.chatdetail.mapper.ChatDetailsMessageItemMapper
 import com.maisel.coroutine.DispatcherProvider
+import com.maisel.dashboard.DashboardDestination
 import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.domain.database.usecase.GetApplicationCacheStateUseCase
 import com.maisel.domain.message.MessageRepository
@@ -13,6 +14,7 @@ import com.maisel.domain.message.usecase.GetMessagesUseCase
 import com.maisel.domain.user.entity.User
 import com.maisel.domain.user.usecase.GetRecipientUserUseCase
 import com.maisel.domain.user.usecase.LogOutUseCase
+import com.maisel.navigation.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,6 +36,9 @@ class ChatDetailViewModel @Inject constructor(
     private val messageMapper: ChatDetailsMessageItemMapper,
 ) : ChatDetailsContract.ViewModel() {
 
+    private val _backPressed = MutableSharedFlow<Boolean>()
+    val backPressed = _backPressed.asSharedFlow()
+
     private val _snackbarMessage = MutableSharedFlow<String>()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
 
@@ -49,12 +54,6 @@ class ChatDetailViewModel @Inject constructor(
     fun init() {
         loadCache()
     }
-//    fun init() {
-//        viewState.value = ChatDetailViewState(senderUid = senderId)
-//        listenToRecipientUser()
-//        getMessageItem(senderId, receiverId)
-//        listenToChatMessage(senderId, receiverId)
-//    }
 
     private fun loadCache() {
         viewModelScope.launch {
@@ -71,7 +70,7 @@ class ChatDetailViewModel @Inject constructor(
 
                             updateUiState { oldState ->
                                 oldState.copy(
-                                    isLoading = true,
+                                    isLoading = false,
                                     senderUid = senderId
                                 )
                             }
@@ -88,7 +87,11 @@ class ChatDetailViewModel @Inject constructor(
                     }
 
                     ApplicationCacheState.Loading -> {
-                        // Create loading screen
+                        updateUiState { oldState ->
+                            oldState.copy(
+                                isLoading = true,
+                            )
+                        }
                     }
                 }
             }
@@ -156,7 +159,9 @@ class ChatDetailViewModel @Inject constructor(
     override fun onUiEvent(event: ChatDetailsContract.UiEvents) {
         when (event) {
             is ChatDetailsContract.UiEvents.BackPressed -> {
-
+                viewModelScope.launch {
+                    _backPressed.emit(true)
+                }
             }
 
             ChatDetailsContract.UiEvents.CallClicked -> {

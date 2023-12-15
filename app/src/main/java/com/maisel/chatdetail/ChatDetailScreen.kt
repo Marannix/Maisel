@@ -1,5 +1,6 @@
 package com.maisel.chatdetail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -24,6 +25,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AppBarDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -42,6 +44,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -62,9 +65,13 @@ import com.maisel.compose.ui.components.shape.RecipientMessageBox
 import com.maisel.compose.ui.components.shape.SenderMessageBox
 import com.maisel.compose.ui.theme.extendedColors
 import com.maisel.compose.ui.theme.typography
+import com.maisel.dashboard.DashboardDestination
 import com.maisel.data.utils.DateFormatter
 import com.maisel.message.MessageViewModel
+import com.maisel.navigation.Screens
 import com.maisel.ui.shapes
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.Date
 
 @Composable
@@ -81,10 +88,19 @@ fun ChatDetailScreen(
     }
 
     val uiState by chatDetailViewModel.uiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
-
-    //val user: User? = chatDetailViewModel.viewState.observeAsState().value?.recipient
-    //   ?: throw Exception() //TODO: Handle this better
+    LaunchedEffect(chatDetailViewModel.backPressed) {
+        chatDetailViewModel
+            .backPressed
+            .collectLatest { backPressed ->
+                scope.launch {
+                    if (backPressed) {
+                        navHostController.navigateUp()
+                    }
+                }
+            }
+    }
 
     ChatDetailContent(
         uiState = uiState,
@@ -205,7 +221,21 @@ fun ChatDetailContent(
                     contentColor = MaterialTheme.colors.primary
                 )
             },
-            content = { padding -> ChatContent(padding, uiState.messages) },
+            content = { padding ->
+                Box {
+                    if (uiState.isLoading) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    ChatContent(padding, uiState.messages)
+                }
+
+
+            },
             bottomBar = { MessageBox() }
         )
     }
