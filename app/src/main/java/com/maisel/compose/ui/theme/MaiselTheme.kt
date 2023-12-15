@@ -143,7 +143,7 @@ fun MaiselTheme(
         val systemUiController = rememberSystemUiController()
         systemUiController.setSystemBarsColor(
             color = MaterialTheme.colors.background,
-            darkIcons = isDarkMode
+            darkIcons = !isDarkMode
         )
 
         CompositionLocalProvider(

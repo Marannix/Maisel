@@ -1,6 +1,7 @@
 package com.maisel.ui
 
 import androidx.compose.ui.graphics.Color
+import com.maisel.compose.ui.theme.MaiselColours
 
 val purple200 = Color(0xFFBB86FC)
 val purple500 = Color(0xFF6200EE)
@@ -48,8 +49,8 @@ val colorSecondaryDark = concrete
 val colorSurfaceDark = lightGreyAlpha
 
 //Extended Light
-val settingLightCardBackgroundColor = Color(0xFF1E1F26)
-val settingLightCardOnBackgroundColor = Color(0xFFFFFFFF)
+val settingLightCardBackgroundColor = Color(0xFFF9F9F9)
+val settingLightCardOnBackgroundColor = MaiselColours.Light.onBackground
 
 //Extended Dark
 val settingDarkCardBackgroundColor = Color(0xFF1E1F26)

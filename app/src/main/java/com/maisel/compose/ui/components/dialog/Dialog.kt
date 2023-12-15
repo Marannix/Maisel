@@ -20,11 +20,12 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.maisel.compose.ui.theme.typography
-import com.maisel.domain.database.AppTheme
+import com.maisel.setting.SettingThemeModel
 
 object Dialogs {
 
@@ -119,30 +120,29 @@ object Dialogs {
     @Composable
     fun ThemeAlertDialog(
         modifier: Modifier = Modifier,
-        currentTheme: AppTheme,
         title: String,
         dismissText: String,
         onDismissRequest: () -> Unit,
         confirmText: String? = null,
         onConfirmClick: (() -> Unit)? = null,
-        radioOptions: List<Pair<String, AppTheme>>,
+        radioOptions: List<SettingThemeModel>,
+        shape: Shape = MaterialTheme.shapes.medium,
         properties: DialogProperties = DialogProperties(),
         selectedOption: String,
-        onOptionSelected: (Pair<String, AppTheme>) -> Unit
+        onOptionSelected: (SettingThemeModel) -> Unit
     ) {
        // val themeSelected = remember { mutableStateOf(currentTheme) }
-
 
         Dialog(
             onDismissRequest = onDismissRequest,
             properties = properties
         ) {
             ThemeAlertContent(
-                currentTheme = currentTheme,
                 title = title,
                 modifier = Modifier
                     .widthIn(280.dp, 560.dp)
                     .then(modifier),
+                shape = shape,
                 confirmButton = {
                     if (confirmText != null && onConfirmClick != null) {
                         ConfirmButton(confirmText, onConfirmClick)
@@ -161,11 +161,11 @@ object Dialogs {
         modifier: Modifier = Modifier,
         title: String,
         confirmButton: @Composable () -> Unit,
-        dismissButton: @Composable() (() -> Unit)? = null,
-        radioOptions: List<Pair<String, AppTheme>>,
-        currentTheme: AppTheme,
+        dismissButton: @Composable (() -> Unit)? = null,
+        radioOptions: List<SettingThemeModel>,
         selectedOption: String,
-        onOptionSelected: (Pair<String, AppTheme>) -> Unit,
+        onOptionSelected: (SettingThemeModel) -> Unit,
+        shape: Shape,
     ) {
 //        val radioOptions = listOf(
 //            stringResource(id = R.string.system_default),
@@ -176,6 +176,7 @@ object Dialogs {
 
         Surface(
             modifier = modifier,
+            shape = shape,
         ) {
             Column(
                 Modifier.fillMaxWidth()
@@ -190,7 +191,7 @@ object Dialogs {
                         Modifier
                             .fillMaxWidth()
                             .selectable(
-                                selected = (text.first == selectedOption),
+                                selected = (text.name == selectedOption),
                                 onClick = {
                                     onOptionSelected(text)
                                 }
@@ -199,12 +200,12 @@ object Dialogs {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = (text.first == selectedOption),
+                            selected = (text.name == selectedOption),
                             onClick = { onOptionSelected(text) }
                         )
                         Text(
                             modifier = modifier.padding(horizontal = 16.dp),
-                            text = text.first
+                            text = text.name
                         )
                     }
                 }

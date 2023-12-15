@@ -1,6 +1,5 @@
 package com.maisel.setting
 
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewModelScope
 import com.maisel.R
 import com.maisel.domain.database.AppTheme
@@ -8,7 +7,6 @@ import com.maisel.domain.database.ApplicationCacheState
 import com.maisel.domain.database.usecase.GetApplicationCacheStateUseCase
 import com.maisel.domain.database.usecase.UpdateThemeUseCase
 import com.maisel.utils.ResourceProvider
-import com.maisel.utils.ThemeMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -19,7 +17,7 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val getApplicationCacheStateUseCase: GetApplicationCacheStateUseCase,
     private val resourceProvider: ResourceProvider,
-    private val updateThemeUseCase: UpdateThemeUseCase
+    private val updateThemeUseCase: UpdateThemeUseCase,
 ) : SettingContract.ViewModel() {
 
     override val _uiState = MutableStateFlow(
@@ -35,14 +33,19 @@ class SettingViewModel @Inject constructor(
             getApplicationCacheStateUseCase.invoke().collectLatest { cache ->
                 when (cache) {
                     ApplicationCacheState.Error -> {
+                        updateUiState { oldState -> oldState.copy(isLoading = false) }
+
                         //TODO: Error screen
                     }
 
                     is ApplicationCacheState.Loaded -> {
+                        val currentTheme = cache.settings.appTheme
+                            ?: AppTheme.SYSTEM_DEFAULT
+
                         updateUiState { oldState ->
                             oldState.copy(
-                                currentAppTheme = cache.settings.appTheme
-                                    ?: AppTheme.SYSTEM_DEFAULT,
+                                isLoading = false,
+                                currentAppTheme = SettingThemeModel(mapThemeString(currentTheme), currentTheme),
                                 appThemes = listOf(
                                     SettingThemeModel(
                                         resourceProvider.getString(R.string.system_default),
@@ -62,7 +65,7 @@ class SettingViewModel @Inject constructor(
                     }
 
                     ApplicationCacheState.Loading -> {
-                        // Create loading screen
+                        updateUiState { oldState -> oldState.copy(isLoading = true) }
                     }
                 }
             }
@@ -88,10 +91,18 @@ class SettingViewModel @Inject constructor(
         }
     }
 
+    private fun mapThemeString(appTheme: AppTheme): String {
+        return when (appTheme) {
+            AppTheme.LIGHT_MODE -> resourceProvider.getString(R.string.light)
+            AppTheme.DARK_MODE ->  resourceProvider.getString(R.string.dark)
+            AppTheme.SYSTEM_DEFAULT ->  resourceProvider.getString(R.string.system_default)
+        }
+    }
+
     private fun initialUiState() = SettingContract.UiState(
         isLoading = false,
         appThemes = emptyList(),
-//        currentAppTheme = null,
-        isThemeDialogShown = false
+        isThemeDialogShown = false,
+        themeOptions = emptyList()
     )
 }

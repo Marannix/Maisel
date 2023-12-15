@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -44,7 +46,6 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.components.dialog.Dialogs.ThemeAlertDialog
 import com.maisel.compose.ui.theme.extendedColors
-import com.maisel.domain.database.AppTheme
 
 @Composable
 fun SettingsScreen(
@@ -88,6 +89,8 @@ fun SettingsContent(
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back Arrow")
                     }
                 },
+                backgroundColor = MaterialTheme.colors.background,
+                contentColor = MaterialTheme.colors.primary,
             )
         },
         content = { contentPadding ->
@@ -99,6 +102,12 @@ fun SettingsContent(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 8.dp)
             ) {
+                if (uiState.isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+
                 if (uiState.isThemeDialogShown) {
                     ThemeDialog(
                         uiState = uiState,
@@ -107,7 +116,10 @@ fun SettingsContent(
                 }
                 AccountSection()
                 GeneralSection()
-                ThemeSection(uiEvents)
+                ThemeSection(
+                    uiState = uiState,
+                    uiAction = uiEvents
+                )
                 BuildInformationSection()
             }
         }
@@ -171,6 +183,7 @@ private fun GeneralSection() {
 @Composable
 private fun ThemeSection(
     uiAction: (SettingContract.UiEvents) -> Unit,
+    uiState: SettingContract.UiState,
 ) {
     SectionCard(
         item = {
@@ -187,12 +200,12 @@ private fun ThemeSection(
                 Text(
                     style = MaterialTheme.typography.body1,
                     text = "Theme",
-                    color = MaterialTheme.colors.onBackground
+                    color = MaterialTheme.extendedColors.cardOnBackgroundColor
                 )
                 Text(
                     style = MaterialTheme.typography.subtitle2,
-                    text = "System default",
-                    color = MaterialTheme.colors.onBackground
+                    text = uiState.currentAppTheme.name,
+                    color = MaterialTheme.extendedColors.cardOnBackgroundColor
                 )
             }
         }
@@ -338,33 +351,26 @@ private fun ThemeDialog(
     uiState: SettingContract.UiState,
     uiAction: (SettingContract.UiEvents) -> Unit,
 ) {
-    val radioOptions = listOf(
-        Pair(stringResource(id = R.string.system_default), AppTheme.SYSTEM_DEFAULT),
-        Pair(stringResource(id = R.string.light), AppTheme.LIGHT_MODE),
-        Pair(stringResource(id = R.string.dark), AppTheme.DARK_MODE)
-    )
-
     val (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
             try {
-                radioOptions.first { it.second == uiState.currentAppTheme }
+                uiState.appThemes.first { it.appTheme == uiState.currentAppTheme.appTheme }
             } catch (exception: NoSuchElementException) {
-                radioOptions.first()
+                uiState.appThemes.first()
             })
     }
 
     ThemeAlertDialog(
-        currentTheme = uiState.currentAppTheme,
-        title = "Choose theme",
+        title = stringResource(id = R.string.dialog_choose_theme),
         dismissText = stringResource(id = R.string.dialog_back_primary),
+        shape = RoundedCornerShape(16.dp),
         confirmText = stringResource(id = R.string.dialog_back_secondary),
-        onConfirmClick = { uiAction(SettingContract.UiEvents.OnDialogConfirmed(selectedOption.second)) },
+        onConfirmClick = { uiAction(SettingContract.UiEvents.OnDialogConfirmed(selectedOption.appTheme)) },
         onDismissRequest = { uiAction(SettingContract.UiEvents.OnDialogDismissed) },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
-        selectedOption = selectedOption.first,
+        selectedOption = selectedOption.name,
         onOptionSelected = onOptionSelected,
-        radioOptions = radioOptions
-        //TODO: Extract this to ui-state
+        radioOptions = uiState.appThemes
     )
 }
 

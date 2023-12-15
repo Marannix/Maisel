@@ -9,6 +9,7 @@
     <string name="compose_message_label">Message</string>
     <string name="dialog_back_primary">Cancel</string>
     <string name="dialog_back_secondary">Confirm</string>
+    <string name="dialog_choose_theme">Choose theme</string>
 
     <!-- Theme -->
     <string name="system_default">System default</string>

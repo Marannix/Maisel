@@ -14,8 +14,9 @@ interface SettingContract {
     data class UiState(
         val isLoading: Boolean,
         val appThemes: List<SettingThemeModel>,
-        val currentAppTheme: AppTheme = AppTheme.SYSTEM_DEFAULT,
+        val currentAppTheme: SettingThemeModel = SettingThemeModel("System default", AppTheme.SYSTEM_DEFAULT),
         val isThemeDialogShown: Boolean,
+        val themeOptions: List<Pair<String, AppTheme>>
     ) : UiStateBase
 
     sealed class UiEvents : UiEventBase {
