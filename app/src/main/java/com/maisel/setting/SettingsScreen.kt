@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -42,6 +44,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.statusBarsPadding
 import com.maisel.R
 import com.maisel.compose.ui.components.dialog.Dialogs.ThemeAlertDialog
@@ -114,7 +118,7 @@ fun SettingsContent(
                         uiAction = uiEvents
                     )
                 }
-                AccountSection()
+                AccountSection(uiState)
                 GeneralSection()
                 ThemeSection(
                     uiState = uiState,
@@ -127,14 +131,14 @@ fun SettingsContent(
 }
 
 @Composable
-private fun AccountSection() {
+private fun AccountSection(uiState: SettingContract.UiState) {
     SectionTitle("Account")
     SectionCard(
         item = {
             SectionItem(
-                // drawableRes = R.drawable.ic_star,
+                profilePicture = uiState.user?.profilePicture,
                 imageColor = null,
-                title = "Alpha",
+                title = uiState.user?.username ?: "",
                 subTitle = "Manage your account",
                 onClick = {
 
@@ -238,6 +242,7 @@ private fun SectionTitle(
 
 @Composable
 private fun SectionItem(
+    profilePicture: String? = null,
     @DrawableRes drawableRes: Int? = null,
     imageVector: ImageVector? = null,
     title: String,
@@ -253,6 +258,24 @@ private fun SectionItem(
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
+        profilePicture?.let {
+            Image(
+                painter = rememberImagePainter(
+                    data = profilePicture ?: R.drawable.ic_son_goku,
+                    builder = {
+                        crossfade(true)
+                        //placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
+                        transformations(CircleCropTransformation())
+                    }
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(start = 5.dp)
+                    .padding(5.dp)
+            )
+        }
+
         drawableRes?.let {
             Image(
                 modifier = Modifier

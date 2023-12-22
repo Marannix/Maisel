@@ -109,7 +109,7 @@ object MaiselColours {
         override val barsBackground = Neutral10
         override val bottomBarsBackground = Primary10
 
-        override val lowEmphasis = Black
+        override val lowEmphasis = White
         override val highEmphasis = Grey10
     }
 }

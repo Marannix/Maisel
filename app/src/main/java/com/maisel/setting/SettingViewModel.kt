@@ -59,7 +59,8 @@ class SettingViewModel @Inject constructor(
                                         resourceProvider.getString(R.string.dark),
                                         AppTheme.DARK_MODE
                                     )
-                                )
+                                ),
+                                user = cache.settings.user
                             )
                         }
                     }
@@ -103,6 +104,7 @@ class SettingViewModel @Inject constructor(
         isLoading = false,
         appThemes = emptyList(),
         isThemeDialogShown = false,
-        themeOptions = emptyList()
+        themeOptions = emptyList(),
+        user = null
     )
 }

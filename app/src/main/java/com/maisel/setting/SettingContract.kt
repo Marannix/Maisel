@@ -5,6 +5,7 @@ import com.maisel.common.base.UiEventBase
 import com.maisel.common.base.UiStateBase
 import com.maisel.common.base.UpdatedBaseViewModel
 import com.maisel.domain.database.AppTheme
+import com.maisel.domain.user.entity.User
 
 interface SettingContract {
 
@@ -16,7 +17,8 @@ interface SettingContract {
         val appThemes: List<SettingThemeModel>,
         val currentAppTheme: SettingThemeModel = SettingThemeModel("System default", AppTheme.SYSTEM_DEFAULT),
         val isThemeDialogShown: Boolean,
-        val themeOptions: List<Pair<String, AppTheme>>
+        val themeOptions: List<Pair<String, AppTheme>>,
+        val user: User?
     ) : UiStateBase
 
     sealed class UiEvents : UiEventBase {
