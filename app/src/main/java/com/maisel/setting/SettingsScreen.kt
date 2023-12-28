@@ -44,6 +44,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.ImagePainter.State.Empty.painter
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.insets.statusBarsPadding
@@ -136,7 +137,7 @@ private fun AccountSection(uiState: SettingContract.UiState) {
     SectionCard(
         item = {
             SectionItem(
-                profilePicture = uiState.user?.profilePicture,
+                profilePicture = uiState.user?.profilePicture ?: "",
                 imageColor = null,
                 title = uiState.user?.username ?: "",
                 subTitle = "Manage your account",
@@ -258,42 +259,24 @@ private fun SectionItem(
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        profilePicture?.let {
-            Image(
-                painter = rememberImagePainter(
-                    data = profilePicture ?: R.drawable.ic_son_goku,
-                    builder = {
-                        crossfade(true)
-                        //placeholder(R.drawable.ic_son_goku) //TODO: Placeholder
-                        transformations(CircleCropTransformation())
-                    }
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(50.dp)
-                    .padding(start = 5.dp)
-                    .padding(5.dp)
-            )
-        }
+        when {
+            drawableRes != null -> {
+                Image(
+                    modifier = Modifier
+                        .padding(
+                            top = 16.dp,
+                            bottom = 16.dp,
+                            start = 16.dp
+                        )
+                        .size(16.dp),
+                    painter = painterResource(id = drawableRes),
+                    contentDescription = "",
+                    colorFilter = imageColor?.let {
+                        ColorFilter.tint(imageColor)
+                    })
+            }
 
-        drawableRes?.let {
-            Image(
-                modifier = Modifier
-                    .padding(
-                        top = 16.dp,
-                        bottom = 16.dp,
-                        start = 16.dp
-                    )
-                    .size(16.dp),
-                painter = painterResource(id = drawableRes),
-                contentDescription = "",
-                colorFilter = imageColor?.let {
-                    ColorFilter.tint(imageColor)
-                })
-        }
-
-        if (drawableRes == null) {
-            imageVector?.let {
+            imageVector != null -> {
                 Image(
                     modifier = Modifier
                         .padding(
@@ -307,6 +290,24 @@ private fun SectionItem(
                     colorFilter = imageColor?.let {
                         ColorFilter.tint(imageColor)
                     }
+                )
+            }
+            profilePicture != null -> {
+                Image(
+                    painter = rememberImagePainter(
+                        data = profilePicture.ifBlank {
+                            R.drawable.ic_unknown
+                        },
+                        builder = {
+                            crossfade(true)
+                            transformations(CircleCropTransformation())
+                        }
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(start = 5.dp)
+                        .padding(5.dp),
                 )
             }
         }
